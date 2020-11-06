@@ -5,12 +5,14 @@ import { Task } from "./Task";
 import { TaskForm } from "./TaskForm";
 import { LoginForm } from "./LoginForm";
 
+
+
 const toggleChecked = ({ _id, isChecked }) => {
-  Meteor.call('tasks.setIsChecked', _id, !isChecked);
+  Meteor.call("tasks.setIsChecked", _id, !isChecked);
 };
 
 const deleteTask = ({ _id }) => {
-  Meteor.call('tasks.remove', _id);
+  Meteor.call("tasks.remove", _id);
 };
 
 export const App = () => {
@@ -29,7 +31,7 @@ export const App = () => {
     if (!Meteor.user()) {
       return noDataAvailable;
     }
-    const handler = Meteor.subscribe('tasks');
+    const handler = Meteor.subscribe("tasks");
 
     if (!handler.ready()) {
       return { ...noDataAvailable, isLoading: true };
@@ -58,7 +60,7 @@ export const App = () => {
       <header>
         <div className="app-bar">
           <div className="app-header">
-            <h1>My todo app! {pendingTasksTitle}</h1>
+            <h1>PERSFO {pendingTasksTitle}</h1>
           </div>
         </div>
       </header>
@@ -66,6 +68,7 @@ export const App = () => {
       <div className="main">
         {user ? (
           <Fragment>
+            
             <div className="user" onClick={logout}>
               {user.username}🚪
             </div>
@@ -77,7 +80,7 @@ export const App = () => {
             </div>
 
             {isLoading && <div className="loading">loading...</div>}
-            
+
             <ul className="tasks">
               {tasks.map((task) => (
                 <Task
