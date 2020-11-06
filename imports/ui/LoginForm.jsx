@@ -99,10 +99,10 @@ export const LoginForm = () => {
           margin="normal"
           required
           fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
+          id="username"
+          label="Username"
+          name="username"
+          autoComplete="username"
           onChange={e => setUsername(e.target.value)}
           autoFocus
         />
@@ -118,10 +118,10 @@ export const LoginForm = () => {
           onChange={e => setPassword(e.target.value)}
           autoComplete="current-password"
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
-        />
+        /> */}
         <Button
           type="submit"
           fullWidth
