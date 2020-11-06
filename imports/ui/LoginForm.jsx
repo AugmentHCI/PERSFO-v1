@@ -1,5 +1,5 @@
-import { Meteor } from 'meteor/meteor';
-import React, { useState } from 'react';
+import { Meteor } from "meteor/meteor";
+import React, { useState } from "react";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -16,27 +16,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 export const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const submit = e => {
+  const submit = (e) => {
     e.preventDefault();
 
     Meteor.loginWithPassword(username, password);
   };
-
-  function Copyright() {
-    return (
-      <Typography variant="body2" color="textSecondary" align="center">
-        {"Copyright © "}
-        <Link color="inherit" href="https://material-ui.com/">
-          Your Website
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  }
 
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -61,94 +48,78 @@ export const LoginForm = () => {
   const classes = useStyles();
 
   return (
-    // <form onSubmit={submit} className="login-form">
-    //   <label htmlFor="username">Username</label>
-
-    //   <input
-    //     type="text"
-    //     placeholder="Username"
-    //     name="username"
-    //     required
-    //     onChange={e => setUsername(e.target.value)}
-    //   />
-
-    //   <label htmlFor="password">Password</label>
-
-    //   <input
-    //     type="password"
-    //     placeholder="Password"
-    //     name="password"
-    //     required
-    //     onChange={e => setPassword(e.target.value)}
-    //   />
-
-    //   <button type="submit">Log In</button>
-    // </form>
     <Container component="main" maxWidth="xs">
-    <CssBaseline />
-    <div className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h5">
-        Sign in
-      </Typography>
-      <form className={classes.form} noValidate>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          autoComplete="username"
-          onChange={e => setUsername(e.target.value)}
-          autoFocus
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-        />
-        {/* <FormControlLabel
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} noValidate>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            onChange={(e) => setUsername(e.target.value)}
+            autoFocus
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+          {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         /> */}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          onClick={submit}
-        >
-          Sign In
-        </Button>
-        <Grid container>
-          <Grid item xs>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={submit}
+          >
+            Sign In
+          </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="#" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Link href="#" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
-          </Grid>
-        </Grid>
-      </form>
-    </div>
-    <Box mt={8}>
-      <Copyright />
-    </Box>
-  </Container>
+        </form>
+      </div>
+      <Box mt={8}>
+        <Typography variant="body2" color="textSecondary" align="center">
+          {"Copyright2 © "}
+          <Link color="inherit" href="https://material-ui.com/">
+            Your Website
+          </Link>{" "}
+          {new Date().getFullYear()}
+          {"."}
+        </Typography>
+      </Box>
+    </Container>
   );
 };
