@@ -1,40 +1,39 @@
 import React, { useState, Fragment } from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { useTracker } from "meteor/react-meteor-data";
 import { TasksCollection } from "/imports/db/TasksCollection";
 import { Task } from "./Task";
 import { TaskForm } from "./TaskForm";
 import { LoginForm } from "./LoginForm";
-
+import { AppBarPersfo } from "./AppBarPersfo";
 import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
-import MoreIcon from "@material-ui/icons/MoreVert";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Box from "@material-ui/core/Box";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import { purple } from '@material-ui/core/colors';
+
+const persfoTheme = createMuiTheme({
+  palette: {
+    primary: {
+      // Purple and green play nicely together.
+      main: "#F57D20",
+    },
+    secondary: {
+      // Purple and green play nicely together.
+      main: "#fff",
+    },
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  toolbar: {
-    minHeight: 128,
-    alignItems: "flex-start",
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(2),
-    background: "#F57D20"
-  },
-  title: {
-    flexGrow: 1,
-    paddingTop: theme.spacing(1),
-    alignSelf: "flex-start"
-    // alignSelf: "flex-end",
-  },
-}));
+});
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return <div {...other}>{value === index && <Box p={3}>{children}</Box>}</div>;
+}
 
 const toggleChecked = ({ _id, isChecked }) => {
   Meteor.call("tasks.setIsChecked", _id, !isChecked);
@@ -45,9 +44,18 @@ const deleteTask = ({ _id }) => {
 };
 
 export const App = () => {
-  const [hideCompleted, setHideCompleted] = useState(false);
-
+  // account logic
   const user = useTracker(() => Meteor.user());
+  const logout = () => Meteor.logout();
+
+  // tab logic
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // old
+  const [hideCompleted, setHideCompleted] = useState(false);
 
   const hideCompletedFilter = { isChecked: { $ne: true } };
 
@@ -80,65 +88,60 @@ export const App = () => {
   const pendingTasksTitle = pendingTasksCount
     ? "(" + pendingTasksCount + ")"
     : "";
-  // const pendingTasksTitle = `${pendingTasksCount ? ` (${pendingTasksCount})` : ''}`;
-
-  const logout = () => Meteor.logout();
-
-  const classes = useStyles();
 
   return (
+    <ThemeProvider theme={persfoTheme}>
     <div className="app">
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.title} variant="h5" noWrap>
-              Keep up the great work!
-            </Typography>
-            <IconButton aria-label="search" color="inherit">
-              <SearchIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-      </div>
+      <AppBarPersfo />
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        indicatorColor="primary"
+        textColor="primary"
+      >
+        <Tab label="LUNCH" />
+        <Tab label="SMOOTHIE" />
+        <Tab label="SNACK" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        Item One
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        Item Two
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <div className="main">
+          {user ? (
+            <Fragment>
+              <div className="user" onClick={logout}>
+                {user.username}🚪
+              </div>
+              <TaskForm user={user} />
+              <div className="filter">
+                <button onClick={() => setHideCompleted(!hideCompleted)}>
+                  {hideCompleted ? "Show All" : "Hide Completed"}
+                </button>
+              </div>
 
-      <div className="main">
-        {user ? (
-          <Fragment>
-            <div className="user" onClick={logout}>
-              {user.username}🚪
-            </div>
-            <TaskForm user={user} />
-            <div className="filter">
-              <button onClick={() => setHideCompleted(!hideCompleted)}>
-                {hideCompleted ? "Show All" : "Hide Completed"}
-              </button>
-            </div>
+              {isLoading && <div className="loading">loading...</div>}
 
-            {isLoading && <div className="loading">loading...</div>}
-
-            <ul className="tasks">
-              {tasks.map((task) => (
-                <Task
-                  key={task._id}
-                  task={task}
-                  onCheckboxClick={toggleChecked}
-                  onDeleteClick={deleteTask}
-                />
-              ))}
-            </ul>
-          </Fragment>
-        ) : (
-          <LoginForm />
-        )}
-      </div>
+              <ul className="tasks">
+                {tasks.map((task) => (
+                  <Task
+                    key={task._id}
+                    task={task}
+                    onCheckboxClick={toggleChecked}
+                    onDeleteClick={deleteTask}
+                  />
+                ))}
+              </ul>
+            </Fragment>
+          ) : (
+            <LoginForm />
+          )}
+        </div>
+      </TabPanel>
     </div>
+    </ThemeProvider>
   );
 };
