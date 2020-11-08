@@ -12,14 +12,11 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 const logout = () => Meteor.logout();
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   toolbar: {
-    minHeight: 128,
+    minHeight: 80,
     alignItems: "flex-start",
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(2),

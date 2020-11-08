@@ -14,34 +14,32 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import React, { useState } from "react";
 
 const useStyles = makeStyles((persfoTheme) => ({
-  main: {
-    overflow: "auto",
-  },
   recommendedCard: {
     display: "flex",
-    marginRight: -persfoTheme.spacing(2),
-    marginTop: persfoTheme.spacing(2),
-    borderRadius: "40px 0px 0px 40px",
+    position: "relative",
+    marginLeft: persfoTheme.spacing(1),
+    borderRadius: "30px 0px 0px 30px",
     width: "100%",
+    zIndex: 20000,
   },
   menuImage: {
     justifyContent: "flex-start",
     margin: persfoTheme.spacing(2),
-    width: persfoTheme.spacing(12),
-    height: persfoTheme.spacing(12),
+    width: persfoTheme.spacing(8),
+    height: persfoTheme.spacing(8),
   },
   menuTitle: {
     marginTop: persfoTheme.spacing(2),
   },
   nutriscore: {
     marginTop: persfoTheme.spacing(2),
-    width: "80px",
-    height: "25px",
+    width: "54px",
+    height: "20px",
   },
   thumbs: {
-    marginTop: persfoTheme.spacing(2),
+    marginTop: persfoTheme.spacing(1),
     position: "absolute",
-    right: "50px",
+    right: persfoTheme.spacing(1),
   },
   thumb: {
     display: "block",
@@ -49,9 +47,10 @@ const useStyles = makeStyles((persfoTheme) => ({
   recommendedLowerButtons: {
     float: "right",
     background: "#F6EBE4",
+    // marginTop: "-2px",
   },
   heartButton: {
-    marginRight: persfoTheme.spacing(1),
+    marginRight: persfoTheme.spacing(0.5),
   },
 }));
 
@@ -88,7 +87,7 @@ export const CardRecommendedMeal = () => {
 
         <Box className={classes.recommendedLowerButtons}>
           <ButtonGroup
-            size="large"
+            size="small"
             color="primary"
             aria-label="large outlined primary button group"
             style={{ Index: 1 }}

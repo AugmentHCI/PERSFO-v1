@@ -25,22 +25,34 @@ const persfoTheme = createMuiTheme({
       default: "#F9F1EC",
     },
   },
+  typography: {
+    fontSize: 12,
+  }
 });
 
 const useStyles = makeStyles((persfoTheme) => ({
   headerTitle: {
-    marginTop: persfoTheme.spacing(1),
+    margin: persfoTheme.spacing(1),
+  },
+  root: {
+    margin: 0,
   },
   info: {
     position: "relative",
     top: persfoTheme.spacing(0.5),
     left: persfoTheme.spacing(1),
   },
+  otherMeals: {
+    display: "flex",
+    overflowX: "auto",
+    height: Math.min(400, (window.innerHeight - 300)) + "px",
+    margin: persfoTheme.spacing(1),
+  }
 }));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  return <div {...other}>{value === index && <Box p={3}>{children}</Box>}</div>;
+  return <div {...other}>{value === index && <Box>{children}</Box>}</div>;
 }
 
 // const toggleChecked = ({ _id, isChecked }) => {
@@ -97,8 +109,7 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={persfoTheme}>
-      <div className="app">
-        <AppBarPersfo />
+        <AppBarPersfo/>
 
         <div className="main">
           {user ? (
@@ -119,7 +130,7 @@ export const App = () => {
               </Tabs>
 
               <TabPanel value={value} index={0}>
-                <Typography variant="h5" className={classes.headerTitle}>
+                <Typography variant="h6" className={classes.headerTitle}>
                   RECOMMENDED
                   <HelpOutlineIcon
                     className={classes.info}
@@ -129,11 +140,19 @@ export const App = () => {
 
                 <CardRecommendedMeal></CardRecommendedMeal>
 
-                <Typography className={classes.headerTitle} variant="h5">
+                <Box m={5}></Box>
+
+                <Typography className={classes.headerTitle} variant="h6">
                   OTHER
                 </Typography>
 
-                <CardOtherMeal></CardOtherMeal>
+                <Box className={classes.otherMeals}>
+                  <CardOtherMeal></CardOtherMeal>
+                  <CardOtherMeal></CardOtherMeal>
+                  <CardOtherMeal></CardOtherMeal>
+                  <CardOtherMeal></CardOtherMeal>
+                  <CardOtherMeal></CardOtherMeal>
+                </Box>
               </TabPanel>
 
               <TabPanel value={value} index={1}>
@@ -166,7 +185,6 @@ export const App = () => {
             <LoginForm />
           )}
         </div>
-      </div>
     </ThemeProvider>
   );
 };

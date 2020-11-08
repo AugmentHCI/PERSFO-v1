@@ -1,5 +1,11 @@
 body {
-background: #F9F1EC;
+  background: #f9f1ec;
+  margin: 0;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 /* 
 button {
