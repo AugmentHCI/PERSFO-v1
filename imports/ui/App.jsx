@@ -1,9 +1,6 @@
 import React, { useState, Fragment } from "react";
 
 import { useTracker } from "meteor/react-meteor-data";
-import { TasksCollection } from "/imports/db/TasksCollection";
-import { Task } from "./Task";
-import { TaskForm } from "./TaskForm";
 import { LoginForm } from "./LoginForm";
 import { AppBarPersfo } from "./AppBarPersfo";
 import Tab from "@material-ui/core/Tab";
@@ -12,24 +9,17 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { grey } from "@material-ui/core/colors";
-import { red } from "@material-ui/core/colors";
 
 import Avatar from "@material-ui/core/Avatar";
 
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import { Paper } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import { CardRecommended } from "./CardRecommeded";
 
 const persfoTheme = createMuiTheme({
   palette: {
@@ -41,21 +31,16 @@ const persfoTheme = createMuiTheme({
     },
     background: {
       default: "#F9F1EC",
-    }
+    },
   },
 });
 
 const useStyles = makeStyles((persfoTheme) => ({
   headerTitle: {
-    marginTop: persfoTheme.spacing(5),
-  },
-  recommendedCard: {
-    marginRight: -persfoTheme.spacing(2),
-    marginTop: persfoTheme.spacing(2),
-    borderRadius: "40px 0px 0px 40px",
+    marginTop: persfoTheme.spacing(1),
   },
   otherPaper: {
-    display: 'flex',
+    display: "flex",
     // alignItems: 'center',
     marginTop: persfoTheme.spacing(1),
     borderRadius: "40px",
@@ -67,7 +52,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     width: persfoTheme.spacing(12),
     height: persfoTheme.spacing(12),
     alignItems: "center",
-    margin: "auto"
+    margin: "auto",
   },
   otherMenuTitle: {
     // alignItems: "center",
@@ -75,43 +60,17 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   otherElement: {
     alignItems: "center",
-    margin: "auto"
+    margin: "auto",
   },
   info: {
     position: "relative",
     top: persfoTheme.spacing(0.5),
     left: persfoTheme.spacing(1),
   },
-  menuImage: {
-    margin: persfoTheme.spacing(1),
-    width: persfoTheme.spacing(12),
-    height: persfoTheme.spacing(12),
-  },
-  menuTitle: {
-    marginTop: persfoTheme.spacing(2),
-    marginLeft: persfoTheme.spacing(4),
-  },
-  nutriscore: {
-    marginTop: persfoTheme.spacing(2),
-    marginLeft: persfoTheme.spacing(4),
-    width: "75px",
-    height: "25px",
-  },
   otherNutriscore: {
-    width: "75px",
+    width: "85px",
     height: "25px",
-    // alignItems: "center",
-    // margin: "auto"
-  },
-  recommendedButtons: {
-    float: "right",
-    background: "#F6EBE4",
-    marginRight: -persfoTheme.spacing(2),
-    marginTop: persfoTheme.spacing(1),
-  },
-  heartButton: {
-    marginRight: persfoTheme.spacing(1),
-  },
+  }
 }));
 
 function TabPanel(props) {
@@ -119,13 +78,13 @@ function TabPanel(props) {
   return <div {...other}>{value === index && <Box p={3}>{children}</Box>}</div>;
 }
 
-const toggleChecked = ({ _id, isChecked }) => {
-  Meteor.call("tasks.setIsChecked", _id, !isChecked);
-};
+// const toggleChecked = ({ _id, isChecked }) => {
+//   Meteor.call("tasks.setIsChecked", _id, !isChecked);
+// };
 
-const deleteTask = ({ _id }) => {
-  Meteor.call("tasks.remove", _id);
-};
+// const deleteTask = ({ _id }) => {
+//   Meteor.call("tasks.remove", _id);
+// };
 
 export const App = () => {
   // account logic
@@ -137,41 +96,39 @@ export const App = () => {
     setValue(newValue);
   };
 
-  const [nbLikesDummy, increaseLike] = useState(134);
-
   // styling
   const classes = useStyles();
 
   // old
-  const [hideCompleted, setHideCompleted] = useState(false);
+  // const [hideCompleted, setHideCompleted] = useState(false);
 
-  const hideCompletedFilter = { isChecked: { $ne: true } };
+  // const hideCompletedFilter = { isChecked: { $ne: true } };
 
-  const userFilter = user ? { userId: user._id } : {};
+  // const userFilter = user ? { userId: user._id } : {};
 
-  const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter };
+  // const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter };
 
-  const { tasks, isLoading } = useTracker(() => {
-    const noDataAvailable = { tasks: [], pendingTasksCount: 0 };
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
-    const handler = Meteor.subscribe("tasks");
+  // const { tasks, isLoading } = useTracker(() => {
+  //   const noDataAvailable = { tasks: [], pendingTasksCount: 0 };
+  //   if (!Meteor.user()) {
+  //     return noDataAvailable;
+  //   }
+  //   const handler = Meteor.subscribe("tasks");
 
-    if (!handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
+  //   if (!handler.ready()) {
+  //     return { ...noDataAvailable, isLoading: true };
+  //   }
 
-    const tasks = TasksCollection.find(
-      hideCompleted ? pendingOnlyFilter : userFilter,
-      {
-        sort: { createdAt: -1 },
-      }
-    ).fetch();
-    const pendingTasksCount = TasksCollection.find(pendingOnlyFilter).count();
+  //   const tasks = TasksCollection.find(
+  //     hideCompleted ? pendingOnlyFilter : userFilter,
+  //     {
+  //       sort: { createdAt: -1 },
+  //     }
+  //   ).fetch();
+  //   const pendingTasksCount = TasksCollection.find(pendingOnlyFilter).count();
 
-    return { tasks, pendingTasksCount };
-  });
+  //   return { tasks, pendingTasksCount };
+  // });
 
   return (
     <ThemeProvider theme={persfoTheme}>
@@ -197,61 +154,16 @@ export const App = () => {
               </Tabs>
 
               <TabPanel value={value} index={0}>
-                  <Typography variant="h5">
-                    RECOMMENDED
-                    <HelpOutlineIcon
-                      className={classes.info}
-                      style={{ color: grey[500] }}
-                    />
-                  </Typography>
-                <Paper className={classes.recommendedCard}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                      <Avatar
-                        aria-label="recipe"
-                        className={classes.menuImage}
-                        src="/images/pasta.jpg"
-                      />
-                    </Grid>
-                    <Grid item xs={8}>
-                      <Typography className={classes.menuTitle} variant="h5">
-                        Menu long title
-                      </Typography>
-                      <img
-                        className={classes.nutriscore}
-                        src="/images/nutriA.png"
-                      ></img>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Fragment>
-                        <IconButton aria-label="settings">
-                          <ThumbUpIcon style={{ color: grey[300] }} />
-                        </IconButton>
-                        <IconButton aria-label="settings">
-                          <ThumbDownIcon style={{ color: grey[300] }} />
-                        </IconButton>
-                      </Fragment>
-                    </Grid>
-                  </Grid>
-                </Paper>
-                <div className={classes.recommendedButtons}>
-                  <ButtonGroup
-                    size="large"
-                    color="primary"
-                    aria-label="large outlined primary button group"
-                    style={{ Index: 1 }}
-                  >
-                    <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
-                      <FavoriteIcon
-                        className={classes.heartButton}
-                        style={{ color: red[300] }}
-                      ></FavoriteIcon>{" "}
-                      {nbLikesDummy}
-                    </Button>
-                    <Button>More info</Button>
-                    <Button>Order</Button>
-                  </ButtonGroup>
-                </div>
+                <Typography variant="h5" className={classes.headerTitle}>
+                  RECOMMENDED
+                  <HelpOutlineIcon
+                    className={classes.info}
+                    style={{ color: grey[500] }}
+                  />
+                </Typography>
+
+                <CardRecommended></CardRecommended>
+
                 <Typography className={classes.headerTitle} variant="h5">
                   OTHER
                 </Typography>
@@ -266,7 +178,10 @@ export const App = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography className={classes.otherMenuTitle} variant="h5">
+                      <Typography
+                        className={classes.otherMenuTitle}
+                        variant="h5"
+                      >
                         Menu long title
                       </Typography>
                     </Grid>
@@ -280,11 +195,10 @@ export const App = () => {
                     </Grid>
                   </Grid>
                 </Paper>
-
               </TabPanel>
 
               <TabPanel value={value} index={1}>
-                <TaskForm user={user} />
+                {/* <TaskForm user={user} />
                 <div className="filter">
                   <button onClick={() => setHideCompleted(!hideCompleted)}>
                     {hideCompleted ? "Show All" : "Hide Completed"}
@@ -302,7 +216,7 @@ export const App = () => {
                       onDeleteClick={deleteTask}
                     />
                   ))}
-                </ul>
+                </ul> */}
               </TabPanel>
 
               <TabPanel value={value} index={2}>
