@@ -1,13 +1,16 @@
-import React, { Fragment } from "react";
-
 import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import { AdherenceTimeline } from "./AdherenceTimeline";
+
+import React from "react";
 
 const logout = () => Meteor.logout();
 
@@ -16,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   toolbar: {
-    minHeight: 80,
+    minHeight: 50,
     alignItems: "flex-start",
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(2),
@@ -42,26 +45,44 @@ export const AppBarPersfo = () => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="secondary"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography className={classes.title} variant="h5" noWrap>
-            Keep up the great work!
-          </Typography>
-          <Typography className={classes.adherenceTitle} variant="h5" noWrap>
-            Adherence figure
-          </Typography>
-          <IconButton aria-label="search" color="inherit">
-            <SearchIcon color="secondary" />
-          </IconButton>
-          <IconButton aria-label="person" color="inherit" onClick={logout}>
-            <AccountCircleIcon color="secondary" />
-          </IconButton>
+          <Grid container spacing={3}>
+            <Grid item xs={1}>
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="secondary"
+                aria-label="open drawer"
+              >
+                <MenuIcon />
+              </IconButton>
+            </Grid>
+
+            <Grid item xs={8}>
+              <Box>
+                <Typography className={classes.title} variant="h5" noWrap>
+                  Keep up the great work!
+                </Typography>
+                {/* <Typography className={classes.adherenceTitle} variant="h5" noWrap>
+              Adherence figure
+            </Typography> */}
+              </Box>
+            </Grid>
+
+            <Grid item xs={1}>
+              <IconButton aria-label="search" color="inherit">
+                <SearchIcon color="secondary" />
+              </IconButton>
+            </Grid>
+
+            <Grid item xs={1}>
+              <IconButton aria-label="person" color="inherit" onClick={logout}>
+                <AccountCircleIcon color="secondary" />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <AdherenceTimeline></AdherenceTimeline>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
     </div>

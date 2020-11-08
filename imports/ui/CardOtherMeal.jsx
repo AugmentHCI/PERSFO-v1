@@ -3,15 +3,14 @@ import {
   Box,
   Button,
   ButtonGroup,
-  IconButton,
   Paper,
-  Typography,
+  Typography
 } from "@material-ui/core/";
-import { makeStyles } from "@material-ui/core/styles";
-import React, { Fragment, useState } from "react";
-
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import { red } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import React, { useState } from "react";
+
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
