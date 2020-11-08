@@ -20,8 +20,8 @@ const useStyles = makeStyles((persfoTheme) => ({
   main: {
     display: "flex",
     position: "relative",
-    borderRadius: "30px",
-    minWidth: "120px",
+    borderRadius: "30px 30px 20px 20px",
+    minWidth: "130px",
     height: "80%",
     textAlign: "center",
     zIndex: 20000,
