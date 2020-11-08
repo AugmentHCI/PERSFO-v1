@@ -1,22 +1,17 @@
-import React, { useState, Fragment } from "react";
-
 import {
   Avatar,
   Box,
-  Paper,
-  Typography,
   Button,
   ButtonGroup,
-  IconButton,
+  IconButton, Paper,
+  Typography
 } from "@material-ui/core/";
-
-import { red, grey } from "@material-ui/core/colors";
-
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
-
+import { grey, red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import React, { useState } from "react";
 
 const useStyles = makeStyles((persfoTheme) => ({
   main: {
@@ -40,7 +35,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   nutriscore: {
     marginTop: persfoTheme.spacing(2),
-    width: "85px",
+    width: "80px",
     height: "25px",
   },
   thumbs: {
@@ -60,7 +55,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
-export const CardRecommended = () => {
+export const CardRecommendedMeal = () => {
   const classes = useStyles();
 
   const [nbLikesDummy, increaseLike] = useState(134);

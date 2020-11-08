@@ -1,25 +1,17 @@
-import React, { useState, Fragment } from "react";
-
-import { useTracker } from "meteor/react-meteor-data";
-import { LoginForm } from "./LoginForm";
-import { AppBarPersfo } from "./AppBarPersfo";
+import Box from "@material-ui/core/Box";
+import { grey } from "@material-ui/core/colors";
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { grey } from "@material-ui/core/colors";
-
-import Avatar from "@material-ui/core/Avatar";
-
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-
-import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
-
-import { Paper } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import { CardRecommended } from "./CardRecommeded";
+import { useTracker } from "meteor/react-meteor-data";
+import React, { Fragment, useState } from "react";
+import { AppBarPersfo } from "./AppBarPersfo";
+import { CardOtherMeal } from "./CardOtherMeal";
+import { CardRecommendedMeal } from "./CardRecommededMeal";
+import { LoginForm } from "./LoginForm";
 
 const persfoTheme = createMuiTheme({
   palette: {
@@ -39,38 +31,11 @@ const useStyles = makeStyles((persfoTheme) => ({
   headerTitle: {
     marginTop: persfoTheme.spacing(1),
   },
-  otherPaper: {
-    display: "flex",
-    // alignItems: 'center',
-    marginTop: persfoTheme.spacing(1),
-    borderRadius: "40px",
-    width: "180px",
-    // float: "center",
-  },
-  otherMenuImage: {
-    marginTop: persfoTheme.spacing(2),
-    width: persfoTheme.spacing(12),
-    height: persfoTheme.spacing(12),
-    alignItems: "center",
-    margin: "auto",
-  },
-  otherMenuTitle: {
-    // alignItems: "center",
-    // margin: "auto"
-  },
-  otherElement: {
-    alignItems: "center",
-    margin: "auto",
-  },
   info: {
     position: "relative",
     top: persfoTheme.spacing(0.5),
     left: persfoTheme.spacing(1),
   },
-  otherNutriscore: {
-    width: "85px",
-    height: "25px",
-  }
 }));
 
 function TabPanel(props) {
@@ -162,39 +127,13 @@ export const App = () => {
                   />
                 </Typography>
 
-                <CardRecommended></CardRecommended>
+                <CardRecommendedMeal></CardRecommendedMeal>
 
                 <Typography className={classes.headerTitle} variant="h5">
                   OTHER
                 </Typography>
 
-                <Paper className={classes.otherPaper}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                      <Avatar
-                        aria-label="recipe"
-                        className={classes.otherMenuImage}
-                        src="/images/pasta.jpg"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography
-                        className={classes.otherMenuTitle}
-                        variant="h5"
-                      >
-                        Menu long title
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <div className={classes.otherElement}>
-                        <img
-                          className={classes.otherNutriscore}
-                          src="/images/nutriA.png"
-                        ></img>
-                      </div>
-                    </Grid>
-                  </Grid>
-                </Paper>
+                <CardOtherMeal></CardOtherMeal>
               </TabPanel>
 
               <TabPanel value={value} index={1}>
