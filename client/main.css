@@ -4,6 +4,13 @@ body {
   overflow: hidden;
 }
 
+.letter {
+  stroke: #F9F1EC;
+  font-size: 10px;
+  font-family: "roboto";
+  font-weight: 100;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }

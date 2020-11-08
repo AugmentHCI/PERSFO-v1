@@ -15,6 +15,9 @@ import React from "react";
 const logout = () => Meteor.logout();
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    // borderRadius: "30px 0px 0px 30px",
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -24,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(2),
     background: "primary",
+    borderRadius: "50px",
   },
   title: {
     flexGrow: 1,
@@ -42,49 +46,52 @@ export const AppBarPersfo = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar className={classes.toolbar}>
-          <Grid container spacing={3}>
-            <Grid item xs={1}>
-              <IconButton
-                edge="start"
-                className={classes.menuButton}
-                color="secondary"
-                aria-label="open drawer"
-              >
-                <MenuIcon />
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={8}>
-              <Box>
-                <Typography className={classes.title} variant="h5" noWrap>
-                  Keep up the great work!
-                </Typography>
-                {/* <Typography className={classes.adherenceTitle} variant="h5" noWrap>
-              Adherence figure
-            </Typography> */}
-              </Box>
-            </Grid>
-
-            <Grid item xs={1}>
-              <IconButton aria-label="search" color="inherit">
-                <SearchIcon color="secondary" />
-              </IconButton>
-            </Grid>
-
-            <Grid item xs={1}>
-              <IconButton aria-label="person" color="inherit" onClick={logout}>
-                <AccountCircleIcon color="secondary" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12}>
-              <AdherenceTimeline></AdherenceTimeline>
-            </Grid>
+    // <div className={classes.rootLongTest}>
+    <AppBar position="static">
+      <Toolbar className={classes.toolbar2}>
+        <Grid container spacing={3}>
+          <Grid item xs={1}>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="secondary"
+              aria-label="open drawer"
+            >
+              <MenuIcon />
+            </IconButton>
           </Grid>
-        </Toolbar>
-      </AppBar>
-    </div>
+
+          <Grid item xs={8}>
+            <Box>
+              <Typography className={classes.title} variant="h5" noWrap>
+                Keep up the great work!
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid item xs={1}>
+            <IconButton aria-label="search" color="inherit">
+              <SearchIcon color="secondary" />
+            </IconButton>
+          </Grid>
+
+          <Grid item xs={1}>
+            <IconButton aria-label="person" color="inherit" onClick={logout}>
+              <AccountCircleIcon color="secondary" />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12}>
+            <AdherenceTimeline
+              day1="A"
+              day2="C"
+              day3="A"
+              day4="D"
+              day5="A"
+            ></AdherenceTimeline>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </AppBar>
+    // </div>
   );
 };

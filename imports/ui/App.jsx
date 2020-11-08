@@ -27,7 +27,14 @@ const persfoTheme = createMuiTheme({
   },
   typography: {
     fontSize: 12,
-  }
+  },
+  overrides: {
+    MuiAppBar: {
+      root: {
+        borderRadius: "0px 0px 75px 0px",
+      },
+    },
+  },
 });
 
 const useStyles = makeStyles((persfoTheme) => ({
@@ -45,9 +52,9 @@ const useStyles = makeStyles((persfoTheme) => ({
   otherMeals: {
     display: "flex",
     overflowX: "auto",
-    height: Math.min(400, (window.innerHeight - 300)) + "px",
+    height: Math.min(400, window.innerHeight - 300) + "px",
     margin: persfoTheme.spacing(1),
-  }
+  },
 }));
 
 function TabPanel(props) {
@@ -109,54 +116,54 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={persfoTheme}>
-        <AppBarPersfo/>
+      <AppBarPersfo />
 
-        <div className="main">
-          {user ? (
-            <Fragment>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="auto"
-              >
-                <Tab label="LUNCH" />
-                <Tab label="SMOOTHIE" />
-                <Tab label="SNACK" />
-                <Tab label="DESSERT" />
-                <Tab label="DRINKS" />
-              </Tabs>
+      <div className="main">
+        {user ? (
+          <Fragment>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab label="LUNCH" />
+              <Tab label="SMOOTHIE" />
+              <Tab label="SNACK" />
+              <Tab label="DESSERT" />
+              <Tab label="DRINKS" />
+            </Tabs>
 
-              <TabPanel value={value} index={0}>
-                <Typography variant="h6" className={classes.headerTitle}>
-                  RECOMMENDED
-                  <HelpOutlineIcon
-                    className={classes.info}
-                    style={{ color: grey[500] }}
-                  />
-                </Typography>
+            <TabPanel value={value} index={0}>
+              <Typography variant="h6" className={classes.headerTitle}>
+                RECOMMENDED
+                <HelpOutlineIcon
+                  className={classes.info}
+                  style={{ color: grey[500] }}
+                />
+              </Typography>
 
-                <CardRecommendedMeal></CardRecommendedMeal>
+              <CardRecommendedMeal></CardRecommendedMeal>
 
-                <Box m={5}></Box>
+              <Box m={5}></Box>
 
-                <Typography className={classes.headerTitle} variant="h6">
-                  OTHER
-                </Typography>
+              <Typography className={classes.headerTitle} variant="h6">
+                OTHER
+              </Typography>
 
-                <Box className={classes.otherMeals}>
-                  <CardOtherMeal></CardOtherMeal>
-                  <CardOtherMeal></CardOtherMeal>
-                  <CardOtherMeal></CardOtherMeal>
-                  <CardOtherMeal></CardOtherMeal>
-                  <CardOtherMeal></CardOtherMeal>
-                </Box>
-              </TabPanel>
+              <Box className={classes.otherMeals}>
+                <CardOtherMeal></CardOtherMeal>
+                <CardOtherMeal></CardOtherMeal>
+                <CardOtherMeal></CardOtherMeal>
+                <CardOtherMeal></CardOtherMeal>
+                <CardOtherMeal></CardOtherMeal>
+              </Box>
+            </TabPanel>
 
-              <TabPanel value={value} index={1}>
-                {/* <TaskForm user={user} />
+            <TabPanel value={value} index={1}>
+              {/* <TaskForm user={user} />
                 <div className="filter">
                   <button onClick={() => setHideCompleted(!hideCompleted)}>
                     {hideCompleted ? "Show All" : "Hide Completed"}
@@ -175,16 +182,16 @@ export const App = () => {
                     />
                   ))}
                 </ul> */}
-              </TabPanel>
+            </TabPanel>
 
-              <TabPanel value={value} index={2}>
-                Item Three
-              </TabPanel>
-            </Fragment>
-          ) : (
-            <LoginForm />
-          )}
-        </div>
+            <TabPanel value={value} index={2}>
+              Item Three
+            </TabPanel>
+          </Fragment>
+        ) : (
+          <LoginForm />
+        )}
+      </div>
     </ThemeProvider>
   );
 };
