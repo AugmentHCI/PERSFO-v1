@@ -52,7 +52,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   otherMeals: {
     display: "flex",
     overflowX: "auto",
-    height: Math.min(400, window.innerHeight - 300) + "px",
+    height: Math.min(400, window.innerHeight - 360) + "px",
     margin: persfoTheme.spacing(1),
   },
 }));
