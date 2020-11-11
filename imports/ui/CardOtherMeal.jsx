@@ -77,7 +77,7 @@ export const CardOtherMeal = () => {
           <Box className={classes.nutriscoreLabel}>
             <img
               className={classes.nutriscoreImage}
-              src="/images/nutriA.png"
+              src="/images/nutriA.jpg"
             ></img>
           </Box>
         </Box>

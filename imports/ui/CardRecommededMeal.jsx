@@ -72,7 +72,7 @@ export const CardRecommendedMeal = () => {
             <Typography className={classes.menuTitle} variant="h5">
               Menu long title
             </Typography>
-            <img className={classes.nutriscore} src="/images/nutriA.png"></img>
+            <img className={classes.nutriscore} src="/images/nutriA.jpg"></img>
           </Box>
 
           <Box className={classes.thumbs}>
