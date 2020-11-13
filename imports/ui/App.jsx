@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { ThemeProvider } from "@material-ui/styles";
 import { useTracker } from "meteor/react-meteor-data";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { AppBarPersfo } from "./AppBarPersfo";
 import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
@@ -82,6 +82,28 @@ export const App = () => {
 
   // styling
   const classes = useStyles();
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    setLoading(true);
+        Meteor.call("getRecipes", (error, result) => {
+      if (error) {
+        console.log(error)
+        setLoading(false);
+      } else {
+        // for(recipe in result.data.results) {
+          console.log(result);
+        // }
+        setLoading(false);
+      }
+    });
+  };
+
 
   // old
   // const [hideCompleted, setHideCompleted] = useState(false);

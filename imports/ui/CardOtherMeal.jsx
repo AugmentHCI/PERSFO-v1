@@ -23,7 +23,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     minWidth: "130px",
     height: "80%",
     textAlign: "center",
-    zIndex: 20000,
+    zIndex: 1100,
     marginRight: persfoTheme.spacing(1),
   },
   menuImage: {

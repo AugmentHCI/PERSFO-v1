@@ -21,7 +21,6 @@ const DColor = "#F8931D";
 const EColor = "#BF1E2E";
 
 const getColor = (day) => {
-    console.log(day)
   switch (day) {
     case "A":
       return AColor;
