@@ -1,31 +1,40 @@
 import { HTTP } from "meteor/http";
 
-const recipeURL = "https://www.apicbase.com/api/v1/products/recipes";
 const token = "3KUJSZMd9BRLy5sVA4d8u4bsudqAxy";
 
-function fetchRecipes(url) {
-  return HTTP.call("GET", url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+const maxErrors = 10;
+let nbErrors = 0;
 
-let resultArray = [];
-function myLoop(url) {
-  Meteor.setTimeout(function() {
-    let call = fetchRecipes(url);
-    resultArray = resultArray.concat(call.data.results);
-    console.log(resultArray.length);
-    if (call.data.next !== null) {
-      myLoop(call.data.next);
+export function fetchData(Collection, url) {
+  Meteor.setTimeout(function () {
+    try {
+      let call = HTTP.call("GET", url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      call.data.results.forEach((result) => {
+        Collection.upsert({ id: result.id }, { $set: result });
+      });
+      if (call.data.next !== null) {
+        fetchData(Collection, call.data.next);
+      } else {
+        console.log("finished loading:" + url);
+      }
+    } catch (error) {
+      console.log("API request limit reached");
+      console.log(error);
+      Meteor.setTimeout(function () {
+        console.log("new attempt");
+        if (nbErrors < maxErrors) {
+          nbErrors++;
+          fetchData(Collection, url);
+        } else {
+          console.log(
+            "API: stopped trying, too many errors loading data: " + url
+          );
+        }
+      }, 2000);
     }
-  }, 1001) // need to wait at least one second between calls
+  }, 1001); // need to wait at least one second between calls
 }
-
-//API methode definiëren op server side, parameters = URL en user token
-Meteor.methods({
-  getRecipes() {
-    myLoop(recipeURL);       
-  },
-});

@@ -8,6 +8,7 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { ThemeProvider } from "@material-ui/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { Fragment, useState, useEffect } from "react";
+import { MenusCollection } from "../db/MenusCollection";
 import { AppBarPersfo } from "./AppBarPersfo";
 import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
@@ -83,27 +84,26 @@ export const App = () => {
   // styling
   const classes = useStyles();
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
-  const fetchData = () => {
-    setLoading(true);
-        Meteor.call("getRecipes", (error, result) => {
-      if (error) {
-        console.log(error)
-        setLoading(false);
-      } else {
-        // for(recipe in result.data.results) {
-          console.log(result);
-        // }
-        setLoading(false);
-      }
-    });
-  };
-
+  // const fetchData = () => {
+  //   setLoading(true);
+  //       Meteor.call("getRecipes", (error, result) => {
+  //     if (error) {
+  //       console.log(error)
+  //       setLoading(false);
+  //     } else {
+  //       // for(recipe in result.data.results) {
+  //         console.log(result);
+  //       // }
+  //       setLoading(false);
+  //     }
+  //   });
+  // };
 
   // old
   // const [hideCompleted, setHideCompleted] = useState(false);
@@ -114,27 +114,30 @@ export const App = () => {
 
   // const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter };
 
-  // const { tasks, isLoading } = useTracker(() => {
-  //   const noDataAvailable = { tasks: [], pendingTasksCount: 0 };
-  //   if (!Meteor.user()) {
-  //     return noDataAvailable;
-  //   }
-  //   const handler = Meteor.subscribe("tasks");
+  const { menus, isLoading } = useTracker(() => {
+    const noDataAvailable = { menus: [] };
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
+    const handler = Meteor.subscribe("menus");
 
-  //   if (!handler.ready()) {
-  //     return { ...noDataAvailable, isLoading: true };
-  //   }
+    if (!handler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
 
-  //   const tasks = TasksCollection.find(
-  //     hideCompleted ? pendingOnlyFilter : userFilter,
-  //     {
-  //       sort: { createdAt: -1 },
-  //     }
-  //   ).fetch();
-  //   const pendingTasksCount = TasksCollection.find(pendingOnlyFilter).count();
+    const menus = MenusCollection.find().fetch();
 
-  //   return { tasks, pendingTasksCount };
-  // });
+    return { menus };
+  });
+
+  function getCourses() {
+    if (!isLoading) {
+      console.log(menus[0]);
+      return menus[0].courses.map((course) => (
+        <Tab key={course.name} label={course.name} />
+      ));
+    }
+  }
 
   return (
     <ThemeProvider theme={persfoTheme}>
@@ -151,11 +154,7 @@ export const App = () => {
               variant="scrollable"
               scrollButtons="auto"
             >
-              <Tab label="LUNCH" />
-              <Tab label="SMOOTHIE" />
-              <Tab label="SNACK" />
-              <Tab label="DESSERT" />
-              <Tab label="DRINKS" />
+              {getCourses()}
             </Tabs>
 
             <TabPanel value={value} index={0}>
@@ -185,25 +184,9 @@ export const App = () => {
             </TabPanel>
 
             <TabPanel value={value} index={1}>
-              {/* <TaskForm user={user} />
-                <div className="filter">
-                  <button onClick={() => setHideCompleted(!hideCompleted)}>
-                    {hideCompleted ? "Show All" : "Hide Completed"}
-                  </button>
-                </div>
-
+              <div>
                 {isLoading && <div className="loading">loading...</div>}
-
-                <ul className="tasks">
-                  {tasks.map((task) => (
-                    <Task
-                      key={task._id}
-                      task={task}
-                      onCheckboxClick={toggleChecked}
-                      onDeleteClick={deleteTask}
-                    />
-                  ))}
-                </ul> */}
+              </div>
             </TabPanel>
 
             <TabPanel value={value} index={2}>
