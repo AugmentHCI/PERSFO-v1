@@ -11,6 +11,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import React, { useState } from "react";
 
+import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
+
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {

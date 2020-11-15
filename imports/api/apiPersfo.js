@@ -38,3 +38,19 @@ export function fetchData(Collection, url) {
     }
   }, 1001); // need to wait at least one second between calls
 }
+
+export function getNutriscoreImage(recipe) {
+  if(recipe && recipe.nutriscore) {
+    return "/images/nutri" + recipe.nutriscore + ".jpg"
+  } else {
+    return "/images/nutrinull.jpg"
+  }
+};
+
+export function getImage(recipe) {
+  if(recipe && recipe.main_image) {
+    return recipe.main_image.full_image_url;
+  } else {
+    return "/images/Image-not-found.png"
+  }
+};

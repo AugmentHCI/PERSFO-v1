@@ -78,14 +78,25 @@ export const App = () => {
     return { menu };
   });
 
-  function getCoursesTabs() {
+  const getCoursesTabs = () => {
     if (!isLoading) {
-      console.log(menu);
       return menu.courses.map((course) => (
         <Tab key={course.name} label={course.name} />
       ));
     }
-  }
+  };
+
+  const getTabs = () => {
+    let tabPanels = [];
+    for (let i = 0; i < menu.courses.length; i++) {
+      tabPanels.push(
+        <TabPanel key={"tab-" + i} value={value} index={i}>
+          <TabHomeScreen recipeURLs={menu.courses[i].recipes}></TabHomeScreen>
+        </TabPanel>
+      );
+    }
+    return tabPanels;
+  };
 
   return (
     <ThemeProvider theme={persfoTheme}>
@@ -95,6 +106,7 @@ export const App = () => {
         {user ? (
           <Fragment>
             <div>{isLoading && <div className="loading">loading...</div>}</div>
+
             <Tabs
               value={value}
               onChange={handleChange}
@@ -106,17 +118,25 @@ export const App = () => {
               {getCoursesTabs()}
             </Tabs>
 
-            <TabPanel value={value} index={0}>
-              <TabHomeScreen recipeURLs={menu.courses[0].recipes}></TabHomeScreen>
+            {getTabs()}
+
+            {/* <TabPanel value={value} index={0}>
+              <TabHomeScreen
+                recipeURLs={menu.courses[0].recipes}
+              ></TabHomeScreen>
             </TabPanel>
 
             <TabPanel value={value} index={1}>
-              <TabHomeScreen recipeURLs={menu.courses[1].recipes}></TabHomeScreen>
+              <TabHomeScreen
+                recipeURLs={menu.courses[1].recipes}
+              ></TabHomeScreen>
             </TabPanel>
 
             <TabPanel value={value} index={2}>
-              <TabHomeScreen recipeURLs={menu.courses[2].recipes}></TabHomeScreen>
-            </TabPanel>
+              <TabHomeScreen
+                recipeURLs={menu.courses[2].recipes}
+              ></TabHomeScreen>
+            </TabPanel> */}
           </Fragment>
         ) : (
           <LoginForm />

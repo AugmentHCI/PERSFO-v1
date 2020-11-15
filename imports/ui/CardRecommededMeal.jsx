@@ -7,20 +7,18 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core/";
-import { grey, red } from "@material-ui/core/colors";
-import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
 import Checkbox from "@material-ui/core/Checkbox";
+import { grey, red } from "@material-ui/core/colors";
 import Grid from "@material-ui/core/Grid";
-
+import Modal from "@material-ui/core/Modal";
+import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import React, { Fragment, useState } from "react";
-
 import { useTracker } from "meteor/react-meteor-data";
+import React, { Fragment, useState } from "react";
 import { RecipesCollection } from "../db/RecipesCollection";
-
+import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
 const useStyles = makeStyles((persfoTheme) => ({
   recommendedCard: {
@@ -56,7 +54,6 @@ const useStyles = makeStyles((persfoTheme) => ({
   recommendedLowerButtons: {
     float: "right",
     background: "#F6EBE4",
-    // marginTop: "-2px",
   },
   heartButton: {
     marginRight: persfoTheme.spacing(0.5),
@@ -74,9 +71,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     padding: "10px",
     height: "100%",
   },
-  reasonCheckbox: {
-    // textAlign: "right",
-  },
+  reasonCheckbox: {},
 }));
 
 function getModalStyle() {
@@ -112,7 +107,6 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     setOpen(false);
   };
 
-
   const { recipe, isLoading } = useTracker(() => {
     const noDataAvailable = {
       recipe: {},
@@ -126,7 +120,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
       return { ...noDataAvailable, isLoading: true };
     }
 
-    const recipe = RecipesCollection.find({id: recipeId}).fetch()[0];
+    const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
 
     return { recipe };
   });
@@ -165,61 +159,70 @@ export const CardRecommendedMeal = ({ recipeId }) => {
   );
 
   return (
-    <Box className={classes.main}>
-      <Paper className={classes.recommendedCard}>
-        <Avatar
-          aria-label="recipe"
-          className={classes.menuImage}
-          src="/images/pasta.jpg"
-        />
+    <div className="main">
+      {recipeId ? (
+        <Box className={classes.main}>
+          <Paper className={classes.recommendedCard}>
+            <Avatar
+              aria-label="recipe"
+              className={classes.menuImage}
+              src={getImage(recipe)}
+            />
 
-        <Box>
-          <Typography className={classes.menuTitle} variant="h5">
-            {recipe.name}
-          </Typography>
-          <img className={classes.nutriscore} src="/images/nutriA.jpg"></img>
-        </Box>
+            <Box>
+              <Typography className={classes.menuTitle} variant="h5">
+                {recipe.name}
+              </Typography>
+              <img
+                className={classes.nutriscore}
+                src={getNutriscoreImage(recipe)}
+              ></img>
+            </Box>
 
-        <Box className={classes.thumbs}>
-          <IconButton className={classes.thumb} aria-label="settings">
-            <ThumbUpIcon style={{ color: grey[300] }} />
-          </IconButton>
-          <IconButton
-            className={classes.thumb}
-            aria-label="settings"
-            onClick={handleOpen}
+            <Box className={classes.thumbs}>
+              <IconButton className={classes.thumb} aria-label="settings">
+                <ThumbUpIcon style={{ color: grey[300] }} />
+              </IconButton>
+              <IconButton
+                className={classes.thumb}
+                aria-label="settings"
+                onClick={handleOpen}
+              >
+                <ThumbDownIcon style={{ color: grey[300] }} />
+              </IconButton>
+            </Box>
+          </Paper>
+
+          <Box className={classes.recommendedLowerButtons}>
+            <ButtonGroup
+              size="small"
+              color="primary"
+              aria-label="large outlined primary button group"
+              style={{ Index: 1 }}
+            >
+              <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
+                <FavoriteIcon
+                  className={classes.heartButton}
+                  style={{ color: red[300] }}
+                ></FavoriteIcon>{" "}
+                {nbLikesDummy}
+              </Button>
+              <Button>More info</Button>
+              <Button>Order</Button>
+            </ButtonGroup>
+          </Box>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
           >
-            <ThumbDownIcon style={{ color: grey[300] }} />
-          </IconButton>
+            {modalBody}
+          </Modal>
         </Box>
-      </Paper>
-
-      <Box className={classes.recommendedLowerButtons}>
-        <ButtonGroup
-          size="small"
-          color="primary"
-          aria-label="large outlined primary button group"
-          style={{ Index: 1 }}
-        >
-          <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
-            <FavoriteIcon
-              className={classes.heartButton}
-              style={{ color: red[300] }}
-            ></FavoriteIcon>{" "}
-            {nbLikesDummy}
-          </Button>
-          <Button>More info</Button>
-          <Button>Order</Button>
-        </ButtonGroup>
-      </Box>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {modalBody}
-      </Modal>
-    </Box>
+      ) : (
+        <div></div>
+      )}
+    </div>
   );
 };
