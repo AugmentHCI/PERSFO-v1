@@ -25,6 +25,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     minWidth: "140px",
     width: "140px",
     height: "80%",
+    maxHeight: "225px",
     textAlign: "center",
     zIndex: 1100,
     marginRight: persfoTheme.spacing(1),
