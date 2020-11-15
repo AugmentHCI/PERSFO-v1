@@ -24,7 +24,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
-function getRecipeID(recipeURL) {
+const getRecipeID = (recipeURL) => {
   if (recipeURL) {
     let splittedURL = recipeURL.split("/");
     return splittedURL[splittedURL.length - 2];
@@ -34,6 +34,17 @@ function getRecipeID(recipeURL) {
 // recipeURL come from menu --> courses
 export const TabHomeScreen = ({ recipeURLs }) => {
   const classes = useStyles();
+
+  const getCards = () => {
+    let cards = [];
+    for (let i = 0; i < recipeURLs.length; i++) {
+      let recipeId = getRecipeID(recipeURLs[i]);
+      cards.push(
+        <CardOtherMeal recipeId={recipeId} key={recipeId}></CardOtherMeal>
+      );
+    }
+    return cards;
+  };
 
   return (
     <>
@@ -55,13 +66,7 @@ export const TabHomeScreen = ({ recipeURLs }) => {
         OTHER
       </Typography>
 
-      <Box className={classes.otherMeals}>
-        <CardOtherMeal></CardOtherMeal>
-        <CardOtherMeal></CardOtherMeal>
-        <CardOtherMeal></CardOtherMeal>
-        <CardOtherMeal></CardOtherMeal>
-        <CardOtherMeal></CardOtherMeal>
-      </Box>
+      <Box className={classes.otherMeals}>{getCards()}</Box>
     </>
   );
 };

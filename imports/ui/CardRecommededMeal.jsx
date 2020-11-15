@@ -107,7 +107,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     setOpen(false);
   };
 
-  const { recipe, isLoading } = useTracker(() => {
+  const { recipe } = useTracker(() => {
     const noDataAvailable = {
       recipe: {},
     };
@@ -117,7 +117,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     const handler = Meteor.subscribe("recipes");
 
     if (!handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
+      return { ...noDataAvailable};
     }
 
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
@@ -143,20 +143,6 @@ export const CardRecommendedMeal = ({ recipeId }) => {
       </Fragment>
     );
   }
-
-  const modalBody = (
-    <Box style={modalStyle} className={classes.paper}>
-      <h3 id="simple-modal-title">
-        Please help us by telling us why you dislike this menu?
-      </h3>
-      <Grid container justify="center">
-        {getDislikeReason("I don't like pasta", true)}
-        {getDislikeReason("I don't want cheese", checked)}
-        {getDislikeReason("I don't want leeks", true)}
-        {getDislikeReason("I don't want warm meals", false)}
-      </Grid>
-    </Box>
-  );
 
   return (
     <div className="main">
@@ -217,7 +203,17 @@ export const CardRecommendedMeal = ({ recipeId }) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
           >
-            {modalBody}
+            <Box style={modalStyle} className={classes.paper}>
+              <h3 id="simple-modal-title">
+                Please help us by telling us why you dislike this menu?
+              </h3>
+              <Grid container justify="center">
+                {getDislikeReason("I don't like pasta", true)}
+                {getDislikeReason("I don't want cheese", checked)}
+                {getDislikeReason("I don't want leeks", true)}
+                {getDislikeReason("I don't want warm meals", false)}
+              </Grid>
+            </Box>
           </Modal>
         </Box>
       ) : (

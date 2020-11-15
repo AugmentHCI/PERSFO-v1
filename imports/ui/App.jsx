@@ -1,11 +1,11 @@
 import Box from "@material-ui/core/Box";
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 
 import { ThemeProvider } from "@material-ui/styles";
 import { useTracker } from "meteor/react-meteor-data";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { MenusCollection } from "../db/MenusCollection";
 import { AppBarPersfo } from "./AppBarPersfo";
 
@@ -119,24 +119,6 @@ export const App = () => {
             </Tabs>
 
             {getTabs()}
-
-            {/* <TabPanel value={value} index={0}>
-              <TabHomeScreen
-                recipeURLs={menu.courses[0].recipes}
-              ></TabHomeScreen>
-            </TabPanel>
-
-            <TabPanel value={value} index={1}>
-              <TabHomeScreen
-                recipeURLs={menu.courses[1].recipes}
-              ></TabHomeScreen>
-            </TabPanel>
-
-            <TabPanel value={value} index={2}>
-              <TabHomeScreen
-                recipeURLs={menu.courses[2].recipes}
-              ></TabHomeScreen>
-            </TabPanel> */}
           </Fragment>
         ) : (
           <LoginForm />
