@@ -12,13 +12,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import React, { Fragment, useState } from "react";
+
+import { useTracker } from "meteor/react-meteor-data";
+import { RecipesCollection } from "../db/RecipesCollection";
+
 
 const useStyles = makeStyles((persfoTheme) => ({
   recommendedCard: {
@@ -88,7 +90,7 @@ function getModalStyle() {
   };
 }
 
-export const CardRecommendedMeal = () => {
+export const CardRecommendedMeal = ({ recipeId }) => {
   const classes = useStyles();
 
   const [nbLikesDummy, increaseLike] = useState(134);
@@ -109,6 +111,25 @@ export const CardRecommendedMeal = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+
+  const { recipe, isLoading } = useTracker(() => {
+    const noDataAvailable = {
+      recipe: {},
+    };
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
+    const handler = Meteor.subscribe("recipes");
+
+    if (!handler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+
+    const recipe = RecipesCollection.find({id: recipeId}).fetch()[0];
+
+    return { recipe };
+  });
 
   function getDislikeReason(reason, checked) {
     return (
@@ -154,7 +175,7 @@ export const CardRecommendedMeal = () => {
 
         <Box>
           <Typography className={classes.menuTitle} variant="h5">
-            Menu long title
+            {recipe.name}
           </Typography>
           <img className={classes.nutriscore} src="/images/nutriA.jpg"></img>
         </Box>
