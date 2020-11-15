@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
-import { grey, red } from "@material-ui/core/colors";
+import { grey, red, orange } from "@material-ui/core/colors";
 import Grid from "@material-ui/core/Grid";
 import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
@@ -117,7 +117,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     const handler = Meteor.subscribe("recipes");
 
     if (!handler.ready()) {
-      return { ...noDataAvailable};
+      return { ...noDataAvailable, isLoading: true };
     }
 
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
@@ -167,14 +167,14 @@ export const CardRecommendedMeal = ({ recipeId }) => {
 
             <Box className={classes.thumbs}>
               <IconButton className={classes.thumb} aria-label="settings">
-                <ThumbUpIcon style={{ color: grey[300] }} />
+                <ThumbUpIcon style={{ color: "#F6EBE4" }} />
               </IconButton>
               <IconButton
                 className={classes.thumb}
                 aria-label="settings"
                 onClick={handleOpen}
               >
-                <ThumbDownIcon style={{ color: grey[300] }} />
+                <ThumbDownIcon style={{ color: "#F6EBE4" }} />
               </IconButton>
             </Box>
           </Paper>

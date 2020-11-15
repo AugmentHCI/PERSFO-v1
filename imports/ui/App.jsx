@@ -33,6 +33,14 @@ const persfoTheme = createMuiTheme({
         borderRadius: "0px 0px 75px 0px",
       },
     },
+    MuiButton: {
+      outlinedPrimary: {
+        borderRadius: "75px 75px 75px 75px",
+        color: "#222222",
+        borderColor: "#F6EBE4",
+        boxShadow: "10px",
+      }
+    }
   },
 });
 
