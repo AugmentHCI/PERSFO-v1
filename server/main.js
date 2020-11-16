@@ -35,7 +35,7 @@ Meteor.startup(() => {
   const recipeURL = "https://www.apicbase.com/api/v1/products/recipes";
   const menuURL = "https://www.apicbase.com/api/v1/menus/";
 
-  const devMode = true;
+  const devMode = false;
   if(!devMode) {
     console.log("fetching new recipes");
     fetchData(RecipesCollection, recipeURL);
