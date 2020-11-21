@@ -2,8 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { MenusCollection } from '/imports/db/MenusCollection';
 import { RecipesCollection } from '/imports/db/RecipesCollection';
 
-import { TasksCollection } from '/imports/db/TasksCollection';
-
 Meteor.publish('tasks', function publishTasks() {
   return TasksCollection.find({ userId: this.userId });
 });
