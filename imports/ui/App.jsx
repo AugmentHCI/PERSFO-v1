@@ -39,10 +39,11 @@ const persfoTheme = createMuiTheme({
         color: "#222222",
         borderColor: "#F6EBE4",
         boxShadow: "10px",
-      }
-    }
+      },
+    },
   },
 });
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -105,6 +106,8 @@ export const App = () => {
     }
     return tabPanels;
   };
+
+
 
   return (
     <ThemeProvider theme={persfoTheme}>

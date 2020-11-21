@@ -10,7 +10,18 @@ import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import { AdherenceTimeline } from "./AdherenceTimeline";
 
-import React from "react";
+import React, { useState } from "react";
+
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import HomeIcon from "@material-ui/icons/Home";
+import clsx from "clsx";
+import AssessmentIcon from "@material-ui/icons/Assessment";
+import SettingsIcon from "@material-ui/icons/Settings";
+import { Divider } from "@material-ui/core";
 
 const logout = () => Meteor.logout();
 
@@ -40,10 +51,30 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: "flex-end",
     color: "white",
   },
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: "auto",
+  },
 }));
 
 export const AppBarPersfo = () => {
   const classes = useStyles();
+
+  const [drawerOpen, setState] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState(open);
+  };
 
   return (
     // <div className={classes.rootLongTest}>
@@ -56,6 +87,7 @@ export const AppBarPersfo = () => {
               className={classes.menuButton}
               color="secondary"
               aria-label="open drawer"
+              onClick={toggleDrawer(true)}
             >
               <MenuIcon />
             </IconButton>
@@ -91,6 +123,53 @@ export const AppBarPersfo = () => {
           </Grid>
         </Grid>
       </Toolbar>
+      <SwipeableDrawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+      >
+        <Box>
+          <img className={classes.list} src="/images/logo.png" />
+        </Box>
+        <Divider />
+        <div
+          className={classes.list}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <List>
+            <ListItem button key={"home"} onClick={() => console.log("home")}>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Home"} />
+            </ListItem>
+            <ListItem
+              button
+              key={"progress"}
+              onClick={() => console.log("progress")}
+            >
+              <ListItemIcon>
+                <AssessmentIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Progress"} />
+            </ListItem>
+            <ListItem
+              button
+              key={"settings"}
+              onClick={() => console.log("settings")}
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Settings"} />
+            </ListItem>
+          </List>
+        </div>
+        {/* {list("left")} */}
+      </SwipeableDrawer>
     </AppBar>
     // </div>
   );
