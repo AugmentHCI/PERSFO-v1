@@ -54,6 +54,20 @@ export const App = () => {
   // account logic
   const user = useTracker(() => Meteor.user());
 
+  const [drawerOpen, setState] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setState(open);
+  };
+
   // tab logic
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
@@ -111,7 +125,7 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={persfoTheme}>
-      <AppBarPersfo />
+      <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer}/>
 
       <div className="main">
         {user ? (
