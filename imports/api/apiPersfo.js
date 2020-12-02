@@ -21,7 +21,6 @@ export function initData() {
     );
   }
 
-  console.log(allMenus);
   allMenus.forEach((menu) => {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
   });
@@ -33,7 +32,6 @@ export function getNutriscoreImage(recipe) {
     for (let i = 0; i < recipe.custom_fields.length; i++) {
       let custom = recipe.custom_fields[i];
       if (custom.name == "NutriScore") {
-        console.log("/images/nutri" + custom.value + ".jpg");
         return "/images/nutri" + custom.value + ".jpg";
       }
     }
