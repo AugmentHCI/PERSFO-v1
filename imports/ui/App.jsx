@@ -34,16 +34,15 @@ const persfoTheme = createMuiTheme({
       },
     },
     MuiButton: {
-      outlinedPrimary: {
+      outlined: {
         borderRadius: "75px 75px 75px 75px",
-        color: "#222222",
         borderColor: "#F6EBE4",
+        color: "#222222",
         boxShadow: "10px",
       },
     },
   },
 });
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -121,11 +120,9 @@ export const App = () => {
     return tabPanels;
   };
 
-
-
   return (
     <ThemeProvider theme={persfoTheme}>
-      <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer}/>
+      <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
 
       <div className="main">
         {user ? (

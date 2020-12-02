@@ -1,6 +1,6 @@
 import { HTTP } from "meteor/http";
 
-const token = "3KUJSZMd9BRLy5sVA4d8u4bsudqAxy";
+const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
 
 const maxErrors = 10;
 let nbErrors = 0;
@@ -40,17 +40,17 @@ export function fetchData(Collection, url) {
 }
 
 export function getNutriscoreImage(recipe) {
-  if(recipe && recipe.nutriscore) {
-    return "/images/nutri" + recipe.nutriscore + ".jpg"
+  if (recipe && recipe.nutriscore) {
+    return "/images/nutri" + recipe.nutriscore + ".jpg";
   } else {
-    return "/images/nutrinull.jpg"
+    return "/images/nutrinull.jpg";
   }
-};
+}
 
 export function getImage(recipe) {
-  if(recipe && recipe.main_image) {
+  if (recipe && recipe.main_image) {
     return recipe.main_image.full_image_url;
   } else {
-    return "/images/orange.jpg"
+    return "/images/orange.jpg";
   }
-};
+}

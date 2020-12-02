@@ -86,6 +86,7 @@ function getModalStyle() {
 }
 
 export const CardRecommendedMeal = ({ recipeId }) => {
+  console.log(recipeId);
   const classes = useStyles();
 
   const [nbLikesDummy, increaseLike] = useState(134);
