@@ -5,6 +5,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from '@material-ui/lab/Alert';
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -12,15 +14,39 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { Accounts } from "meteor/accounts-base";
 
-export const LoginForm = () => {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+export const RegisterForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+
+  const [toastShown, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
 
   const submit = (e) => {
     e.preventDefault();
-
-    Meteor.loginWithPassword(username, password);
+    if (password === password2) {
+      Accounts.createUser({
+        username: username,
+        password: password2,
+      });
+      Meteor.loginWithPassword(username, password);
+    } else {
+      setOpen(true)
+    }
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -53,7 +79,7 @@ export const LoginForm = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Register
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -80,6 +106,18 @@ export const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password2"
+            label="re-type your password"
+            type="password"
+            id="password2"
+            onChange={(e) => setPassword2(e.target.value)}
+            autoComplete="current-password"
+          />
           {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
@@ -92,7 +130,7 @@ export const LoginForm = () => {
             className={classes.submit}
             onClick={submit}
           >
-            Sign In
+            Register
           </Button>
           <Grid container>
             <Grid item xs>
@@ -102,7 +140,7 @@ export const LoginForm = () => {
             </Grid>
             <Grid item>
               <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {"Already have an account? Sign In"}
               </Link>
             </Grid>
           </Grid>
@@ -110,14 +148,19 @@ export const LoginForm = () => {
       </div>
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
-          {"Copyright2 © "}
+          {"Copyright © "}
           <Link color="inherit" href="https://material-ui.com/">
-            Your Website
+            Augment
           </Link>{" "}
           {new Date().getFullYear()}
           {"."}
         </Typography>
       </Box>
+      <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Passwords do not match!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

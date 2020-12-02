@@ -1,15 +1,11 @@
-import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
-import "/imports/api/tasksPublications";
+import { Meteor } from "meteor/meteor";
 import "/imports/api/apiPersfo";
-import "/imports/api/recipesMethods";
-
-
 import { initData } from "/imports/api/apiPersfo";
-import { fetchData } from "/imports/api/apicbaseParser";
-
-import { RecipesCollection } from "/imports/db/RecipesCollection";
+import "/imports/api/recipesMethods";
+import "/imports/api/tasksPublications";
 import { MenusCollection } from "/imports/db/MenusCollection";
+import { RecipesCollection } from "/imports/db/RecipesCollection";
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
 RecipesCollection.insert({_id:"1", value:"hack to create collection in meteor"});
@@ -30,8 +26,8 @@ Meteor.startup(() => {
 
   const user = Accounts.findUserByUsername(SEED_USERNAME);
 
-  const recipeURL = "https://www.apicbase.com/api/v1/products/recipes";
-  const menuURL = "https://www.apicbase.com/api/v1/menus/";
+  // const recipeURL = "https://www.apicbase.com/api/v1/products/recipes";
+  // const menuURL = "https://www.apicbase.com/api/v1/menus/";
 
   initData();
   // const devMode = false;

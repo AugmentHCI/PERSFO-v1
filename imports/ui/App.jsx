@@ -10,6 +10,7 @@ import { MenusCollection } from "../db/MenusCollection";
 import { AppBarPersfo } from "./AppBarPersfo";
 
 import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
 import { TabHomeScreen } from "./TabHomeScreen";
 
 const persfoTheme = createMuiTheme({
@@ -143,7 +144,7 @@ export const App = () => {
             {getTabs()}
           </Fragment>
         ) : (
-          <LoginForm />
+          <RegisterForm />
         )}
       </div>
     </ThemeProvider>
