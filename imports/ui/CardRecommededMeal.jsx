@@ -86,7 +86,11 @@ function getModalStyle() {
 
 export const CardRecommendedMeal = ({ recipeId }) => {
   const classes = useStyles();
+<<<<<<< HEAD
   const [nbLikesDummy, increaseLike] = useState(134);
+=======
+
+>>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(true);
@@ -94,12 +98,29 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     setChecked(event.target.checked);
   };
 
+<<<<<<< HEAD
   const handleOpen  = () => { setOpen(true);  };
   const handleClose = () => { setOpen(false); };
+=======
+  const handleIncreaseLike = () => {
+    if(recipe) {
+      Meteor.call('recipes.increaseLike', recipe.id);
+    }
+  };
 
-  const { recipe } = useTracker(() => {
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+>>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
+
+  const { recipe, nbLikesDummy } = useTracker(() => {
     const noDataAvailable = {
       recipe: {},
+      nbLikesDummy: 0
     };
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -111,8 +132,9 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     }
 
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+    const nbLikesDummy = recipe.nbLikes;
 
-    return { recipe };
+    return { recipe, nbLikesDummy };
   });
 
   function getDislikeReason(reason, checked) {
@@ -137,6 +159,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
   return (
     <React.Fragment>
       {recipeId ? (
+<<<<<<< HEAD
         <Card className={classes.root}>
         <div style={{display: 'flex'}}>
           <CardActionArea className={classes.cardTop}>
@@ -162,5 +185,80 @@ export const CardRecommendedMeal = ({ recipeId }) => {
         </Card>
       ) : null }
     </React.Fragment>
+=======
+        <Box className={classes.main}>
+          <Paper className={classes.recommendedCard}>
+            <Avatar
+              aria-label="recipe"
+              className={classes.menuImage}
+              src={getImage(recipe)}
+            />
+
+            <Box>
+              <Typography className={classes.menuTitle} variant="h5">
+                {recipe.name}
+              </Typography>
+              <img
+                className={classes.nutriscore}
+                src={getNutriscoreImage(recipe)}
+              ></img>
+            </Box>
+
+            <Box className={classes.thumbs}>
+              <IconButton className={classes.thumb} aria-label="settings">
+                <ThumbUpIcon style={{ color: "#F6EBE4" }} />
+              </IconButton>
+              <IconButton
+                className={classes.thumb}
+                aria-label="settings"
+                onClick={handleOpen}
+              >
+                <ThumbDownIcon style={{ color: "#F6EBE4" }} />
+              </IconButton>
+            </Box>
+          </Paper>
+
+          <Box className={classes.recommendedLowerButtons}>
+            <ButtonGroup
+              size="small"
+              color="primary"
+              aria-label="large outlined primary button group"
+              style={{ Index: 1 }}
+            >
+              <Button onClick={() => handleIncreaseLike()}>
+                <FavoriteIcon
+                  className={classes.heartButton}
+                  style={{ color: red[300] }}
+                ></FavoriteIcon>{" "}
+                {nbLikesDummy}
+              </Button>
+              <Button>More info</Button>
+              <Button>Order</Button>
+            </ButtonGroup>
+          </Box>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <Box style={modalStyle} className={classes.paper}>
+              <h3 id="simple-modal-title">
+                Please help us by telling us why you dislike this menu?
+              </h3>
+              <Grid container justify="center">
+                {getDislikeReason("I don't like pasta", true)}
+                {getDislikeReason("I don't want cheese", checked)}
+                {getDislikeReason("I don't want leeks", true)}
+                {getDislikeReason("I don't want warm meals", false)}
+              </Grid>
+            </Box>
+          </Modal>
+        </Box>
+      ) : (
+        <div></div>
+      )}
+    </div>
+>>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
   );
 };

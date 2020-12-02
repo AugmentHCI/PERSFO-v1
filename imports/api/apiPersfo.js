@@ -12,6 +12,9 @@ export function initData() {
   allRecipes.forEach((recipe) => {
     RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
   });
+
+  // add custom fields if not exists (do not overwrite old data)
+  RecipesCollection.update({"nbLikes": { "$exists": false }}, {$set: {"nbLikes": 0 }}, { multi: true, upsert: true });
   console.log("recipes loaded");
 
   let allMenus = [];

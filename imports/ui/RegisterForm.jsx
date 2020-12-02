@@ -5,6 +5,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -12,16 +14,16 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import { Accounts } from "meteor/accounts-base";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
+export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
 
   const [toastShown, setOpen] = useState(false);
 
@@ -35,14 +37,15 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
 
   const submit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    Meteor.loginWithPassword(username, password);
-=======
-
-    Meteor.loginWithPassword(username, password, () => {
+    if (password === password2) {
+      Accounts.createUser({
+        username: username,
+        password: password2,
+      });
+      Meteor.loginWithPassword(username, password);
+    } else {
       setOpen(true);
-    });
->>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
+    }
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -75,7 +78,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Register
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -102,6 +105,18 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password2"
+            label="re-type your password"
+            type="password"
+            id="password2"
+            onChange={(e) => setPassword2(e.target.value)}
+            autoComplete="current-password"
+          />
           {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
@@ -114,7 +129,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             className={classes.submit}
             onClick={submit}
           >
-            Sign In
+            Register
           </Button>
           <Grid container>
             <Grid item xs>
@@ -130,16 +145,14 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
               <Link
                 href="#"
                 variant="body2"
-                onClick={() => setExistingUser(false)}
+                onClick={() => setExistingUser(true)}
               >
-                {"Don't have an account? Sign Up"}
+                {"Already have an account? Sign In"}
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
-<<<<<<< HEAD
-=======
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
           {"Copyright © "}
@@ -152,10 +165,9 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
       </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          Incorrect username or password!
+          Passwords do not match!
         </Alert>
       </Snackbar>
->>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
     </Container>
   );
 };

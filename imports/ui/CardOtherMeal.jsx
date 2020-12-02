@@ -84,6 +84,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
+<<<<<<< HEAD
   const [nbLikesDummy, increaseLike] = useState(Math.round(15 * Math.random()));
   const { recipe } = useTracker(() => {
     const noDataAvailable = { recipe: {},};
@@ -115,5 +116,77 @@ export const CardOtherMeal = ({ recipeId }) => {
         </Card>
       : null }
     </React.Fragment>
+=======
+
+  const handleIncreaseLike = () => {
+    if(recipe) {
+      Meteor.call('recipes.increaseLike', recipe.id);
+    }
+  };
+  const { recipe, nbLikesDummy } = useTracker(() => {
+    const noDataAvailable = {
+      recipe: {},
+    };
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
+    const handler = Meteor.subscribe("recipes");
+
+    if (!handler.ready()) {
+      return { ...noDataAvailable};
+    }
+
+    const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+    const nbLikesDummy = recipe.nbLikes;
+
+    return { recipe, nbLikesDummy };
+  });
+
+  return (
+    <div className="main">
+      {recipeId ? (
+        <Box className={classes.root}>
+          <Paper className={classes.main}>
+            <Box>
+              <Avatar
+                aria-label="recipe"
+                className={classes.menuImage}
+                src={getImage(recipe)}
+              />
+              <Typography className={classes.menuTitle} variant="h5">
+                {recipe.name}
+              </Typography>
+              <Box className={classes.nutriscoreLabel}>
+                <img
+                  className={classes.nutriscoreImage}
+                  src={getNutriscoreImage(recipe)}
+                ></img>
+              </Box>
+            </Box>
+          </Paper>
+          <Box className={classes.otherLowerButtons}>
+            <ButtonGroup
+              size="small"
+              color="primary"
+              aria-label="large outlined primary button group"
+              className={classes.otherLowerButtons}
+              style={{ Index: 1 }}
+            >
+              <Button onClick={() => handleIncreaseLike()}>
+                <FavoriteIcon
+                  className={classes.heartButton}
+                  style={{ color: red[300] }}
+                ></FavoriteIcon>{" "}
+                {nbLikesDummy}
+              </Button>
+              <Button>Order</Button>
+            </ButtonGroup>
+          </Box>
+        </Box>
+      ) : (
+        <div></div>
+      )}
+    </div>
+>>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
   );
 };
