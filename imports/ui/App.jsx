@@ -9,8 +9,7 @@ import React, { Fragment, useState } from "react";
 import { MenusCollection } from "../db/MenusCollection";
 import { AppBarPersfo } from "./AppBarPersfo";
 
-import { LoginForm } from "./LoginForm";
-import { RegisterForm } from "./RegisterForm";
+import { AuthenticationScreen } from "./AuthenticationScreen";
 import { TabHomeScreen } from "./TabHomeScreen";
 
 const persfoTheme = createMuiTheme({
@@ -144,7 +143,7 @@ export const App = () => {
             {getTabs()}
           </Fragment>
         ) : (
-          <RegisterForm />
+          <AuthenticationScreen />
         )}
       </div>
     </ThemeProvider>

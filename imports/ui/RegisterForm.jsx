@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from '@material-ui/lab/Alert';
+import MuiAlert from "@material-ui/lab/Alert";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -20,21 +20,20 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const RegisterForm = () => {
+export const RegisterForm = ({ setExistingUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
-  const [toastShown, setOpen] = React.useState(false);
+  const [toastShown, setOpen] = useState(false);
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     setOpen(false);
   };
-
 
   const submit = (e) => {
     e.preventDefault();
@@ -45,7 +44,7 @@ export const RegisterForm = () => {
       });
       Meteor.loginWithPassword(username, password);
     } else {
-      setOpen(true)
+      setOpen(true);
     }
   };
 
@@ -139,7 +138,11 @@ export const RegisterForm = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setExistingUser(true)}
+              >
                 {"Already have an account? Sign In"}
               </Link>
             </Grid>
