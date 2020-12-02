@@ -85,16 +85,6 @@ const useStyles = makeStyles((persfoTheme) => ({
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
 
-  // const [nbLikesDummy, increaseLike] = useState(Math.round(15 * Math.random()));
-  // const { recipe } = useTracker(() => {
-  //   const noDataAvailable = { recipe: {},};
-  //   const handler = Meteor.subscribe("recipes");
-  //   const recipe = RecipesCollection.findOne({ id: recipeId });
-  //   if (!Meteor.user()) { return noDataAvailable; }
-  //   if (!handler.ready()) { return { ...noDataAvailable}; }
-  //   return { recipe };
-  // });
-
   const handleIncreaseLike = () => {
     if(recipe) {
       Meteor.call('recipes.increaseLike', recipe.id);
