@@ -35,14 +35,10 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
 
   const submit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    Meteor.loginWithPassword(username, password);
-=======
 
     Meteor.loginWithPassword(username, password, () => {
       setOpen(true);
     });
->>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -138,8 +134,6 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
           </Grid>
         </form>
       </div>
-<<<<<<< HEAD
-=======
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
           {"Copyright © "}
@@ -155,7 +149,6 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
           Incorrect username or password!
         </Alert>
       </Snackbar>
->>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
     </Container>
   );
 };

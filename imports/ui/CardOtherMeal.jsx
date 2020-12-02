@@ -84,39 +84,16 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
-<<<<<<< HEAD
-  const [nbLikesDummy, increaseLike] = useState(Math.round(15 * Math.random()));
-  const { recipe } = useTracker(() => {
-    const noDataAvailable = { recipe: {},};
-    const handler = Meteor.subscribe("recipes");
-    const recipe = RecipesCollection.findOne({ id: recipeId });
-    if (!Meteor.user()) { return noDataAvailable; }
-    if (!handler.ready()) { return { ...noDataAvailable}; }
-    return { recipe };
-  });
 
-  return (
-    <React.Fragment>
-      {recipeId ?
-        <Card className={classes.root}>
-          <CardActionArea className={classes.cardTop}>
-            <CardMedia className={classes.menuImage} image={getImage(recipe)} />
-            <CardContent className={classes.cardContent}>
-            <Typography  className={classes.menuTitle} gutterBottom>{String(recipe.name).length > 60 ? recipe.name.slice(0, 60) + '...' : recipe.name }</Typography>
-            <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
-            </CardContent>
-          </CardActionArea>
-
-          <CardActions className={classes.cardActions}>
-          <Button size="large" onClick={() => increaseLike(nbLikesDummy + 1)} color="primary">
-            <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
-          </Button>
-          <Button size="large" color="primary">Order</Button>
-          </CardActions>
-        </Card>
-      : null }
-    </React.Fragment>
-=======
+  // const [nbLikesDummy, increaseLike] = useState(Math.round(15 * Math.random()));
+  // const { recipe } = useTracker(() => {
+  //   const noDataAvailable = { recipe: {},};
+  //   const handler = Meteor.subscribe("recipes");
+  //   const recipe = RecipesCollection.findOne({ id: recipeId });
+  //   if (!Meteor.user()) { return noDataAvailable; }
+  //   if (!handler.ready()) { return { ...noDataAvailable}; }
+  //   return { recipe };
+  // });
 
   const handleIncreaseLike = () => {
     if(recipe) {
@@ -143,50 +120,25 @@ export const CardOtherMeal = ({ recipeId }) => {
   });
 
   return (
-    <div className="main">
-      {recipeId ? (
-        <Box className={classes.root}>
-          <Paper className={classes.main}>
-            <Box>
-              <Avatar
-                aria-label="recipe"
-                className={classes.menuImage}
-                src={getImage(recipe)}
-              />
-              <Typography className={classes.menuTitle} variant="h5">
-                {recipe.name}
-              </Typography>
-              <Box className={classes.nutriscoreLabel}>
-                <img
-                  className={classes.nutriscoreImage}
-                  src={getNutriscoreImage(recipe)}
-                ></img>
-              </Box>
-            </Box>
-          </Paper>
-          <Box className={classes.otherLowerButtons}>
-            <ButtonGroup
-              size="small"
-              color="primary"
-              aria-label="large outlined primary button group"
-              className={classes.otherLowerButtons}
-              style={{ Index: 1 }}
-            >
-              <Button onClick={() => handleIncreaseLike()}>
-                <FavoriteIcon
-                  className={classes.heartButton}
-                  style={{ color: red[300] }}
-                ></FavoriteIcon>{" "}
-                {nbLikesDummy}
-              </Button>
-              <Button>Order</Button>
-            </ButtonGroup>
-          </Box>
-        </Box>
-      ) : (
-        <div></div>
-      )}
-    </div>
->>>>>>> 7b7e86f67a3fb33e964ed98b09e824a9aca28d61
+    <React.Fragment>
+      {recipeId ?
+        <Card className={classes.root}>
+          <CardActionArea className={classes.cardTop}>
+            <CardMedia className={classes.menuImage} image={getImage(recipe)} />
+            <CardContent className={classes.cardContent}>
+            <Typography  className={classes.menuTitle} gutterBottom>{String(recipe.name).length > 60 ? recipe.name.slice(0, 60) + '...' : recipe.name }</Typography>
+            <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
+            </CardContent>
+          </CardActionArea>
+
+          <CardActions className={classes.cardActions}>
+          <Button size="large" onClick={() => handleIncreaseLike()} color="primary">
+            <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
+          </Button>
+          <Button size="large" color="primary">Order</Button>
+          </CardActions>
+        </Card>
+      : null }
+    </React.Fragment>
   );
 };
