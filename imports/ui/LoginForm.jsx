@@ -12,15 +12,31 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export const LoginForm = ({ setExistingUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [toastShown, setOpen] = useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const submit = (e) => {
     e.preventDefault();
 
-    Meteor.loginWithPassword(username, password);
+    Meteor.loginWithPassword(username, password, () => {setOpen(true)});
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -114,14 +130,19 @@ export const LoginForm = ({ setExistingUser }) => {
       </div>
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
-          {"Copyright2 © "}
+          {"Copyright © "}
           <Link color="inherit" href="https://material-ui.com/">
-            Your Website
+            Augment
           </Link>{" "}
           {new Date().getFullYear()}
           {"."}
         </Typography>
       </Box>
+      <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Incorrect username or password!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
