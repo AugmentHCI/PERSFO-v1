@@ -4,6 +4,8 @@ import "/imports/api/apiPersfo";
 import { initData } from "/imports/api/apiPersfo";
 import "/imports/api/recipesMethods";
 import "/imports/api/tasksPublications";
+import "/imports/api/userMethods";
+
 import { MenusCollection } from "/imports/db/MenusCollection";
 import { RecipesCollection } from "/imports/db/RecipesCollection";
 

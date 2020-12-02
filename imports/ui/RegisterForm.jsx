@@ -20,7 +20,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export const RegisterForm = ({ setExistingUser }) => {
+export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -133,7 +133,11 @@ export const RegisterForm = ({ setExistingUser }) => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setForgotPassword(true)}
+              >
                 Forgot password?
               </Link>
             </Grid>
