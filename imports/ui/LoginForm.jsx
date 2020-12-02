@@ -21,7 +21,6 @@ export const LoginForm = () => {
 
   const submit = (e) => {
     e.preventDefault();
-
     Meteor.loginWithPassword(username, password);
   };
 
@@ -110,16 +109,6 @@ export const LoginForm = () => {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          {"Copyright2 © "}
-          <Link color="inherit" href="https://material-ui.com/">
-            Your Website
-          </Link>{" "}
-          {new Date().getFullYear()}
-          {"."}
-        </Typography>
-      </Box>
     </Container>
   );
 };

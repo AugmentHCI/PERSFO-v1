@@ -19,8 +19,8 @@ const useStyles = makeStyles((persfoTheme) => ({
   otherMeals: {
     display: "flex",
     overflowX: "auto",
-    height: Math.min(400, window.innerHeight - 360) + "px",
-    margin: persfoTheme.spacing(1),
+    columnGap: '16px',
+    padding: '8px'
   },
 }));
 
@@ -50,16 +50,12 @@ export const TabHomeScreen = ({ recipeURLs }) => {
     <>
       <Typography variant="h6" className={classes.headerTitle}>
         RECOMMENDED
-        <HelpOutlineIcon
-          className={classes.info}
-          style={{ color: grey[500] }}
-        />
+        <HelpOutlineIcon className={classes.info} style={{ color: grey[500] }} />
       </Typography>
 
-      <CardRecommendedMeal
-        recipeId={getRecipeID(recipeURLs[0])}
-      ></CardRecommendedMeal>
-
+      <div style={{ padding: '8px'}}>
+      <CardRecommendedMeal recipeId={getRecipeID(recipeURLs[0])} />
+      </div>
       <Box m={4}></Box>
 
       <Typography className={classes.headerTitle} variant="h6">

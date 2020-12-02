@@ -6,8 +6,11 @@ import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import Tooltip from '@material-ui/core/Tooltip';
+
 import { AdherenceTimeline } from "./AdherenceTimeline";
 
 import React, { useState } from "react";
@@ -66,7 +69,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
 
           <Grid item xs={8}>
             <Box>
-              <Typography className={classes.title} variant="h5" noWrap>
+              <Typography className={classes.title} variant="h6" noWrap>
                 Keep up the great work!
               </Typography>
             </Box>
@@ -79,9 +82,15 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
           </Grid>
 
           <Grid item xs={1}>
-            <IconButton aria-label="person" color="inherit" onClick={logout}>
-              <AccountCircleIcon color="secondary" />
-            </IconButton>
+
+          { Meteor.user() ?
+            <Tooltip title="Logout" aria-label="Logout">
+              <IconButton aria-label="person" color="inherit" onClick={logout}>
+                <ExitToAppIcon color="secondary" />
+              </IconButton>
+            </Tooltip>
+          : null }
+
           </Grid>
           <Grid item xs={12}>
             <AdherenceTimeline

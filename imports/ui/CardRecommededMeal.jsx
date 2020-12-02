@@ -1,12 +1,3 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  Paper,
-  Typography,
-} from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
 import { grey, red, orange } from "@material-ui/core/colors";
 import Grid from "@material-ui/core/Grid";
@@ -20,58 +11,66 @@ import React, { Fragment, useState } from "react";
 import { RecipesCollection } from "../db/RecipesCollection";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
+import {
+  Card,
+  CardActions,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Avatar,
+  Box,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Paper,
+  Typography,
+} from "@material-ui/core/";
+
 const useStyles = makeStyles((persfoTheme) => ({
-  recommendedCard: {
-    display: "flex",
-    position: "relative",
-    marginLeft: persfoTheme.spacing(1),
-    borderRadius: "30px 0px 0px 30px",
-    width: "100%",
-    zIndex: 1100,
-  },
   menuImage: {
-    justifyContent: "flex-start",
-    margin: persfoTheme.spacing(2),
-    width: persfoTheme.spacing(8),
-    height: persfoTheme.spacing(8),
+    height: '100px',
+    width:  '100px',
   },
   menuTitle: {
-    marginTop: persfoTheme.spacing(2),
+    fontSize: '13px',
+    fontWeight: 500,
+    textAlign: 'center',
+    width: '100%',
+    height: '20px',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: '0px'
   },
-  nutriscore: {
-    marginTop: persfoTheme.spacing(2),
-    width: "54px",
-    height: "20px",
-  },
-  thumbs: {
-    marginTop: persfoTheme.spacing(1),
-    position: "absolute",
-    right: persfoTheme.spacing(1),
-  },
-  thumb: {
-    display: "block",
-  },
-  recommendedLowerButtons: {
-    float: "right",
-    background: "#F6EBE4",
-  },
-  heartButton: {
-    marginRight: persfoTheme.spacing(0.5),
-  },
-  paper: {
-    position: "absolute",
-    width: 300,
-    backgroundColor: persfoTheme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: persfoTheme.shadows[1],
-    padding: persfoTheme.spacing(2),
+  nutriscoreImage: {
+    height: "32px",
   },
   reasonLabel: {
     alignSelf: "center",
     padding: "10px",
     height: "100%",
   },
-  reasonCheckbox: {},
+  cardActions: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    background: '#fafafa'
+  },
+  cardTop: {
+    display: 'flex',
+    justifyContent: 'flex-start'
+  },
+  cardContent: {
+    alignSelf: 'flex-start'
+  },
+  sideCardActions: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  likeButton: {
+    margin: '0 !important',
+  }
 }));
 
 function getModalStyle() {
@@ -87,25 +86,16 @@ function getModalStyle() {
 
 export const CardRecommendedMeal = ({ recipeId }) => {
   const classes = useStyles();
-
   const [nbLikesDummy, increaseLike] = useState(134);
-
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
-
   const [checked, setChecked] = React.useState(true);
-
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleOpen  = () => { setOpen(true);  };
+  const handleClose = () => { setOpen(false); };
 
   const { recipe } = useTracker(() => {
     const noDataAvailable = {
@@ -145,80 +135,32 @@ export const CardRecommendedMeal = ({ recipeId }) => {
   }
 
   return (
-    <div className="main">
+    <React.Fragment>
       {recipeId ? (
-        <Box className={classes.main}>
-          <Paper className={classes.recommendedCard}>
-            <Avatar
-              aria-label="recipe"
-              className={classes.menuImage}
-              src={getImage(recipe)}
-            />
+        <Card className={classes.root}>
+        <div style={{display: 'flex'}}>
+          <CardActionArea className={classes.cardTop}>
+            <CardMedia className={classes.menuImage} image={getImage(recipe)} />
+            <CardContent className={classes.cardContent}>
+            <Typography  className={classes.menuTitle} gutterBottom>{String(recipe.name).length > 40 ? recipe.name.slice(0, 40) + '...' : recipe.name }</Typography>
+            <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
+            </CardContent>
+          </CardActionArea>
 
-            <Box>
-              <Typography className={classes.menuTitle} variant="h5">
-                {recipe.name}
-              </Typography>
-              <img
-                className={classes.nutriscore}
-                src={getNutriscoreImage(recipe)}
-              ></img>
-            </Box>
-
-            <Box className={classes.thumbs}>
-              <IconButton className={classes.thumb} aria-label="settings">
-                <ThumbUpIcon style={{ color: "#F6EBE4" }} />
-              </IconButton>
-              <IconButton
-                className={classes.thumb}
-                aria-label="settings"
-                onClick={handleOpen}
-              >
-                <ThumbDownIcon style={{ color: "#F6EBE4" }} />
-              </IconButton>
-            </Box>
-          </Paper>
-
-          <Box className={classes.recommendedLowerButtons}>
-            <ButtonGroup
-              size="small"
-              color="primary"
-              aria-label="large outlined primary button group"
-              style={{ Index: 1 }}
-            >
-              <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
-                <FavoriteIcon
-                  className={classes.heartButton}
-                  style={{ color: red[300] }}
-                ></FavoriteIcon>{" "}
-                {nbLikesDummy}
-              </Button>
-              <Button>More info</Button>
-              <Button>Order</Button>
-            </ButtonGroup>
-          </Box>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            <Box style={modalStyle} className={classes.paper}>
-              <h3 id="simple-modal-title">
-                Please help us by telling us why you dislike this menu?
-              </h3>
-              <Grid container justify="center">
-                {getDislikeReason("I don't like pasta", true)}
-                {getDislikeReason("I don't want cheese", checked)}
-                {getDislikeReason("I don't want leeks", true)}
-                {getDislikeReason("I don't want warm meals", false)}
-              </Grid>
-            </Box>
-          </Modal>
-        </Box>
-      ) : (
-        <div></div>
-      )}
-    </div>
+          <CardActions className={classes.sideCardActions}>
+            <IconButton className={classes.likeButton}><ThumbUpIcon style={{ color: "#f7ba8b" }} /></IconButton>
+            <IconButton className={classes.likeButton} onClick={handleOpen} ><ThumbDownIcon style={{ color: "#f7ba8b" }} /></IconButton>
+          </CardActions>
+        </div>
+          <CardActions className={classes.cardActions}>
+            <Button size="large" onClick={() => increaseLike(nbLikesDummy + 1)} color="primary">
+              <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
+            </Button>
+            <Button size="large" color="primary">More info</Button>
+            <Button size="large" color="primary">Order</Button>
+          </CardActions>
+        </Card>
+      ) : null }
+    </React.Fragment>
   );
 };
