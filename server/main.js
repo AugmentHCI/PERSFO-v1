@@ -2,6 +2,8 @@ import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
 import "/imports/api/tasksPublications";
 import "/imports/api/apiPersfo";
+import "/imports/api/recipesMethods";
+
 
 import { initData } from "/imports/api/apiPersfo";
 import { fetchData } from "/imports/api/apicbaseParser";

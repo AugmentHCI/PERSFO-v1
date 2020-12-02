@@ -88,8 +88,6 @@ function getModalStyle() {
 export const CardRecommendedMeal = ({ recipeId }) => {
   const classes = useStyles();
 
-  const [nbLikesDummy, increaseLike] = useState(134);
-
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
@@ -97,6 +95,12 @@ export const CardRecommendedMeal = ({ recipeId }) => {
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
+  };
+
+  const handleIncreaseLike = () => {
+    if(recipe) {
+      Meteor.call('recipes.increaseLike', recipe.id);
+    }
   };
 
   const handleOpen = () => {
@@ -107,9 +111,10 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     setOpen(false);
   };
 
-  const { recipe } = useTracker(() => {
+  const { recipe, nbLikesDummy } = useTracker(() => {
     const noDataAvailable = {
       recipe: {},
+      nbLikesDummy: 0
     };
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -121,8 +126,9 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     }
 
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+    const nbLikesDummy = recipe.nbLikes;
 
-    return { recipe };
+    return { recipe, nbLikesDummy };
   });
 
   function getDislikeReason(reason, checked) {
@@ -186,7 +192,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
               aria-label="large outlined primary button group"
               style={{ Index: 1 }}
             >
-              <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
+              <Button onClick={() => handleIncreaseLike()}>
                 <FavoriteIcon
                   className={classes.heartButton}
                   style={{ color: red[300] }}

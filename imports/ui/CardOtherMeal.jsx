@@ -64,9 +64,12 @@ const useStyles = makeStyles((persfoTheme) => ({
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
 
-  const [nbLikesDummy, increaseLike] = useState(Math.round(15 * Math.random()));
-
-  const { recipe } = useTracker(() => {
+  const handleIncreaseLike = () => {
+    if(recipe) {
+      Meteor.call('recipes.increaseLike', recipe.id);
+    }
+  };
+  const { recipe, nbLikesDummy } = useTracker(() => {
     const noDataAvailable = {
       recipe: {},
     };
@@ -80,8 +83,9 @@ export const CardOtherMeal = ({ recipeId }) => {
     }
 
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+    const nbLikesDummy = recipe.nbLikes;
 
-    return { recipe };
+    return { recipe, nbLikesDummy };
   });
 
   return (
@@ -114,7 +118,7 @@ export const CardOtherMeal = ({ recipeId }) => {
               className={classes.otherLowerButtons}
               style={{ Index: 1 }}
             >
-              <Button onClick={() => increaseLike(nbLikesDummy + 1)}>
+              <Button onClick={() => handleIncreaseLike()}>
                 <FavoriteIcon
                   className={classes.heartButton}
                   style={{ color: red[300] }}
