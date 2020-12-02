@@ -3,8 +3,8 @@ import { Accounts } from "meteor/accounts-base";
 import "/imports/api/tasksPublications";
 import "/imports/api/apiPersfo";
 
-import { fetchData } from "/imports/api/apiPersfo";
-import { initData } from "/imports/api/apicbaseParser";
+import { initData } from "/imports/api/apiPersfo";
+import { fetchData } from "/imports/api/apicbaseParser";
 
 import { RecipesCollection } from "/imports/db/RecipesCollection";
 import { MenusCollection } from "/imports/db/MenusCollection";

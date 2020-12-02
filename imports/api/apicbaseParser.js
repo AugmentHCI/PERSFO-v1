@@ -1,43 +1,50 @@
-import { MenusCollection } from "../db/MenusCollection";
-import { RecipesCollection } from "../db/RecipesCollection";
+import { HTTP } from "meteor/http";
 
-export function initData() {
-  let allRecipes = [];
-  for (let i = 1; i < 8; i++) {
-    allRecipes = allRecipes.concat(
-      JSON.parse(Assets.getText("data/recipes/recipes" + i + ".json")).results
-    );
-  }
+const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
 
-  console.log(allRecipes);
-  allRecipes.forEach((recipe) => {
-    RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
-  });
+const maxErrors = 10;
+let nbErrors = 0;
 
-  let allMenus = [];
-  for (let i = 1; i < 2; i++) {
-    allMenus = allMenus.concat(
-      JSON.parse(Assets.getText("data/menus/menu" + i + ".json"))
-    );
-  }
-
-  console.log(allMenus);
-  allMenus.forEach((menu) => {
-    MenusCollection.upsert({ id: menu.id }, { $set: menu });
-  });
+export function fetchData(Collection, url) {
+  Meteor.setTimeout(function () {
+    try {
+      let call = HTTP.call("GET", url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      call.data.results.forEach((result) => {
+        Collection.upsert({ id: result.id }, { $set: result });
+      });
+      if (call.data.next !== null) {
+        fetchData(Collection, call.data.next);
+      } else {
+        console.log("finished loading:" + url);
+      }
+    } catch (error) {
+      console.log("API request limit reached");
+      console.log(error);
+      Meteor.setTimeout(function () {
+        console.log("new attempt");
+        if (nbErrors < maxErrors) {
+          nbErrors++;
+          fetchData(Collection, url);
+        } else {
+          console.log(
+            "API: stopped trying, too many errors loading data: " + url
+          );
+        }
+      }, 2000);
+    }
+  }, 1001); // need to wait at least one second between calls
 }
 
 export function getNutriscoreImage(recipe) {
-  if (recipe && recipe.custom_fields) {
-    for (let i = 0; i < recipe.custom_fields.length; i++) {
-      let custom = recipe.custom_fields[i];
-      if (custom.name == "NutriScore") {
-        console.log("/images/nutri" + custom.value + ".jpg");
-        return "/images/nutri" + custom.value + ".jpg";
-      }
-    }
+  if (recipe && recipe.nutriscore) {
+    return "/images/nutri" + recipe.nutriscore + ".jpg";
+  } else {
+    return "/images/nutrinull.jpg";
   }
-  return "/images/nutrinull.jpg";
 }
 
 export function getImage(recipe) {
