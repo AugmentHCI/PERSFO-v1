@@ -1,0 +1,256 @@
+{
+    "url": "https://www.apicbase.com/api/v1/recipes/149111831860005/",
+    "id": "149111831860005",
+    "name": "Salade met scampi's en rauwkost (chinese kool, wortelen, paprika en ananas)",
+    "name_translations": [],
+    "uid": "12020121002001",
+    "description": "Fresh Salad & Cold dish 1",
+    "persons": 1,
+    "cuisine": null,
+    "recipe_stage": null,
+    "remarks": null,
+    "recipe_type": null,
+    "recipe_type_other": null,
+    "season": null,
+    "difficulty": null,
+    "recipe_class": null,
+    "target_profit_margin": null,
+    "vat": "6.00",
+    "current_sell_price": {
+        "created": "2020-12-02 13:35:14.047078",
+        "pricing": 0.0,
+        "user_pk": 8762,
+        "username": "hans@alberts.be"
+    },
+    "sell_price_history": [],
+    "created_date": "2020-12-02T13:35:14.021701+01:00",
+    "created_by": "hans@alberts.be",
+    "modified_date": "2020-12-02T13:35:14.062414+01:00",
+    "public": false,
+    "steps": [],
+    "net_weight": "0.36",
+    "net_weight_unit": "kg",
+    "net_volume": "360.00",
+    "net_volume_unit": "ml",
+    "portion_pieces": null,
+    "prep_time": null,
+    "prep_time_passive": null,
+    "cooking_time": null,
+    "cooking_time_passive": null,
+    "plating_time": null,
+    "financial": {
+        "foodcost": 0.0,
+        "personnel_cost": 0.0
+    },
+    "allergens": {
+        "sunflower_seeds": 0,
+        "legume_pulse": 0,
+        "cashews": 0,
+        "hazelnuts": 0,
+        "rye": 0,
+        "seeds": 0,
+        "macadamia_nuts": 0,
+        "wheat": 1,
+        "egg": 0,
+        "milk_dairy": 0,
+        "mollusc": 0,
+        "pecan_nuts": 0,
+        "shellfish": 0,
+        "lupine": 0,
+        "lactose": 0,
+        "corn": 0,
+        "soy": 1,
+        "nut": 0,
+        "peanut": 0,
+        "oats": 0,
+        "poppy_seeds": 0,
+        "celery": 0,
+        "brazil_nuts": 0,
+        "pistachio_nuts": 0,
+        "gluten": 1,
+        "almonds": 0,
+        "sesame": 0,
+        "fish": 0,
+        "mustard": 0,
+        "sulfites": 0,
+        "walnuts": 0,
+        "kamut": 0,
+        "spelt": 1,
+        "barley": 0,
+        "sulfites_ppm": 0
+    },
+    "nutrition_info": {
+        "for": {
+            "quantity": 100,
+            "unit": "g"
+        },
+        "kcal": {
+            "quantity": 90.24166666666667,
+            "unit": "kcal"
+        },
+        "kj": {
+            "quantity": 374.85,
+            "unit": "kJ"
+        },
+        "fat": {
+            "quantity": 4.5616666666666665,
+            "unit": "g"
+        },
+        "trans_fatty_acids": {
+            "quantity": 0.0,
+            "unit": "g"
+        },
+        "saturated_fat": {
+            "quantity": 0.49583333333333335,
+            "unit": "g"
+        },
+        "mono_unsaturated_fat": {
+            "quantity": 2.2808333333333333,
+            "unit": "g"
+        },
+        "poly_unsaturated_fat": {
+            "quantity": 1.6858333333333333,
+            "unit": "g"
+        },
+        "carbohydrate": {
+            "quantity": 4.958333333333334,
+            "unit": "g"
+        },
+        "sugar": {
+            "quantity": 3.5700000000000003,
+            "unit": "g"
+        },
+        "protein": {
+            "quantity": 6.445833333333334,
+            "unit": "g"
+        },
+        "fibre": {
+            "quantity": 1.586666666666667,
+            "unit": "g"
+        },
+        "starch": {
+            "quantity": 1.2891666666666668,
+            "unit": "g"
+        },
+        "vitamin_a": {
+            "quantity": 177.68088333333336,
+            "unit": "µg"
+        },
+        "vitamin_c": {
+            "quantity": 17.651666666666667,
+            "unit": "mg"
+        },
+        "vitamin_d": {
+            "quantity": 0.10908333333333334,
+            "unit": "µg"
+        },
+        "vitamin_b12": {
+            "quantity": 0.2975,
+            "unit": "µg"
+        },
+        "potassium": {
+            "quantity": 187.38434166666667,
+            "unit": "mg"
+        },
+        "calcium": {
+            "quantity": 50.49566666666667,
+            "unit": "mg"
+        },
+        "phosphorus": {
+            "quantity": 70.30718333333333,
+            "unit": "mg"
+        },
+        "magnesium": {
+            "quantity": 17.329375000000002,
+            "unit": "mg"
+        },
+        "iron": {
+            "quantity": 0.8230833333333333,
+            "unit": "mg"
+        },
+        "zinc": {
+            "quantity": 0.5255833333333334,
+            "unit": "mg"
+        },
+        "copper": {
+            "quantity": 0.15866666666666668,
+            "unit": "mg"
+        },
+        "selenium": {
+            "quantity": 3.71875,
+            "unit": "µg"
+        },
+        "chromium": {
+            "quantity": 177.68088333333336,
+            "unit": "µg"
+        },
+        "water": {
+            "quantity": 80.42416666666666,
+            "unit": "g"
+        }
+    },
+    "nutriscore": null,
+    "dietary_info": {
+        "aspartame_e951": false,
+        "propionates": false,
+        "caffeine": false,
+        "sulphur": false,
+        "carrot": false,
+        "flavor_enhancer": false,
+        "phosphate": false,
+        "taurine": false,
+        "sweetener": false,
+        "coloring": false,
+        "acesulfame_e962": false,
+        "preservative": false,
+        "pigmeat": false,
+        "kosher": false,
+        "quinine": false,
+        "halal": false,
+        "alcohol": false,
+        "glutamate": false,
+        "lamb": false,
+        "sorbates": false,
+        "cacao": false,
+        "poultry_meat": false,
+        "beef": false,
+        "benzoates": false,
+        "vegetarian": false,
+        "genetic_modified": false,
+        "nitrates": false,
+        "coriander": false,
+        "vegan": false,
+        "blackened": false,
+        "antioxidant": false
+    },
+    "images": [],
+    "main_image": null,
+    "ingredients": [
+        {
+            "number": 1,
+            "description": "[I] Koude schotel Salade met scampis (S,C,N)",
+            "quantity": "0.357",
+            "unit": "kg",
+            "ingredient": "https://www.apicbase.com/api/v1/ingredients/164247931200008/",
+            "subrecipe": null,
+            "remarks": null,
+            "waste_percentage": 0.03
+        }
+    ],
+    "custom_fields": [
+        {
+            "name": "Kitchen Utensils",
+            "value": null
+        },
+        {
+            "name": "NutriScore",
+            "value": "A"
+        },
+        {
+            "name": "Picture",
+            "value": null
+        }
+    ],
+    "main_stock_items": [],
+    "shelf_life": null
+}
