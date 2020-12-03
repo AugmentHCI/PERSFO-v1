@@ -52,51 +52,19 @@ function TabPanel(props) {
 export const App = () => {
   // account logic
   const user = useTracker(() => Meteor.user());
-
   const [drawerOpen, setState] = useState(false);
-
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState(open);
-  };
+  const toggleDrawer = (open) => (event) => { if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) { return; } setState(open); };
 
   // tab logic
   const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleChange = (event, newValue) => { setValue(newValue); };
 
   const { menu, isLoading } = useTracker(() => {
-    const noDataAvailable = {
-      menu: {
-        courses: [
-          { name: "empty", recipes: [] },
-          { name: "empty", recipes: [] },
-          { name: "empty", recipes: [] },
-          { name: "empty", recipes: [] },
-          { name: "empty", recipes: [] },
-          { name: "empty", recipes: [] },
-        ],
-      },
-    };
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
+    const noDataAvailable = { menu: { courses: [], }, };
     const handler = Meteor.subscribe("menus");
-
-    if (!handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
-    const menu = MenusCollection.find().fetch()[0];
-
+    if (!Meteor.user()) { return noDataAvailable; }
+    if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+    const menu = MenusCollection.findOne();
     return { menu };
   });
 
@@ -112,9 +80,7 @@ export const App = () => {
     let tabPanels = [];
     for (let i = 0; i < menu.courses.length; i++) {
       tabPanels.push(
-        <TabPanel key={"tab-" + i} value={value} index={i}>
-          <TabHomeScreen recipeURLs={menu.courses[i].recipes}></TabHomeScreen>
-        </TabPanel>
+
       );
     }
     return tabPanels;
@@ -123,28 +89,24 @@ export const App = () => {
   return (
     <ThemeProvider theme={persfoTheme}>
       <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
-
       <div className="main">
-        {user ? (
+        {user ?
           <Fragment>
-            <div>{isLoading && <div className="loading">loading...</div>}</div>
-
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              {getCoursesTabs()}
-            </Tabs>
-
-            {getTabs()}
+          <div>{isLoading && <div className="loading">loading...</div>}</div>
+          <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="scrollable"
+          scrollButtons="on"> {getCoursesTabs()} </Tabs>
+          {
+            _.map(menu.courses, function(n,i) {
+              return <TabPanel key={i} value={value} index={i}><TabHomeScreen recipeURLs={menu.courses[i].recipes} /></TabPanel>
+            })
+          }
           </Fragment>
-        ) : (
-          <AuthenticationScreen />
-        )}
+        : <AuthenticationScreen /> }
       </div>
     </ThemeProvider>
   );
