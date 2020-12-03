@@ -1,0 +1,286 @@
+{
+    "url": "https://www.apicbase.com/api/v1/recipes/949111992890006/",
+    "id": "949111992890006",
+    "name": "Gegrilde rund steak\nChoronsaus (getomateerde béarnaise)\nRauwkostslaatje met yoghurtdressing\nFrieten",
+    "name_translations": [],
+    "uid": "12020121102002",
+    "description": "Balanced 1",
+    "persons": 1,
+    "cuisine": null,
+    "recipe_stage": null,
+    "remarks": null,
+    "recipe_type": null,
+    "recipe_type_other": null,
+    "season": null,
+    "difficulty": null,
+    "recipe_class": null,
+    "target_profit_margin": null,
+    "vat": "6.00",
+    "current_sell_price": {
+        "created": "2020-12-02 14:04:30.974333",
+        "pricing": 0.0,
+        "user_pk": 8762,
+        "username": "hans@alberts.be"
+    },
+    "sell_price_history": [],
+    "created_date": "2020-12-02T14:04:30.844727+01:00",
+    "created_by": "hans@alberts.be",
+    "modified_date": "2020-12-02T14:04:31.157991+01:00",
+    "public": false,
+    "steps": [],
+    "net_weight": "0.53",
+    "net_weight_unit": "kg",
+    "net_volume": "530.00",
+    "net_volume_unit": "ml",
+    "portion_pieces": null,
+    "prep_time": null,
+    "prep_time_passive": null,
+    "cooking_time": null,
+    "cooking_time_passive": null,
+    "plating_time": null,
+    "financial": {
+        "foodcost": 0.0,
+        "personnel_cost": 0.0
+    },
+    "allergens": {
+        "sunflower_seeds": 0,
+        "legume_pulse": 0,
+        "cashews": 0,
+        "hazelnuts": 0,
+        "rye": 0,
+        "seeds": 0,
+        "macadamia_nuts": 0,
+        "wheat": 1,
+        "egg": 1,
+        "milk_dairy": 1,
+        "mollusc": 0,
+        "pecan_nuts": 0,
+        "shellfish": 0,
+        "lupine": 0,
+        "lactose": 1,
+        "corn": 0,
+        "soy": 0,
+        "nut": 0,
+        "peanut": 0,
+        "oats": 0,
+        "poppy_seeds": 0,
+        "celery": 0,
+        "brazil_nuts": 0,
+        "pistachio_nuts": 0,
+        "gluten": 1,
+        "almonds": 0,
+        "sesame": 0,
+        "fish": 0,
+        "mustard": 0,
+        "sulfites": 0,
+        "walnuts": 0,
+        "kamut": 0,
+        "spelt": 1,
+        "barley": 0,
+        "sulfites_ppm": 0
+    },
+    "nutrition_info": {
+        "for": {
+            "quantity": 100,
+            "unit": "g"
+        },
+        "kcal": {
+            "quantity": 150.96603773584906,
+            "unit": "kcal"
+        },
+        "kj": {
+            "quantity": 631.5924528301887,
+            "unit": "kJ"
+        },
+        "fat": {
+            "quantity": 8.90301886792453,
+            "unit": "g"
+        },
+        "trans_fatty_acids": {
+            "quantity": 0.0,
+            "unit": "g"
+        },
+        "saturated_fat": {
+            "quantity": 3.1666037735849053,
+            "unit": "g"
+        },
+        "mono_unsaturated_fat": {
+            "quantity": 4.361886792452831,
+            "unit": "g"
+        },
+        "poly_unsaturated_fat": {
+            "quantity": 1.5813207547169812,
+            "unit": "g"
+        },
+        "carbohydrate": {
+            "quantity": 9.735849056603776,
+            "unit": "g"
+        },
+        "sugar": {
+            "quantity": 1.179245283018868,
+            "unit": "g"
+        },
+        "protein": {
+            "quantity": 7.689056603773585,
+            "unit": "g"
+        },
+        "fibre": {
+            "quantity": 1.0518867924528303,
+            "unit": "g"
+        },
+        "starch": {
+            "quantity": 8.202830188679247,
+            "unit": "g"
+        },
+        "vitamin_a": {
+            "quantity": 95.03051886792454,
+            "unit": "µg"
+        },
+        "vitamin_c": {
+            "quantity": 3.3386792452830196,
+            "unit": "mg"
+        },
+        "vitamin_d": {
+            "quantity": 0.17449056603773583,
+            "unit": "µg"
+        },
+        "vitamin_b12": {
+            "quantity": 0.14913207547169813,
+            "unit": "µg"
+        },
+        "potassium": {
+            "quantity": 268.64619433962264,
+            "unit": "mg"
+        },
+        "calcium": {
+            "quantity": 14.035103773584908,
+            "unit": "mg"
+        },
+        "phosphorus": {
+            "quantity": 90.30131886792452,
+            "unit": "mg"
+        },
+        "magnesium": {
+            "quantity": 17.29642830188679,
+            "unit": "mg"
+        },
+        "iron": {
+            "quantity": 1.0391698113207546,
+            "unit": "mg"
+        },
+        "zinc": {
+            "quantity": 1.6163207547169811,
+            "unit": "mg"
+        },
+        "copper": {
+            "quantity": 0.07349056603773585,
+            "unit": "mg"
+        },
+        "selenium": {
+            "quantity": 10.670283018867924,
+            "unit": "µg"
+        },
+        "chromium": {
+            "quantity": 95.03051886792454,
+            "unit": "µg"
+        },
+        "water": {
+            "quantity": 74.28566037735848,
+            "unit": "g"
+        }
+    },
+    "nutriscore": null,
+    "dietary_info": {
+        "aspartame_e951": false,
+        "propionates": false,
+        "caffeine": false,
+        "sulphur": false,
+        "carrot": false,
+        "flavor_enhancer": false,
+        "phosphate": false,
+        "taurine": false,
+        "sweetener": false,
+        "coloring": false,
+        "acesulfame_e962": false,
+        "preservative": false,
+        "pigmeat": false,
+        "kosher": false,
+        "quinine": false,
+        "halal": false,
+        "alcohol": false,
+        "glutamate": false,
+        "lamb": false,
+        "sorbates": false,
+        "cacao": false,
+        "poultry_meat": false,
+        "beef": false,
+        "benzoates": false,
+        "vegetarian": false,
+        "genetic_modified": false,
+        "nitrates": false,
+        "coriander": false,
+        "vegan": false,
+        "blackened": false,
+        "antioxidant": false
+    },
+    "images": [],
+    "main_image": null,
+    "ingredients": [
+        {
+            "number": 1,
+            "description": "[I] Rund steak gegrild (S,C)",
+            "quantity": "0.152",
+            "unit": "kg",
+            "ingredient": "https://www.apicbase.com/api/v1/ingredients/364247043250006/",
+            "subrecipe": null,
+            "remarks": null,
+            "waste_percentage": 0.03
+        },
+        {
+            "number": 2,
+            "description": "[I] Saus choron (S,C)",
+            "quantity": "0.075",
+            "unit": "kg",
+            "ingredient": "https://www.apicbase.com/api/v1/ingredients/364247653290009/",
+            "subrecipe": null,
+            "remarks": null,
+            "waste_percentage": 0.03
+        },
+        {
+            "number": 3,
+            "description": "[I] Rauwkost (sla, wortel, tomaat) met yoghurtdressing (S,C)",
+            "quantity": "0.100",
+            "unit": "kg",
+            "ingredient": "https://www.apicbase.com/api/v1/ingredients/264247863290003/",
+            "subrecipe": null,
+            "remarks": null,
+            "waste_percentage": 0.03
+        },
+        {
+            "number": 4,
+            "description": "[I] Aardappelen gefrituurd frieten (S,C,N)",
+            "quantity": "0.200",
+            "unit": "kg",
+            "ingredient": "https://www.apicbase.com/api/v1/ingredients/164247673250002/",
+            "subrecipe": null,
+            "remarks": null,
+            "waste_percentage": 0.03
+        }
+    ],
+    "custom_fields": [
+        {
+            "name": "Kitchen Utensils",
+            "value": null
+        },
+        {
+            "name": "NutriScore",
+            "value": "A"
+        },
+        {
+            "name": "Picture",
+            "value": null
+        }
+    ],
+    "main_stock_items": [],
+    "shelf_life": null
+}

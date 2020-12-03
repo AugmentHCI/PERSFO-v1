@@ -2,26 +2,26 @@ import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
 export function initData() {
   let allRecipes = [];
-  for (let i = 1; i < 8; i++) {
+  for (let i = 1; i < 9; i++) {
     allRecipes = allRecipes.concat(
       JSON.parse(Assets.getText("data/recipes/recipes" + i + ".json")).results
     );
   }
 
   allRecipes.forEach((recipe) => {
-    RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
+    try {
+      let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/"+ recipe.id + ".json"))
+      RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
+    } catch (error) {
+      console.log("data missing for recipe id:" + recipe.id)
+    }
   });
 
   // add custom fields if not exists (do not overwrite old data)
   RecipesCollection.update({"nbLikes": { "$exists": false }}, {$set: {"nbLikes": 0 }}, { multi: true, upsert: true });
   console.log("recipes loaded");
 
-  let allMenus = [];
-  for (let i = 1; i < 2; i++) {
-    allMenus = allMenus.concat(
-      JSON.parse(Assets.getText("data/menus/menu" + i + ".json"))
-    );
-  }
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
 
   allMenus.forEach((menu) => {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });

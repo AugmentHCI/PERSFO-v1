@@ -114,6 +114,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
   const [checked, setChecked] = React.useState(true);
   const handleChange = (event) => { setChecked(event.target.checked); };
   const handleIncreaseLike = () => { if(recipe) { Meteor.call('recipes.increaseLike', recipe.id); } };
+  const handleOrder = () => { if(recipe) { Meteor.call('orders.newOrder', recipe.id); } };
   const handleOpen  = () => { setOpen(true);  };
   const handleClose = () => { setOpen(false); };
 
@@ -153,7 +154,7 @@ export const CardRecommendedMeal = ({ recipeId }) => {
               <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
             </Button>
             <Button size="large" color="primary">More info</Button>
-            <Button size="large" color="primary">Order</Button>
+            <Button size="large" color="primary"  onClick={() => handleOrder()}>Order</Button>
           </CardActions>
 
           <Modal open={open} onClose={handleClose}>
