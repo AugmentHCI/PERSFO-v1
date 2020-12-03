@@ -29,21 +29,25 @@ import {
 
 const useStyles = makeStyles((persfoTheme) => ({
   menuImage: {
-    height: '100px',
-    width:  '100px',
+    minWidth:  '80px',
+    minHeight: '80px',
+    borderRadius: '100px',
+    marginLeft: '8px'
   },
   menuTitle: {
-    fontSize: '13px',
+    fontSize: '12px',
     fontWeight: 500,
     width: '100%',
-    height: '20px',
+    height: '40px',
     display: 'flex',
     alignItems: 'center',
     textTransform: 'uppercase',
-    letterSpacing: '0px'
+    letterSpacing: '0px',
+    lineHeight: 1,
+    color: '#717171'
   },
   nutriscoreImage: {
-    height: "32px",
+    height: "24px",
     marginTop: '8px'
   },
   reasonLabel: {
@@ -62,18 +66,20 @@ const useStyles = makeStyles((persfoTheme) => ({
     justifyContent: 'flex-start'
   },
   cardContent: {
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    padding: '8px'
   },
   sideCardActions: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    padding: '4px'
   },
   likeButton: {
     margin: '0 !important',
   },
   paper: {
     position: 'absolute',
-    width: 400,
+    width: '80%',
     backgroundColor: 'white',
     borderRadius: '8px',
     padding: '16px',
@@ -127,12 +133,12 @@ export const CardRecommendedMeal = ({ recipeId }) => {
   return (
     <React.Fragment>
       {recipeId ? (
-        <Card className={classes.root}>
+        <Card>
         <div style={{display: 'flex'}}>
           <CardActionArea className={classes.cardTop}>
             <CardMedia className={classes.menuImage} image={getImage(recipe)} />
             <CardContent className={classes.cardContent}>
-            <Typography  className={classes.menuTitle} gutterBottom>{String(recipe.name).length > 40 ? recipe.name.slice(0, 40) + '...' : recipe.name }</Typography>
+            <Typography  className={classes.menuTitle}>{String(recipe.name).length > 40 ? recipe.name.slice(0, 40) + '...' : recipe.name }</Typography>
             <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
             </CardContent>
           </CardActionArea>

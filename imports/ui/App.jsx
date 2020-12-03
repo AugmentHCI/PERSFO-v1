@@ -1,5 +1,5 @@
 import Box from "@material-ui/core/Box";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import React, { Fragment, useState } from "react";
 import { ThemeProvider }   from "@material-ui/styles";
 import { useTracker }      from "meteor/react-meteor-data";
@@ -45,6 +45,15 @@ const persfoTheme = createMuiTheme({
   },
 });
 
+const useStyles = makeStyles((persfoTheme) => ({
+  tabs: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    height: '38px'
+  }
+}));
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return <div {...other}>{value === index && <Box>{children}</Box>}</div>;
@@ -52,6 +61,7 @@ function TabPanel(props) {
 
 export const App = () => {
   // account logic
+  const classes = useStyles();
   const user = useTracker(() => Meteor.user());
   const [drawerOpen, setState] = useState(false);
   const toggleDrawer = (open) => (event) => { if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) { return; } setState(open); };
@@ -72,7 +82,7 @@ export const App = () => {
   const getCoursesTabs = () => {
     if (!isLoading) {
       return menu.courses.map((course) => (
-        <Tab key={course.name} label={course.name} />
+        <Tab style={{minHeight: '32px'}} key={course.name} label={course.name} />
       ));
     }
   };
@@ -80,9 +90,7 @@ export const App = () => {
   const getTabs = () => {
     let tabPanels = [];
     for (let i = 0; i < menu.courses.length; i++) {
-      tabPanels.push(
-
-      );
+      tabPanels.push();
     }
     return tabPanels;
   };
@@ -95,6 +103,7 @@ export const App = () => {
           <Fragment>
           <div>{isLoading && <div className="loading">loading...</div>}</div>
           <Tabs
+          className={classes.tabs}
           value={value}
           onChange={handleChange}
           indicatorColor="primary"

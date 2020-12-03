@@ -1,15 +1,24 @@
 import Box from "@material-ui/core/Box";
 import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import React from "react";
 import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
+import IconButton from "@material-ui/core/IconButton"
 
 const useStyles = makeStyles((persfoTheme) => ({
-  headerTitle: {
-    margin: persfoTheme.spacing(1),
+  titleContent: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '40px'
+  },
+  title: {
+    fontSize: '13px',
+    fontWeight: 600,
+    fontFamily: 'Roboto',
+    margin: '4px',
+    color: '#424242'
   },
   info: {
     position: "relative",
@@ -20,7 +29,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     display: "flex",
     overflowX: "auto",
     columnGap: '16px',
-    padding: '8px'
+    padding: '4px'
   },
 }));
 
@@ -35,34 +44,26 @@ const getRecipeID = (recipeURL) => {
 export const TabHomeScreen = ({ recipeURLs }) => {
   const classes = useStyles();
 
-  const getCards = () => {
-    let cards = [];
-    for (let i = 0; i < recipeURLs.length; i++) {
-      let recipeId = getRecipeID(recipeURLs[i]);
-      cards.push(
-        <CardOtherMeal recipeId={recipeId} key={recipeId}></CardOtherMeal>
-      );
-    }
-    return cards;
-  };
-
   return (
-    <>
-      <Typography variant="h6" className={classes.headerTitle}>
-        RECOMMENDED
-        <HelpOutlineIcon className={classes.info} style={{ color: grey[500] }} />
-      </Typography>
+    <React.Fragment>
+      <div className={classes.titleContent}>
+      <h1  className={classes.title}>RECOMMENDED</h1><IconButton><HelpOutlineIcon fontSize="small" /></IconButton>
+      </div>
 
-      <div style={{ padding: '8px'}}>
+      <div style={{ padding: '4px'}}>
       <CardRecommendedMeal recipeId={getRecipeID(recipeURLs[0])} />
       </div>
-      <Box m={4}></Box>
+      <div className={classes.titleContent}>
+      <h1  className={classes.title}>OTHER</h1><IconButton></IconButton>
+      </div>
 
-      <Typography className={classes.headerTitle} variant="h6">
-        OTHER
-      </Typography>
-
-      <Box className={classes.otherMeals}>{getCards()}</Box>
-    </>
+      <div className={classes.otherMeals}>
+      {
+        _.map(recipeURLs, function(recipe,i){
+           return <CardOtherMeal recipeId={getRecipeID(recipeURLs[i])} key={getRecipeID(recipeURLs[i])}></CardOtherMeal>
+        })
+      }
+      </div>
+    </React.Fragment>
   );
 };

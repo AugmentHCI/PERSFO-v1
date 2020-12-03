@@ -21,11 +21,12 @@ import {
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
-    minWidth: '240px',
-    maxWidth: '240px',
+    minWidth: '140px',
+    maxWidth: '140px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    borderRadius: '28px'
   },
   cardTop: {
     width: '100%',
@@ -40,23 +41,27 @@ const useStyles = makeStyles((persfoTheme) => ({
     alignItems: 'center'
   },
   menuImage: {
-    width: '100%',
-    height: '100px'
+    width:  '80px',
+    height: '80px',
+    borderRadius: '100px',
+    marginTop: '8px'
   },
   menuTitle: {
-    fontSize: '13px',
+    fontSize: '11px',
     fontWeight: 500,
-    textAlign: 'center',
     width: '100%',
-    height: '60px',
-    overflow: 'hidden',
+    height: '40px',
     display: 'flex',
     alignItems: 'center',
     textTransform: 'uppercase',
-    letterSpacing: '0px'
+    letterSpacing: '0px',
+    lineHeight: 1,
+    textAlign: 'center',
+    color: '#717171'
   },
   nutriscoreImage: {
-    height: "32px",
+    height: "24px",
+    marginBottom: '8px'
   },
   heartButton: {
     marginRight: persfoTheme.spacing(0.5),
@@ -79,6 +84,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-around',
+    padding: '4px'
   }
 }));
 
@@ -116,7 +122,7 @@ export const CardOtherMeal = ({ recipeId }) => {
           <CardActionArea className={classes.cardTop}>
             <CardMedia className={classes.menuImage} image={getImage(recipe)} />
             <CardContent className={classes.cardContent}>
-            <Typography  className={classes.menuTitle} gutterBottom>{String(recipe.name).length > 60 ? recipe.name.slice(0, 60) + '...' : recipe.name }</Typography>
+            <Typography  className={classes.menuTitle}>{String(recipe.name).length > 36 ? recipe.name.slice(0, 36) + '...' : recipe.name }</Typography>
             <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
             </CardContent>
           </CardActionArea>
