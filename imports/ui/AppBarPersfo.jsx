@@ -24,9 +24,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     // borderRadius: "30px 0px 0px 30px",
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   toolbar: {
     minHeight: 50,
     alignItems: "flex-start",
@@ -36,10 +33,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50px",
   },
   title: {
-    flexGrow: 1,
-    paddingTop: theme.spacing(1),
-    alignSelf: "flex-start",
+    fontSize: '13px',
+    fontFamily: 'sans-serif',
     color: "white",
+    margin: 0,
+    fontWeight: 400,
+    opacity: 0.8
   },
   adherenceTitle: {
     flexGrow: 1,
@@ -55,12 +54,14 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
     // <div className={classes.rootLongTest}>
     <AppBar position="static">
       <div style={{display: 'flex', flexDirection: 'column'}}>
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px' }}>
+        <div style={{display: 'flex', alignItems: 'center' }} >
         <Button edge="start" className={classes.menuButton} color="secondary" onClick={toggleDrawer(true)} startIcon={<MenuIcon />}></Button>
-        <Typography className={classes.title} variant="h6" noWrap> Keep up the great work!</Typography>
+        <h1 className={classes.title}> Keep up the great work!</h1>
+        </div>
         { Meteor.user() ? <Button color="inherit" onClick={logout} startIcon={<ExitToAppIcon color="secondary" />}></Button> : null }
         </div>
-        <div style={{height: '48px', marginLeft: '48px', marginTop: '16px'}}>
+        <div style={{height: '48px', marginTop: '16px'}}>
         <AdherenceTimeline day1="A" day2="C" day3="A" day4="D" day5="A" />
         </div>
       </div>

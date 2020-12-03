@@ -127,7 +127,8 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
-    const nbLikesDummy = recipe.nbLikes;
+    let nbLikesDummy = 0;
+    try { nbLikesDummy = recipe.nbLikes; } catch (e) {}
     return { recipe, nbLikesDummy };
   });
 
