@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-export const MenusCollection = new Mongo.Collection("menus");
+export const MenusCollection   = new Mongo.Collection("menus");
 export const RecipesCollection = new Mongo.Collection("recipes");
 
 Meteor.methods({
@@ -10,5 +10,21 @@ Meteor.methods({
       }
     const user = Accounts.findUserByUsername(username);
     Accounts.setPassword(user._id, newPassword);
+  },
+  'recipes.increaseLike'(recipeId) {
+    check(recipeId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error('Not authorized.');
+    }
+    RecipesCollection.update({"id": recipeId}, {$inc: {"nbLikes": 1 }});
+  },
+  'recipes.decrementLike'(recipeId) {
+    check(recipeId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error('Not authorized.');
+    }
+    RecipesCollection.update({"id": recipeId}, {$inc: {"nbLikes": -1 }});
   },
 });
