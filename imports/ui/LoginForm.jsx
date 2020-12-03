@@ -134,16 +134,6 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          {"Copyright © "}
-          <Link color="inherit" href="https://material-ui.com/">
-            Augment
-          </Link>{" "}
-          {new Date().getFullYear()}
-          {"."}
-        </Typography>
-      </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Incorrect username or password!

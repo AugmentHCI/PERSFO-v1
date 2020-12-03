@@ -17,6 +17,7 @@ import {
   CardActionArea,
   CardMedia,
   CardContent,
+  FormControlLabel,
   Avatar,
   Box,
   Button,
@@ -70,13 +71,30 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   likeButton: {
     margin: '0 !important',
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    padding: '16px',
+    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)'
+  },
+  modalTitle: {
+    fontFamily: 'sans-serif',
+    lineHeight: 1.5,
+    fontWeight: 400
+  },
+  checkbox: {
+    justifyContent: 'space-between',
+    fontSize: '16px',
+    fontWeight: 400
   }
 }));
 
 function getModalStyle() {
   const top = 50; // percentages
   const left = 50;
-
   return {
     top: `${top}%`,
     left: `${left}%`,
@@ -86,66 +104,26 @@ function getModalStyle() {
 
 export const CardRecommendedMeal = ({ recipeId }) => {
   const classes = useStyles();
-
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(true);
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
+  const handleChange = (event) => { setChecked(event.target.checked); };
+  const handleIncreaseLike = () => { if(recipe) { Meteor.call('recipes.increaseLike', recipe.id); } };
+  const handleOpen  = () => { setOpen(true);  };
+  const handleClose = () => { setOpen(false); };
 
-  const handleIncreaseLike = () => {
-    if(recipe) {
-      Meteor.call('recipes.increaseLike', recipe.id);
-    }
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const cancelModal  = () => { setOpen(false);  };
+  const sendModal    = () => { setOpen(false);  };  // TO. DO... SEND MODAL DATA...
 
   const { recipe, nbLikesDummy } = useTracker(() => {
-    const noDataAvailable = {
-      recipe: {},
-      nbLikesDummy: 0
-    };
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
+    const noDataAvailable = { recipe: {}, nbLikesDummy: 0 };
     const handler = Meteor.subscribe("recipes");
-
-    if (!handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
+    if (!Meteor.user()) { return noDataAvailable; }
+    if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
     const nbLikesDummy = recipe.nbLikes;
-
     return { recipe, nbLikesDummy };
   });
-
-  function getDislikeReason(reason, checked) {
-    return (
-      <Fragment>
-        <Grid item xs={10}>
-          <Box className={classes.reasonLabel}>{reason}</Box>
-        </Grid>
-        <Grid item xs={2}>
-          <Checkbox
-            className={classes.reasonCheckbox}
-            checked={checked}
-            color="primary"
-            onChange={handleChange}
-            inputProps={{ "aria-label": "primary checkbox" }}
-          />
-        </Grid>
-      </Fragment>
-    );
-  }
 
   return (
     <React.Fragment>
@@ -172,6 +150,23 @@ export const CardRecommendedMeal = ({ recipeId }) => {
             <Button size="large" color="primary">More info</Button>
             <Button size="large" color="primary">Order</Button>
           </CardActions>
+
+          <Modal open={open} onClose={handleClose}>
+              <div style={modalStyle} className={classes.paper}>
+              <h3 className={classes.modalTitle}>Please help us by telling us why you dislike this menu?</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', rowGap: '16px' }}>
+                <FormControlLabel className={classes.checkbox} control={<Checkbox color="primary" checked={checked} />} label="I don't like pasta"      labelPlacement="start" />
+                <FormControlLabel className={classes.checkbox} control={<Checkbox color="primary" checked={checked} />} label="I don't want cheese"     labelPlacement="start" />
+                <FormControlLabel className={classes.checkbox} control={<Checkbox color="primary" checked={checked} />} label="I don't want leeks"      labelPlacement="start" />
+                <FormControlLabel className={classes.checkbox} control={<Checkbox color="primary" checked={checked} />} label="I don't want warm meals" labelPlacement="start" />
+              </div>
+              <div style={{ display: 'flex', columnGap: '16px', marginTop: '32px', justifyContent: 'flex-end' }}>
+                <Button size="large" onClick={() => cancelModal()} color="primary">Cancel</Button>
+                <Button size="large" onClick={() => sendModal()} color="primary">Send</Button>
+              </div>
+              </div>
+          </Modal>
+
         </Card>
       ) : null }
     </React.Fragment>
