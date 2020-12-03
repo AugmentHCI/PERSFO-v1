@@ -1,3 +1,4 @@
+import { check } from "meteor/check";
 import { Meteor } from 'meteor/meteor';
 
 export const MenusCollection   = new Mongo.Collection("menus");
