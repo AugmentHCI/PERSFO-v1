@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
-import { RecipesCollection } from "../db/RecipesCollection";
-import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
+import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
+import { getImage, getNutriscoreImage }       from "/imports/api/apiPersfo";
 import {
   Card,
   CardActions,

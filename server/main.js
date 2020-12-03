@@ -1,13 +1,10 @@
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
-import "/imports/api/apiPersfo";
 import { initData } from "/imports/api/apiPersfo";
-import "/imports/api/recipesMethods";
-import "/imports/api/tasksPublications";
-import "/imports/api/userMethods";
+import "/imports/api/methods.js";
+import "/imports/api/apiPersfo";
 
-import { MenusCollection } from "/imports/db/MenusCollection";
-import { RecipesCollection } from "/imports/db/RecipesCollection";
+import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
 RecipesCollection.insert({_id:"1", value:"hack to create collection in meteor"});
@@ -17,6 +14,14 @@ MenusCollection.remove({_id:"1"});
 
 const SEED_USERNAME = "meteorite1";
 const SEED_PASSWORD = "password";
+
+Meteor.publish('menus', function publishTasks() {
+  return MenusCollection.find();
+});
+
+Meteor.publish('recipes', function publishTasks() {
+  return RecipesCollection.find();
+});
 
 Meteor.startup(() => {
   if (!Accounts.findUserByUsername(SEED_USERNAME)) {

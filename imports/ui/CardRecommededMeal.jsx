@@ -8,7 +8,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { Fragment, useState } from "react";
-import { RecipesCollection } from "../db/RecipesCollection";
+import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
 import {

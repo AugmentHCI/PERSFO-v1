@@ -1,16 +1,17 @@
 import Box from "@material-ui/core/Box";
 import { createMuiTheme } from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-
-import { ThemeProvider } from "@material-ui/styles";
-import { useTracker } from "meteor/react-meteor-data";
 import React, { Fragment, useState } from "react";
-import { MenusCollection } from "../db/MenusCollection";
-import { AppBarPersfo } from "./AppBarPersfo";
+import { ThemeProvider }   from "@material-ui/styles";
+import { useTracker }      from "meteor/react-meteor-data";
 
+import { AppBarPersfo }    from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { TabHomeScreen } from "./TabHomeScreen";
+
+import { MenusCollection } from '/imports/api/methods.js';
+
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
 
 const persfoTheme = createMuiTheme({
   palette: {

@@ -1,5 +1,4 @@
-import { MenusCollection } from "../db/MenusCollection";
-import { RecipesCollection } from "../db/RecipesCollection";
+import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
 export function initData() {
   let allRecipes = [];
