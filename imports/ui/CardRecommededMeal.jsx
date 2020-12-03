@@ -35,10 +35,8 @@ const useStyles = makeStyles((persfoTheme) => ({
   menuTitle: {
     fontSize: '13px',
     fontWeight: 500,
-    textAlign: 'center',
     width: '100%',
     height: '20px',
-    overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
     textTransform: 'uppercase',
@@ -46,6 +44,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   nutriscoreImage: {
     height: "32px",
+    marginTop: '8px'
   },
   reasonLabel: {
     alignSelf: "center",
