@@ -1,9 +1,13 @@
 import { check } from "meteor/check";
 import { Meteor } from 'meteor/meteor';
 
+import { getRecipeID } from "./apiPersfo";
+
 export const MenusCollection   = new Mongo.Collection("menus");
 export const RecipesCollection = new Mongo.Collection("recipes");
 export const OrdersCollection  = new Mongo.Collection("orders");
+export const UserPreferences   = new Mongo.Collection("userpreferences");
+
 export const OpenMealDetails   = new ReactiveVar(null); 
 
 Meteor.methods({
@@ -38,5 +42,25 @@ Meteor.methods({
     }
 
     OrdersCollection.insert({"userId": this.userId, "recipeId": recipeId, "timestamp":new Date()});
+  },
+  'recommender.getTodaysRecommendation'() {
+    // Find all recipes that are available today --> TODO tailor per course
+    let todaysCourses = MenusCollection.findOne().courses;
+    let todaysRecipes = [];
+    todaysCourses.forEach(course => {
+        todaysRecipes = todaysRecipes.concat(course.recipes)
+    });
+    todaysRecipes = _.map(todaysRecipes, getRecipeID);
+
+    todaysRecipes= RecipesCollection.find({"id": {$in: todaysRecipes}}).fetch();
+
+    // find recipe with lowest kcal --> TODO make smarter
+    todaysRecipes = _.sortBy(todaysRecipes, ["kcal"]);
+
+    // todo filter allergies
+
+    // todo filter user preferences
+
+    console.log(todaysRecipes);
   },
 });

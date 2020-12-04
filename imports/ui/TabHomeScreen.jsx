@@ -7,6 +7,9 @@ import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
 import IconButton from "@material-ui/core/IconButton"
 
+import { getRecipeID } from "/imports/api/apiPersfo";
+
+
 const useStyles = makeStyles((persfoTheme) => ({
   titleContent: {
     display: 'flex',
@@ -32,13 +35,6 @@ const useStyles = makeStyles((persfoTheme) => ({
     padding: '4px'
   },
 }));
-
-const getRecipeID = (recipeURL) => {
-  if (recipeURL) {
-    let splittedURL = recipeURL.split("/");
-    return splittedURL[splittedURL.length - 2];
-  }
-}
 
 // recipeURL come from menu --> courses
 export const TabHomeScreen = ({ recipeURLs }) => {

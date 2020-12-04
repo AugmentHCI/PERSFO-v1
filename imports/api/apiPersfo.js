@@ -11,11 +11,14 @@ export function initData() {
   allRecipes.forEach((recipe) => {
     try {
       let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/"+ recipe.id + ".json"))
+      recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
       RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
     } catch (error) {
       console.log("data missing for recipe id:" + recipe.id)
     }
   });
+
+  // kcal per gram * total gram
 
   // add custom fields if not exists (do not overwrite old data)
   RecipesCollection.update({"nbLikes": { "$exists": false }}, {$set: {"nbLikes": 0 }}, { multi: true, upsert: true });
@@ -48,4 +51,24 @@ export function getImage(recipe) {
   } else {
     return "/images/orange2.jpg";
   }
+}
+
+export function getRecipeID(recipeURL) {
+  if (recipeURL) {
+    let splittedURL = recipeURL.split("/");
+    return splittedURL[splittedURL.length - 2];
+  }
+}
+
+function calculateKCalforRecipe(recipeDetails) {
+  let netWeightUnit = recipeDetails.net_weight_unit;
+  let multiplier = -1;
+  if(netWeightUnit == "kg") {
+    multiplier = 1000;
+  } else if (netWeightUnit == "g") {
+    multiplier = 1;
+  } else {
+    console.log("other weight unit: " + netWeightUnit + " for recipe: " + recipeDetails.id);
+  }
+  return (recipeDetails.nutrition_info.kcal.quantity/100) * (recipeDetails.net_weight * multiplier);
 }
