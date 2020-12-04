@@ -184,7 +184,6 @@ export const CardRecommendedMeal = () => {
 
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipe.id);
-    console.log(recipe.id);
   };
 
   return (
@@ -256,7 +255,6 @@ export const CardRecommendedMeal = () => {
                 }}
               >
                 {_.map(reasons, (reason, i) => {
-                  console.log(reason);
                   return (
                     <FormControlLabel
                       className={classes.checkbox}

@@ -41,8 +41,7 @@ export function initData() {
   console.log("recipes loaded");
 
   // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json"))
-    .results;
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
 
   allMenus.forEach((menu) => {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
