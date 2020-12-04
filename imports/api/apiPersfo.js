@@ -7,7 +7,10 @@ import {
 const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
+var fs = require("fs");
+
 export function initData() {
+
   // first load menus to only load relevant recipes!
 
   // init menus
@@ -75,8 +78,12 @@ export function initData() {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (call.data)
+        if (call.data) {
           RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+          // fs.writeFile(process.env["PWD"] + "/public/newRecipeDetails/"+ currentId + ".json", JSON.stringify(call.data), (err) => {
+          //   if (err) throw err;
+          // });
+        }
 
         index++;
         if (index < allRecipes.length) {
@@ -89,7 +96,7 @@ export function initData() {
 
     // start the interval with the first recipe
     updateRecipeDetails(allRecipes[0].id);
-  }, 5 * 60 * 1000);
+  }, 10 * 60 * 1000);
 }
 
 export function getNutriscoreImage(recipe) {
