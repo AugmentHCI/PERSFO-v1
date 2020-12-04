@@ -76,12 +76,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
 
   useEffect(() => {
     if(GetOpenMealDetails !== null ) {
-      // let url = "/images/orange2.jpg";
-      // try { url = RecipesCollection.findOne({id: GetOpenMealDetails}).main_image.full_image_url; } catch (e) { url = "/images/orange2.jpg"; }
-      // console.log(url); // Debugging
-      console.log(GetOpenMealDetails);
       let url = getImage(RecipesCollection.findOne({id: GetOpenMealDetails}));
-      console.log(url);
       setBackground('url('+url+')');
     }
   });
