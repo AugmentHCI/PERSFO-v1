@@ -21,8 +21,7 @@ export function initData() {
       recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
       RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
     } catch (error) {
-      console.log(error);
-      console.log("data missing for recipe id:" + recipe.id);
+      console.log("data or datafield missing for recipe id:" + recipe.id);
     }
   });
 
