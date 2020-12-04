@@ -19,17 +19,7 @@ export function initData() {
       });
     });
   });
-  console.log(allRecipeIds);
   console.log("menus loaded");
-
-
-  // // init recipes
-  // let allRecipes = [];
-  // for (let i = 1; i < 9; i++) {
-  //   allRecipes = allRecipes.concat(
-  //     JSON.parse(Assets.getText("data/recipes/recipes" + i + ".json")).results
-  //   );
-  // }
 
   allRecipeIds.forEach((recipeId) => {
     try {
