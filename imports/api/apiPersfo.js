@@ -4,17 +4,21 @@ import {
   RecommendedRecipes,
 } from "/imports/api/methods.js";
 
+const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
+const url = "https://www.apicbase.com/api/v1/recipes/";
+
 export function initData() {
   // first load menus to only load relevant recipes!
-  
+
   // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json"))
+    .results;
   let allRecipeIds = [];
 
   allMenus.forEach((menu) => {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
-    menu.courses.forEach(course => {
-      course.recipes.forEach(recipeURL => {
+    menu.courses.forEach((course) => {
+      course.recipes.forEach((recipeURL) => {
         allRecipeIds.push(getRecipeID(recipeURL));
       });
     });
@@ -52,7 +56,40 @@ export function initData() {
   );
   console.log("recipes loaded");
 
+  Meteor.setInterval(function () {
+    console.log("Hourly updated started");
 
+    // fetch all recipes in database
+    const allRecipes = RecipesCollection.find({}).fetch();
+
+    let index = 0;
+
+    // function to fetch data in intervals
+    function updateRecipeDetails() {
+      Meteor.setTimeout(function () {
+        const currentId = allRecipes[index].id;
+        console.log("calling API: " + currentId);
+
+        let call = HTTP.call("GET", url + currentId, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (call.data)
+          RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+
+        index++;
+        if (index < allRecipes.length) {
+          updateRecipeDetails();
+        } else {
+          console.log("hourly update finished");
+        }
+      }, 1001);
+    }
+
+    // start the interval with the first recipe
+    updateRecipeDetails(allRecipes[0].id);
+  }, 5 * 60 * 1000);
 }
 
 export function getNutriscoreImage(recipe) {

@@ -6,6 +6,7 @@ const maxErrors = 10;
 let nbErrors = 0;
 
 export function fetchData(Collection, url) {
+
   Meteor.setTimeout(function () {
     try {
       let call = HTTP.call("GET", url, {
