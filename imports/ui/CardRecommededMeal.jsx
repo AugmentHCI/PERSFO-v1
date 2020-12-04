@@ -8,7 +8,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { Fragment, useState } from "react";
-import { MenusCollection, RecipesCollection, OpenMealDetails } from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection, OpenMealDetails, RecommendedRecipes} from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
 import {
@@ -107,7 +107,7 @@ function getModalStyle() {
   };
 }
 
-export const CardRecommendedMeal = ({ recipeId }) => {
+export const CardRecommendedMeal = () => {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
@@ -123,24 +123,29 @@ export const CardRecommendedMeal = ({ recipeId }) => {
 
   const { recipe, nbLikesDummy } = useTracker(() => {
     const noDataAvailable = { recipe: {}, nbLikesDummy: 0 };
-    const handler = Meteor.subscribe("recipes");
+    const recipeHandler = Meteor.subscribe("recipes");
+    const recommendationHandler = Meteor.subscribe("recommendedrecipes");
     if (!Meteor.user()) { return noDataAvailable; }
-    if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
-    const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+    if (!recipeHandler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+    if (!recommendationHandler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+    // const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0]; // todo
+    const recommendedRecipes = RecommendedRecipes.findOne({"userid": Meteor.userId()}).recommendations;
+    const recommendedRecipeId = _.filter(recommendedRecipes, r => r.ranking === 1)[0].id;
+    const recipe = RecipesCollection.find({ id: recommendedRecipeId }).fetch()[0];
     let nbLikesDummy = 0;
     try { nbLikesDummy = recipe.nbLikes; } catch (e) {}
     return { recipe, nbLikesDummy };
   });
 
   const handleDetailsClick = () => {
-    OpenMealDetails.set(recipeId);
-    console.log(recipeId);
+    OpenMealDetails.set(recipe.id);
+    console.log(recipe.id);
   }
 
 
   return (
     <React.Fragment>
-      {recipeId ? (
+      {recipe ? (
         <Card>
         <div style={{display: 'flex'}}>
           <CardActionArea className={classes.cardTop} onClick={() => handleDetailsClick()} >

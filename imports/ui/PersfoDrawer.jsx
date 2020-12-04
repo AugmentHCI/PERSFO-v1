@@ -51,7 +51,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
           <ListItem
             button
             key={"progress"}
-            onClick={() => Meteor.call('recommender.getTodaysRecommendation')}
+            onClick={() => console.log("progress")}
           >
             <ListItemIcon>
               <AssessmentIcon />

@@ -1,6 +1,7 @@
-import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection, RecommendedRecipes } from "/imports/api/methods.js";
 
 export function initData() {
+  // init recipes  
   let allRecipes = [];
   for (let i = 1; i < 9; i++) {
     allRecipes = allRecipes.concat(
@@ -10,22 +11,34 @@ export function initData() {
 
   allRecipes.forEach((recipe) => {
     try {
-      let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/"+ recipe.id + ".json"))
+      let recipeDetails = JSON.parse(
+        Assets.getText("data/recipeDetails/" + recipe.id + ".json")
+      );
       recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
       RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
     } catch (error) {
-      console.log("data missing for recipe id:" + recipe.id)
+      console.log("data missing for recipe id:" + recipe.id);
     }
   });
 
   // kcal per gram * total gram
 
   // add custom fields if not exists (do not overwrite old data)
-  RecipesCollection.update({"nbLikes": { "$exists": false }}, {$set: {"nbLikes": 0 }}, { multi: true, upsert: true });
-  RecipesCollection.update({"reviews": { "$exists": false }}, {$set: {"reviews": [] }}, { multi: true, upsert: true });
+  RecipesCollection.update(
+    { nbLikes: { $exists: false } },
+    { $set: { nbLikes: 0 } },
+    { multi: true, upsert: true }
+  );
+  RecipesCollection.update(
+    { reviews: { $exists: false } },
+    { $set: { reviews: [] } },
+    { multi: true, upsert: true }
+  );
   console.log("recipes loaded");
 
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
+  // init menus
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json"))
+    .results;
 
   allMenus.forEach((menu) => {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
@@ -63,12 +76,17 @@ export function getRecipeID(recipeURL) {
 function calculateKCalforRecipe(recipeDetails) {
   let netWeightUnit = recipeDetails.net_weight_unit;
   let multiplier = -1;
-  if(netWeightUnit == "kg") {
+  if (netWeightUnit == "kg") {
     multiplier = 1000;
   } else if (netWeightUnit == "g") {
     multiplier = 1;
   } else {
-    console.log("other weight unit: " + netWeightUnit + " for recipe: " + recipeDetails.id);
+    console.log(
+      "other weight unit: " + netWeightUnit + " for recipe: " + recipeDetails.id
+    );
   }
-  return (recipeDetails.nutrition_info.kcal.quantity/100) * (recipeDetails.net_weight * multiplier);
+  return (
+    (recipeDetails.nutrition_info.kcal.quantity / 100) *
+    (recipeDetails.net_weight * multiplier)
+  );
 }
