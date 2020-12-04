@@ -1,14 +1,24 @@
-import { Box, Paper, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
-import { getNutriscoreImage } from "/imports/api/apiPersfo";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { grey, red, orange } from "@material-ui/core/colors";
-import Typography from "@material-ui/core/Typography";
-import Fab from '@material-ui/core/Fab';
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-import Grid from "@material-ui/core/Grid";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { getNutriscoreImage } from "/imports/api/apiPersfo";
+import { Fab,Tab,Tabs,Grid,Typography,Box,Paper,Button,LinearProgress } from "@material-ui/core/";
+
+
+const BorderLinearProgress = withStyles((theme) => ({
+  root: {
+    height: 4,
+    borderRadius: 4,
+  },
+  colorPrimary: {
+    backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: '#F57D20',
+  },
+}))(LinearProgress);
 
 const useStyles = makeStyles((persfoTheme) => ({
   mealTitleCard: {
@@ -116,19 +126,43 @@ export const MealScreen = ({ recipe }) => {
     try {
       return (recipe.nutrition_info.kcal.quantity.toFixed(2) + ' ' + recipe.nutrition_info.kcal.unit);
     } catch (e) { }
-    return '';
   }
 
   const getMPricing = () => {
     try {
       return ('€'+recipe.current_sell_price.pricing.toFixed(2) );
     } catch (e) { }
-    return '';
   }
+
+  const NutrientsBar = (props) => {
+    return <div style={{padding: '4px', marginBottom: '8px'}}>
+           <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '2px'}}>
+           <div style={{color: '#717171', fontSize: '12px'}}>{props.title}</div>
+           <div style={{color: '#717171', fontSize: '12px'}}>{props.value.toLocaleString()}/{props.maxValue.toLocaleString()}{String(props.unit)}</div>
+           </div>
+           <BorderLinearProgress variant="determinate" value={props.value}/>
+           </div>;
+  }
+  // TODO... MAX VALUES TO BE GET FROM THE PREFERENCES.
+  const NutrientsContent = (props) => {
+    const r = props.recipe.nutrition_info;
+    return <div>
+           <h1 className={classes.subtitle}>Nutrients</h1>
+           <div style={{overflowY: 'scroll', height: '150px'}}>
+           <NutrientsBar title='Energy'         value={r.kcal.quantity}          maxValue={100} unit={r.kcal.unit}/>
+           <NutrientsBar title='Total fat'      value={r.fat.quantity}           maxValue={100} unit={r.fat.unit}/>
+           <NutrientsBar title='Saturated fats' value={r.saturated_fat.quantity} maxValue={100} unit={r.saturated_fat.unit}/>
+           <NutrientsBar title='Sugar'          value={r.sugar.quantity}         maxValue={100} unit={r.sugar.unit}/>
+           <NutrientsBar title='Proteins'       value={r.protein.quantity}       maxValue={100} unit={r.protein.unit}/>
+           <NutrientsBar title='Fiber'          value={r.fibre.quantity}         maxValue={100} unit={r.fibre.unit}/>
+           </div>
+           </div>;
+  }
+
 
   const renderTabContent = (tabValue) => {
     switch (tabValue) {
-      case 0: return 'Nutrients Content'; break;
+      case 0: return <NutrientsContent recipe={recipe} />;  break;
       case 1: return 'Allergies';         break;
       case 2: return 'Sustainability';    break;
       case 3: return 'Reviews';           break;
@@ -164,9 +198,7 @@ export const MealScreen = ({ recipe }) => {
       </div>
       </div>
 
-      <div className={classes.tabContent}>
-      <h1 className={classes.subtitle}>{renderTabContent(tabValue)}</h1>
-      </div>
+      <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
 
       <div className={classes.recipeDescription}>
       <div style={{alignSelf: 'flex-start'}}>
