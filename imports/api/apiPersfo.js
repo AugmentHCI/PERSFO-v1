@@ -17,6 +17,7 @@ export function initData() {
       recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
       RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
     } catch (error) {
+      console.log(error)
       console.log("data missing for recipe id:" + recipe.id);
     }
   });
@@ -59,11 +60,15 @@ export function getNutriscoreImage(recipe) {
 }
 
 export function getImage(recipe) {
-  if (recipe && recipe.main_image) {
-    return recipe.main_image.full_image_url;
-  } else {
-    return "/images/orange2.jpg";
+  if (recipe && recipe.custom_fields) {
+    for (let i = 0; i < recipe.custom_fields.length; i++) {
+      let custom = recipe.custom_fields[i];
+      if (custom.name == "Picture") {
+        return custom.value;
+      }
+    }
   }
+  return "/images/orange.jpg";
 }
 
 export function getRecipeID(recipeURL) {
