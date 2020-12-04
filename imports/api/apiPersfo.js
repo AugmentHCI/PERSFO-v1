@@ -19,6 +19,7 @@ export function initData() {
 
   // add custom fields if not exists (do not overwrite old data)
   RecipesCollection.update({"nbLikes": { "$exists": false }}, {$set: {"nbLikes": 0 }}, { multi: true, upsert: true });
+  RecipesCollection.update({"reviews": { "$exists": false }}, {$set: {"reviews": [] }}, { multi: true, upsert: true });
   console.log("recipes loaded");
 
   let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;

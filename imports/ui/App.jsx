@@ -78,8 +78,19 @@ export const App = () => {
     const handler = Meteor.subscribe("menus");
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+<<<<<<< HEAD
     const menu = MenusCollection.findOne();
     return { GetOpenMealDetails, menu };
+=======
+    // let menu = MenusCollection.find({"starting_date": "2020-12-18"}).fetch(); // pick random date for testing
+    let menu = MenusCollection.find({"starting_date": new Date().toISOString().substring(0,10)}).fetch();
+    if(menu && menu.length > 0) {
+      menu = menu[0];
+    } else {
+      menu = MenusCollection.findOne();
+    }
+    return { menu };    return { menu };
+>>>>>>> 9e6f57dc32977362b921ce9bd1344f506534ac2f
   });
 
   const getCoursesTabs = () => {
