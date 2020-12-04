@@ -5,23 +5,45 @@ import {
 } from "/imports/api/methods.js";
 
 export function initData() {
-  // init recipes
-  let allRecipes = [];
-  for (let i = 1; i < 9; i++) {
-    allRecipes = allRecipes.concat(
-      JSON.parse(Assets.getText("data/recipes/recipes" + i + ".json")).results
-    );
-  }
+  // first load menus to only load relevant recipes!
+  
+  // init menus
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
+  let allRecipeIds = [];
 
-  allRecipes.forEach((recipe) => {
+  allMenus.forEach((menu) => {
+    MenusCollection.upsert({ id: menu.id }, { $set: menu });
+    menu.courses.forEach(course => {
+      course.recipes.forEach(recipeURL => {
+        allRecipeIds.push(getRecipeID(recipeURL));
+      });
+    });
+  });
+  console.log(allRecipeIds);
+  console.log("menus loaded");
+
+
+  // // init recipes
+  // let allRecipes = [];
+  // for (let i = 1; i < 9; i++) {
+  //   allRecipes = allRecipes.concat(
+  //     JSON.parse(Assets.getText("data/recipes/recipes" + i + ".json")).results
+  //   );
+  // }
+
+  allRecipeIds.forEach((recipeId) => {
     try {
       let recipeDetails = JSON.parse(
-        Assets.getText("data/recipeDetails/" + recipe.id + ".json")
+        Assets.getText("data/recipeDetails/" + recipeId + ".json")
       );
-      recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
-      RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
+      try {
+        recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
+      } catch (error) {
+        recipeDetails.kcal = 0;
+      }
+      RecipesCollection.upsert({ id: recipeId }, { $set: recipeDetails });
     } catch (error) {
-      console.log("data or datafield missing for recipe id:" + recipe.id);
+      console.log("data or datafield missing for recipe id:" + recipeId);
     }
   });
 
@@ -40,13 +62,7 @@ export function initData() {
   );
   console.log("recipes loaded");
 
-  // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
 
-  allMenus.forEach((menu) => {
-    MenusCollection.upsert({ id: menu.id }, { $set: menu });
-  });
-  console.log("menus loaded");
 }
 
 export function getNutriscoreImage(recipe) {
