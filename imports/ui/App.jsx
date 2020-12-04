@@ -105,7 +105,7 @@ export const App = () => {
     }
   };
 
-  const renderMainScreen = () => {
+  const renderScreen = () => {
     if(user) {
       return (<React.Fragment>
       <div>{isLoading && <div className="loading">loading...</div>}</div>
@@ -132,7 +132,7 @@ export const App = () => {
     <ThemeProvider theme={persfoTheme}>
       <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
       <div className="main">
-      { GetOpenMealDetails == null ? renderMainScreen() : <MealScreen recipe={RecipesCollection.findOne({id: GetOpenMealDetails})}/> }
+      { GetOpenMealDetails == null ? renderScreen() : <MealScreen recipe={RecipesCollection.findOne({id: GetOpenMealDetails})}/> }
       </div>
     </ThemeProvider>
   );

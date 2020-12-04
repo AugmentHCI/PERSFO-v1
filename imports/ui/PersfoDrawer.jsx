@@ -10,6 +10,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import SettingsIcon from "@material-ui/icons/Settings";
 import React from "react";
 import Box from "@material-ui/core/Box";
+import { RecipesCollection, OpenMealDetails, OpenProgress, OpenSettings } from '/imports/api/methods.js';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -24,6 +25,23 @@ const useStyles = makeStyles((theme) => ({
 export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
   const classes = useStyles();
 
+  const handleHomeButton = () => {
+    OpenMealDetails.set(null);
+    OpenProgress.set(false);
+    OpenSettings.set(false);
+  }
+
+  const handleProgress = () => {
+    OpenMealDetails.set(null);
+    OpenSettings.set(false);
+    OpenProgress.set(true);
+  }
+
+  const handleSettings = () => {
+    OpenMealDetails.set(null);
+    OpenProgress.set(false);
+    OpenSettings.set(true);
+  }
   return (
     <SwipeableDrawer
       anchor="left"
@@ -42,7 +60,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
         onKeyDown={toggleDrawer(false)}
       >
         <List>
-          <ListItem button key={"home"} onClick={() => console.log("home")}>
+          <ListItem button key={"home"} onClick={() => handleHomeButton() }>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
@@ -51,7 +69,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
           <ListItem
             button
             key={"progress"}
-            onClick={() => console.log("progress")}
+            onClick={() => handleProgress() }
           >
             <ListItemIcon>
               <AssessmentIcon />
@@ -61,7 +79,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
           <ListItem
             button
             key={"settings"}
-            onClick={() => console.log("settings")}
+            onClick={() => handleSettings() }
           >
             <ListItemIcon>
               <SettingsIcon />
