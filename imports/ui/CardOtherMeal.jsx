@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
-import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection, OpenMealDetails } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage }       from "/imports/api/apiPersfo";
 import {
   Card,
@@ -90,39 +90,29 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
-
-  const handleIncreaseLike = () => {
-    if(recipe) {
-      Meteor.call('recipes.increaseLike', recipe.id);
-    }
-  };
+  const handleIncreaseLike = () => { if(recipe) Meteor.call('recipes.increaseLike', recipe.id); };
   const { recipe, nbLikesDummy } = useTracker(() => {
-    const noDataAvailable = {
-      recipe: {},
-    };
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
+    const noDataAvailable = { recipe: {}, };
+    if (!Meteor.user()) { return noDataAvailable; }
     const handler = Meteor.subscribe("recipes");
-
-    if (!handler.ready()) {
-      return { ...noDataAvailable};
-    }
-
+    if (!handler.ready()) { return { ...noDataAvailable}; }
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
     const nbLikesDummy = recipe.nbLikes;
-
     return { recipe, nbLikesDummy };
   });
+
+  const handleDetailsClick = () => {
+    OpenMealDetails.set(recipeId);
+  }
 
   return (
     <React.Fragment>
       {recipeId ?
         <Card className={classes.root}>
-          <CardActionArea className={classes.cardTop}>
-            <CardMedia className={classes.menuImage} image={getImage(recipe)} />
-            <CardContent className={classes.cardContent}>
-            <Typography  className={classes.menuTitle}>{String(recipe.name).length > 36 ? recipe.name.slice(0, 36) + '...' : recipe.name }</Typography>
+          <CardActionArea className={classes.cardTop}  onClick={() => handleDetailsClick()} >
+            <CardMedia    className={classes.menuImage} image={getImage(recipe)} />
+            <CardContent  className={classes.cardContent}>
+            <Typography   className={classes.menuTitle}>{String(recipe.name).length > 36 ? recipe.name.slice(0, 36) + '...' : recipe.name }</Typography>
             <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
             </CardContent>
           </CardActionArea>

@@ -18,7 +18,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     fontWeight: 600,
     fontFamily: 'Roboto',
     margin: '4px',
-    color: '#424242'
+    color: '#726f6c'
   },
   info: {
     position: "relative",
@@ -27,7 +27,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   otherMeals: {
     display: "flex",
-    overflowX: "auto",
+    overflowX: "scroll",
     columnGap: '16px',
     padding: '4px'
   },

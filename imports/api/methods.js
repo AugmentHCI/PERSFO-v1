@@ -3,7 +3,8 @@ import { Meteor } from 'meteor/meteor';
 
 export const MenusCollection   = new Mongo.Collection("menus");
 export const RecipesCollection = new Mongo.Collection("recipes");
-export const OrdersCollection = new Mongo.Collection("orders");
+export const OrdersCollection  = new Mongo.Collection("orders");
+export const OpenMealDetails   = new ReactiveVar(null); 
 
 Meteor.methods({
   "users.setNewPassword"(username, newPassword, token) {

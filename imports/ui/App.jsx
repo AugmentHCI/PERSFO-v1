@@ -8,7 +8,9 @@ import { AppBarPersfo }    from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { TabHomeScreen } from "./TabHomeScreen";
 
-import { MenusCollection } from '/imports/api/methods.js';
+import { MenusCollection, OpenMealDetails, RecipesCollection} from '/imports/api/methods.js';
+
+import { MealScreen } from "./MealScreen";
 
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
@@ -70,13 +72,14 @@ export const App = () => {
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => { setValue(newValue); };
 
-  const { menu, isLoading } = useTracker(() => {
+  const { GetOpenMealDetails, menu, isLoading } = useTracker(() => {
+    const GetOpenMealDetails = OpenMealDetails.get();
     const noDataAvailable = { menu: { courses: [], }, };
     const handler = Meteor.subscribe("menus");
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
     const menu = MenusCollection.findOne();
-    return { menu };
+    return { GetOpenMealDetails, menu };
   });
 
   const getCoursesTabs = () => {
@@ -87,36 +90,34 @@ export const App = () => {
     }
   };
 
-  const getTabs = () => {
-    let tabPanels = [];
-    for (let i = 0; i < menu.courses.length; i++) {
-      tabPanels.push();
+  const renderMainScreen = () => {
+    if(user) {
+      return (<React.Fragment>
+      <div>{isLoading && <div className="loading">loading...</div>}</div>
+      <Tabs
+      className={classes.tabs}
+      value={value}
+      onChange={handleChange}
+      indicatorColor="primary"
+      textColor="primary"
+      variant="scrollable"
+      scrollButtons="on"> {getCoursesTabs()} </Tabs>
+      {
+        _.map(menu.courses, function(n,i) {
+          return <TabPanel key={i} value={value} index={i}><TabHomeScreen recipeURLs={menu.courses[i].recipes} /></TabPanel>
+        })
+      }
+      </React.Fragment>)
+    } else {
+      return <AuthenticationScreen />;
     }
-    return tabPanels;
-  };
+  }
 
   return (
     <ThemeProvider theme={persfoTheme}>
       <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
       <div className="main">
-        {user ?
-          <Fragment>
-          <div>{isLoading && <div className="loading">loading...</div>}</div>
-          <Tabs
-          className={classes.tabs}
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="scrollable"
-          scrollButtons="on"> {getCoursesTabs()} </Tabs>
-          {
-            _.map(menu.courses, function(n,i) {
-              return <TabPanel key={i} value={value} index={i}><TabHomeScreen recipeURLs={menu.courses[i].recipes} /></TabPanel>
-            })
-          }
-          </Fragment>
-        : <AuthenticationScreen /> }
+      { GetOpenMealDetails == null ? renderMainScreen() : <MealScreen recipe={RecipesCollection.findOne({id: GetOpenMealDetails})}/> }
       </div>
     </ThemeProvider>
   );

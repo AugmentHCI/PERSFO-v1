@@ -8,7 +8,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { Fragment, useState } from "react";
-import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection, OpenMealDetails } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
 import {
@@ -132,12 +132,18 @@ export const CardRecommendedMeal = ({ recipeId }) => {
     return { recipe, nbLikesDummy };
   });
 
+  const handleDetailsClick = () => {
+    OpenMealDetails.set(recipeId);
+    console.log(recipeId);
+  }
+
+
   return (
     <React.Fragment>
       {recipeId ? (
         <Card>
         <div style={{display: 'flex'}}>
-          <CardActionArea className={classes.cardTop}>
+          <CardActionArea className={classes.cardTop} onClick={() => handleDetailsClick()} >
             <CardMedia className={classes.menuImage} image={getImage(recipe)} />
             <CardContent className={classes.cardContent}>
             <Typography  className={classes.menuTitle}>{String(recipe.name).length > 40 ? recipe.name.slice(0, 40) + '...' : recipe.name }</Typography>
@@ -154,8 +160,8 @@ export const CardRecommendedMeal = ({ recipeId }) => {
             <Button size="large" onClick={() => handleIncreaseLike()} color="primary">
               <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
             </Button>
-            <Button size="large" color="primary">More info</Button>
-            <Button size="large" color="primary"  onClick={() => handleOrder()}>Order</Button>
+            <Button size="large" color="primary" onClick={() => handleDetailsClick()}>More info</Button>
+            <Button size="large" color="primary" onClick={() => handleOrder()}>Order</Button>
           </CardActions>
 
           <Modal open={open} onClose={handleClose}>
