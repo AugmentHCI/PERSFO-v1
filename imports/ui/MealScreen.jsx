@@ -188,12 +188,33 @@ export const MealScreen = ({ recipe }) => {
            </div>;
   }
 
+  const SustainabilityContent = (props) => {
+    return <div>
+           <h1 className={classes.subtitle}>Sustainability</h1>
+           <div style={{overflowY: 'scroll', height: '150px'}}>
+           <h1 className={classes.subtitle}>Food product labels</h1>
+           <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> No data </p>
+           <h1 className={classes.subtitle}>CO2 footprint</h1>
+           <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> No data </p>
+           </div>
+           </div>;
+  }
+
+  const RewiewsContent = (props) => {
+    return <div>
+           <h1 className={classes.subtitle}>Reviews</h1>
+           <div style={{overflowY: 'scroll', height: '150px'}}>
+           <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> No data </p>
+           </div>
+           </div>;
+  }
+
   const renderTabContent = (tabValue) => {
     switch (tabValue) {
-      case 0: return <NutrientsContent recipe={recipe} />;  break;
-      case 1: return <AllergiesContent recipe={recipe} />;  break;
-      case 2: return 'Sustainability';    break;
-      case 3: return 'Reviews';           break;
+      case 0: return <NutrientsContent      recipe={recipe} />; break;
+      case 1: return <AllergiesContent      recipe={recipe} />; break;
+      case 2: return <SustainabilityContent recipe={recipe} />; break;
+      case 3: return <RewiewsContent        recipe={recipe} />; break;
     }
   }
 
@@ -231,7 +252,7 @@ export const MealScreen = ({ recipe }) => {
       <div className={classes.recipeDescription}>
       <div style={{alignSelf: 'flex-start'}}>
       <h1 className={classes.subtitle}>Description</h1>
-      <span>{recipe.description}</span>
+      <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> {recipe.description} </p>
       </div>
       <Fab variant="extended" color="primary" aria-label="add" className={classes.margin} style={{color: 'white'}}>Order</Fab>
       </div>

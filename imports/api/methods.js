@@ -10,6 +10,8 @@ export const OrdersCollection = new Mongo.Collection("orders");
 export const UserPreferences = new Mongo.Collection("userpreferences");
 
 export const OpenMealDetails = new ReactiveVar(null);
+export const OpenProgress    = new ReactiveVar(false);
+export const OpenSettings    = new ReactiveVar(false);
 
 Meteor.methods({
   "users.setNewPassword"(username, newPassword, token) {
