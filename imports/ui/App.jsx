@@ -62,6 +62,7 @@ function TabPanel(props) {
 }
 
 export const App = () => {
+
   // account logic
   const classes = useStyles();
   const user = useTracker(() => Meteor.user());
@@ -76,8 +77,16 @@ export const App = () => {
     const GetOpenMealDetails = OpenMealDetails.get();
     const noDataAvailable = { menu: { courses: [], }, };
     const handler = Meteor.subscribe("menus");
+    const recipesHandler = Meteor.subscribe("recipes");
+
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+    if (!recipesHandler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+
+    // wait for menus and recipes to load before initializing recommendations
+    // recalculate new recommendation on every app startup
+    Meteor.call('recommender.updateRecommendations')
+
     // let menu = MenusCollection.find({"starting_date": "2020-12-18"}).fetch(); // pick random date for testing
     let menu = MenusCollection.find({"starting_date": new Date().toISOString().substring(0,10)}).fetch();
     if(menu && menu.length > 0) {

@@ -124,7 +124,7 @@ export const MealScreen = ({ recipe }) => {
 
   const getKcalInfo = () => {
     try {
-      return (recipe.nutrition_info.kcal.quantity.toFixed(2) + ' ' + recipe.nutrition_info.kcal.unit);
+      return (recipe.kcal.toFixed(2) + ' ' + recipe.nutrition_info.kcal.unit);
     } catch (e) { }
   }
 
