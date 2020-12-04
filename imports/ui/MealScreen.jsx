@@ -142,6 +142,7 @@ export const MealScreen = ({ recipe }) => {
 
   const NutrientsBar = (props) => {
     let maxValue = props.maxValue;
+    console.log(props);
     if(props.value >= props.maxValue) { maxValue = props.value; }
     const normalise = (props.value - 0) * 100 / (maxValue - 0);
     return <div style={{padding: '4px', marginBottom: '8px'}}>
@@ -155,16 +156,37 @@ export const MealScreen = ({ recipe }) => {
   // TODO... MAX VALUES TO BE GET FROM THE PREFERENCES.
   const NutrientsContent = (props) => {
     const r = props.recipe.nutrition_info;
+    let kcal  = 0; try { kcal  = r.kcal.quantity          } catch(e){}
+    let fat   = 0; try { fat   = r.fat.quantity           } catch(e){}
+    let sat   = 0; try { sat   = r.saturated_fat.quantity } catch(e){}
+    let sug   = 0; try { sug   = r.sugar.quantity         } catch(e){}
+    let prot  = 0; try { prot  = r.protein.quantity       } catch(e){}
+    let fibr  = 0; try { fibr  = r.fibre.quantity         } catch(e){}
+    let potss = 0; try { potss = r.potassium.quantity     } catch(e){}
+
+    let ukcal  = ''; try { ukcal  = r.kcal.unit          } catch(e){}
+    let ufat   = ''; try { ufat   = r.fat.unit           } catch(e){}
+    let usat   = ''; try { usat   = r.saturated_fat.unit } catch(e){}
+    let usug   = ''; try { usug   = r.sugar.unit         } catch(e){}
+    let uprot  = ''; try { uprot  = r.protein.unit       } catch(e){}
+    let ufibr  = ''; try { ufibr  = r.fibre.unit         } catch(e){}
+    let upotss = ''; try { upotss = r.potassium.unit     } catch(e){}
+
+    let noData = null
+    if (_.sum([kcal, fat , sat , sug , prot, fibr, potss]) == 0)
+    noData = <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> No data </p>;
+
     return <div>
            <h1 className={classes.subtitle}>Nutrients</h1>
            <div style={{overflowY: 'scroll', height: '150px'}}>
-           <NutrientsBar title='Energy'         value={r.kcal.quantity}          maxValue={100} unit={r.kcal.unit}/>
-           <NutrientsBar title='Total fat'      value={r.fat.quantity}           maxValue={100} unit={r.fat.unit}/>
-           <NutrientsBar title='Saturated fats' value={r.saturated_fat.quantity} maxValue={100} unit={r.saturated_fat.unit}/>
-           <NutrientsBar title='Sugar'          value={r.sugar.quantity}         maxValue={100} unit={r.sugar.unit}/>
-           <NutrientsBar title='Proteins'       value={r.protein.quantity}       maxValue={100} unit={r.protein.unit}/>
-           <NutrientsBar title='Fiber'          value={r.fibre.quantity}         maxValue={100} unit={r.fibre.unit}/>
-           <NutrientsBar title='Potassium'      value={r.potassium.quantity}     maxValue={100} unit={r.potassium.unit}/>
+           { noData }
+           { kcal  == 0 ? null : <NutrientsBar title='Energy'         value={kcal}  maxValue={100} unit={ukcal} /> }
+           { fat   == 0 ? null : <NutrientsBar title='Total fat'      value={fat}   maxValue={100} unit={ufat}  /> }
+           { sat   == 0 ? null : <NutrientsBar title='Saturated fats' value={sat}   maxValue={100} unit={usat}  /> }
+           { sug   == 0 ? null : <NutrientsBar title='Sugar'          value={sug}   maxValue={100} unit={usug}  /> }
+           { prot  == 0 ? null : <NutrientsBar title='Proteins'       value={prot}  maxValue={100} unit={uprot} /> }
+           { fibr  == 0 ? null : <NutrientsBar title='Fiber'          value={fibr}  maxValue={100} unit={ufibr} /> }
+           { potss == 0 ? null : <NutrientsBar title='Potassium'      value={potss} maxValue={100} unit={upotss}/> }
            </div>
            </div>;
   }
