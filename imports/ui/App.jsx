@@ -8,7 +8,7 @@ import { AppBarPersfo }    from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { TabHomeScreen } from "./TabHomeScreen";
 
-import { MenusCollection, OpenMealDetails, RecipesCollection} from '/imports/api/methods.js';
+import { MenusCollection, OpenMealDetails, RecipesCollection, OpenProgress, OpenSettings } from '/imports/api/methods.js';
 
 import { MealScreen } from "./MealScreen";
 
@@ -73,11 +73,14 @@ export const App = () => {
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => { setValue(newValue); };
 
-  const { GetOpenMealDetails, menu, isLoading } = useTracker(() => {
+  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, menu, isLoading } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
     const noDataAvailable = { menu: { courses: [], }, };
     const handler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
+
+    const GetOpenProgress = OpenProgress.get();
+    const GetOpenSettings = OpenSettings.get();
 
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
@@ -94,7 +97,7 @@ export const App = () => {
     } else {
       menu = MenusCollection.findOne();
     }
-    return { GetOpenMealDetails, menu };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, menu };
   });
 
   const getCoursesTabs = () => {
@@ -105,34 +108,49 @@ export const App = () => {
     }
   };
 
-  const renderScreen = () => {
+  const switchRenderScreen = () => {
+    let renderScreen;
     if(user) {
-      return (<React.Fragment>
-      <div>{isLoading && <div className="loading">loading...</div>}</div>
-      <Tabs
-      className={classes.tabs}
-      value={value}
-      onChange={handleChange}
-      indicatorColor="primary"
-      textColor="primary"
-      variant="scrollable"
-      scrollButtons="on"> {getCoursesTabs()} </Tabs>
-      {
-        _.map(menu.courses, function(n,i) {
-          return <TabPanel key={i} value={value} index={i}><TabHomeScreen recipeURLs={menu.courses[i].recipes} /></TabPanel>
-        })
+      if(GetOpenMealDetails == null) {
+        renderScreen = <React.Fragment>
+        <div>{isLoading && <div className="loading">loading...</div>}</div>
+        <Tabs
+        className={classes.tabs}
+        value={value}
+        onChange={handleChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="scrollable"
+        scrollButtons="on"> {getCoursesTabs()} </Tabs>
+        {
+          _.map(menu.courses, function(n,i) {
+            return <TabPanel key={i} value={value} index={i}><TabHomeScreen recipeURLs={menu.courses[i].recipes} /></TabPanel>
+          })
+        }
+        </React.Fragment>;
+      } else if (GetOpenMealDetails !== null) {
+        renderScreen = <MealScreen recipe={RecipesCollection.findOne({id: GetOpenMealDetails})}/>
       }
-      </React.Fragment>)
+
+      if (GetOpenProgress) {
+        renderScreen = 'Progress';
+      }
+
+      if (GetOpenSettings) {
+        renderScreen = 'Settings';
+      }
+
     } else {
-      return <AuthenticationScreen />;
+      renderScreen = <AuthenticationScreen />;
     }
+    return renderScreen;
   }
 
   return (
     <ThemeProvider theme={persfoTheme}>
       <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
       <div className="main">
-      { GetOpenMealDetails == null ? renderScreen() : <MealScreen recipe={RecipesCollection.findOne({id: GetOpenMealDetails})}/> }
+      { switchRenderScreen() }
       </div>
     </ThemeProvider>
   );
