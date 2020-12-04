@@ -98,6 +98,12 @@ const useStyles = makeStyles((persfoTheme) => ({
     lineHeight: 1,
     letterSpacing: '0px',
     textTransform: 'uppercase',
+  },
+  allergenBox: {
+    padding: '8px',
+    border: '1px solid #F57D20',
+    borderRadius: '10px',
+    color: '#F57D20'
   }
 }));
 
@@ -163,11 +169,29 @@ export const MealScreen = ({ recipe }) => {
            </div>;
   }
 
+  const AllergiesContent = (props) => {
+    const allergens = _.without(_.map(_.toPairs(props.recipe.allergens), function(n) { if(n[1] == 1) return n[0] }), undefined );
+    const r = props.recipe.nutrition_info;
+    // <h1 className={classes.subtitle}>Severe</h1> WARNING.. THIS NEEDS TO BE CORRELATED WITH USER PROFILE.
+    // <h1 className={classes.subtitle}>Moderate</h1>
+    return <div>
+           <h1 className={classes.subtitle}>Allergens</h1>
+           <div style={{overflowY: 'scroll', height: '150px'}}>
+           <div style={{display: 'flex', columnGap: '8px', flexWrap: 'wrap', rowGap: '8px'}}>
+           {
+             _.map(allergens, function(a,i){
+               return <div className={classes.allergenBox} key={i}>{a}</div>
+             })
+           }
+           </div>
+           </div>
+           </div>;
+  }
 
   const renderTabContent = (tabValue) => {
     switch (tabValue) {
       case 0: return <NutrientsContent recipe={recipe} />;  break;
-      case 1: return 'Allergies';         break;
+      case 1: return <AllergiesContent recipe={recipe} />;  break;
       case 2: return 'Sustainability';    break;
       case 3: return 'Reviews';           break;
     }
@@ -195,7 +219,7 @@ export const MealScreen = ({ recipe }) => {
       <div>
       <Tabs value={tabValue} onChange={handleChange} indicatorColor="primary" textColor="primary" variant="fullWidth" scrollButtons="auto" centered={true}>
         <Tab key={"key1"} label={<span className={classes.tabFont}>Nutrients</span>} />
-        <Tab key={"key2"} label={<span className={classes.tabFont}>Allergies</span>} />
+        <Tab key={"key2"} label={<span className={classes.tabFont}>Allergens</span>} />
         <Tab key={"key3"} label={<span className={classes.tabFont}>Sustainability</span>}/>
         <Tab key={"key4"} label={<span className={classes.tabFont}>Reviews</span>} />
       </Tabs>
