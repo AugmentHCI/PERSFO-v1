@@ -44,7 +44,8 @@ const useStyles = makeStyles((persfoTheme) => ({
     width:  '80px',
     height: '80px',
     borderRadius: '100px',
-    marginTop: '8px'
+    marginTop: '8px',
+    backgroundColor: '#fafafa'
   },
   menuTitle: {
     fontSize: '11px',

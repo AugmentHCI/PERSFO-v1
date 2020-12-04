@@ -135,12 +135,15 @@ export const MealScreen = ({ recipe }) => {
   }
 
   const NutrientsBar = (props) => {
+    let maxValue = props.maxValue;
+    if(props.value >= props.maxValue) { maxValue = props.value; }
+    const normalise = (props.value - 0) * 100 / (maxValue - 0);
     return <div style={{padding: '4px', marginBottom: '8px'}}>
            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '2px'}}>
            <div style={{color: '#717171', fontSize: '12px'}}>{props.title}</div>
-           <div style={{color: '#717171', fontSize: '12px'}}>{props.value.toLocaleString()}/{props.maxValue.toLocaleString()}{String(props.unit)}</div>
+           <div style={{color: '#717171', fontSize: '12px'}}>{props.value.toLocaleString()}/{maxValue.toLocaleString()}{String(props.unit)}</div>
            </div>
-           <BorderLinearProgress variant="determinate" value={props.value}/>
+           <BorderLinearProgress variant="determinate" value={normalise}/>
            </div>;
   }
   // TODO... MAX VALUES TO BE GET FROM THE PREFERENCES.
@@ -155,6 +158,7 @@ export const MealScreen = ({ recipe }) => {
            <NutrientsBar title='Sugar'          value={r.sugar.quantity}         maxValue={100} unit={r.sugar.unit}/>
            <NutrientsBar title='Proteins'       value={r.protein.quantity}       maxValue={100} unit={r.protein.unit}/>
            <NutrientsBar title='Fiber'          value={r.fibre.quantity}         maxValue={100} unit={r.fibre.unit}/>
+           <NutrientsBar title='Potassium'      value={r.potassium.quantity}     maxValue={100} unit={r.potassium.unit}/>
            </div>
            </div>;
   }
