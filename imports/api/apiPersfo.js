@@ -1,7 +1,11 @@
-import { MenusCollection, RecipesCollection, RecommendedRecipes } from "/imports/api/methods.js";
+import {
+  MenusCollection,
+  RecipesCollection,
+  RecommendedRecipes,
+} from "/imports/api/methods.js";
 
 export function initData() {
-  // init recipes  
+  // init recipes
   let allRecipes = [];
   for (let i = 1; i < 9; i++) {
     allRecipes = allRecipes.concat(
@@ -17,7 +21,7 @@ export function initData() {
       recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
       RecipesCollection.upsert({ id: recipe.id }, { $set: recipeDetails });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       console.log("data missing for recipe id:" + recipe.id);
     }
   });
@@ -64,7 +68,7 @@ export function getImage(recipe) {
     for (let i = 0; i < recipe.custom_fields.length; i++) {
       let custom = recipe.custom_fields[i];
       if (custom.name == "Picture") {
-        return custom.value;
+        if (custom.value) return custom.value.replaceAll(" ", "%20");
       }
     }
   }
