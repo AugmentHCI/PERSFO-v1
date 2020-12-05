@@ -11,7 +11,7 @@ import { red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useTracker } from "meteor/react-meteor-data";
-import React from "react";
+import React, { useState } from "react";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
   OpenMealDetails,
@@ -19,6 +19,8 @@ import {
   RecipesCollection,
   UserPreferences,
 } from "/imports/api/methods.js";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
@@ -92,11 +94,18 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
+
   const handleIncreaseLike = () => {
     if (recipe) Meteor.call("recipes.handleLike", recipe.id);
   };
   const handleOrder = () => {
     if (recipe) {
+      if (!ordered) setToast(true);
       Meteor.call("orders.handleOrder", recipe.id);
     }
   };
@@ -208,6 +217,15 @@ export const CardOtherMeal = ({ recipeId }) => {
           </CardActions>
         </Card>
       ) : null}
+      <Snackbar
+        open={toastShown}
+        autoHideDuration={6000}
+        onClose={() => setToast(false)}
+      >
+        <Alert onClose={() => setToast(false)} severity="success">
+          Thank you for participating today!
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 };

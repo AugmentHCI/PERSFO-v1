@@ -15,6 +15,8 @@ import {
   OrdersCollection,
 } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import {
   Card,
@@ -113,6 +115,12 @@ export const CardRecommendedMeal = () => {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
+
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
+
   // const [reasons, setReasons] = useState(false);
   const [checked, setChecked] = useState(false);
 
@@ -136,6 +144,7 @@ export const CardRecommendedMeal = () => {
   };
   const handleOrder = () => {
     if (recipe) {
+      if (!ordered) setToast(true);
       Meteor.call("orders.handleOrder", recipe.id);
     }
   };
@@ -213,13 +222,11 @@ export const CardRecommendedMeal = () => {
     console.log(start);
     let end = new Date();
     end.setHours(23, 59, 59, 999);
-    const orders = OrdersCollection.find(
-      {
-        userid: Meteor.userId(),
-        recipeId: recipe.id,
-        timestamp: { $gte: start, $lt: end },
-      }
-    ).fetch();
+    const orders = OrdersCollection.find({
+      userid: Meteor.userId(),
+      recipeId: recipe.id,
+      timestamp: { $gte: start, $lt: end },
+    }).fetch();
     const ordered = orders.length > 0;
     console.log(orders);
     return { ordered };
@@ -356,6 +363,15 @@ export const CardRecommendedMeal = () => {
           </Modal>
         </Card>
       ) : null}
+      <Snackbar
+        open={toastShown}
+        autoHideDuration={6000}
+        onClose={() => setToast(false)}
+      >
+        <Alert onClose={() => setToast(false)} severity="success">
+          Thank you for participating today!
+        </Alert>
+      </Snackbar>
     </Fragment>
   );
 };
