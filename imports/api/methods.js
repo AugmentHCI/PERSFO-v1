@@ -10,8 +10,8 @@ export const OrdersCollection = new Mongo.Collection("orders");
 export const UserPreferences = new Mongo.Collection("userpreferences");
 
 export const OpenMealDetails = new ReactiveVar(null);
-export const OpenProgress    = new ReactiveVar(false);
-export const OpenSettings    = new ReactiveVar(false);
+export const OpenProgress = new ReactiveVar(false);
+export const OpenSettings = new ReactiveVar(false);
 
 Meteor.methods({
   "users.setNewPassword"(username, newPassword, token) {
@@ -69,6 +69,12 @@ Meteor.methods({
 
     // Filter allergies + consider user preferences!
 
+    // filter recipes without an image
+    todaysRecipes = _.filter(todaysRecipes, (recipe) => {
+      return recipe.main_image !== null;
+    });
+
+    // last step! Assign rankings
     // find recipe with lowest kcal --> TODO make smarter
     todaysRecipes = _.sortBy(todaysRecipes, ["kcal"]);
     for (let i = 0; i < todaysRecipes.length; i++) {
@@ -79,7 +85,7 @@ Meteor.methods({
     // todo only use ids! Otherwise data is duplicated in multiple object
     RecommendedRecipes.upsert(
       { userid: this.userId },
-      { $set: {recommendations: todaysRecipes} }
+      { $set: { recommendations: todaysRecipes } }
     );
   },
 });
