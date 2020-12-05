@@ -8,7 +8,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SearchIcon from "@material-ui/icons/Search";
 
-import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
+import { getImage } from "/imports/api/apiPersfo";
 import { RecipesCollection, OpenMealDetails, OpenProgress, OpenSettings } from '/imports/api/methods.js';
 
 import { IconButton, AppBar } from "@material-ui/core/";
@@ -76,7 +76,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
   });
 
   const switchHeader = () => {
-    let title = 'Keep up the great work!';
+    let title = 'Your meals from the last five days';
     if(GetOpenMealDetails !== null) title = '';
     if(GetOpenProgress) title = 'Progress';
     if(GetOpenSettings) title = 'Settings';
@@ -96,7 +96,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
         { Meteor.user() ? <IconButton color="inherit" onClick={logout}><ExitToAppIcon color="secondary" /></IconButton> : null }
         </div>
         <div style={{height: '48px' }}>
-        <AdherenceTimeline day1="A" day2="C" day3="A" day4="D" day5="A" />
+        <AdherenceTimeline />
         </div>
         </div>
         :

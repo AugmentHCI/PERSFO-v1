@@ -1,47 +1,73 @@
 import { Box, Typography } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { useTracker } from "meteor/react-meteor-data";
+import { OrdersCollection, RecipesCollection } from "../api/methods";
+import { getNutriscore } from "../api/apiPersfo";
 
 const useStyles = makeStyles((persfoTheme) => ({
-  root: {
-    //   marginTop: persfoTheme.spacing(2),
-    //   marginLeft: "-60px",
-    //
-  },
   letter: {
     font: "11px roboto",
     fontWeight: 100,
+    textAlign: "center",
   },
 }));
 
-const AColor = "#006738";
-const BColor = "#8EC63E";
-const CColor = "#F5E303";
-const DColor = "#F8931D";
-const EColor = "#BF1E2E";
-
-const getColor = (day) => {
-  switch (day) {
-    case "A":
-      return AColor;
-    case "B":
-      return BColor;
-    case "C":
-      return CColor;
-    case "D":
-      return DColor;
-    case "E":
-      return EColor;
-  }
-};
-
-export const AdherenceTimeline = ({ day1, day2, day3, day4, day5 }) => {
+export const AdherenceTimeline = () => {
   const classes = useStyles();
+
+  const { day1, day2, day3, day4, day5 } = useTracker(() => {
+    const noDataAvailable = {
+      day1: undefined,
+      day2: undefined,
+      day3: undefined,
+      day4: undefined,
+      day5: undefined,
+    };
+    const orderHandler = Meteor.subscribe("orders");
+    if (!orderHandler.ready()) {
+      return { ...noDataAvailable };
+    }
+    // find five last orders
+    let start = new Date();
+    start.setDate(start.getDate() - 5);
+    start.setHours(0, 0, 0, 0);
+    let end = new Date();
+    const orders = OrdersCollection.find({
+      userid: Meteor.userId(),
+      timestamp: { $gte: start, $lt: end },
+    }, {sort: {timestamp: 1}}).fetch();
+
+    const recipeHandler = Meteor.subscribe("recipes");
+    if (!recipeHandler.ready()) {
+      return { ...noDataAvailable };
+    }
+
+    let nutriscores = [];
+    for (let i = 0; i < 5; i++) {
+      try {
+        let recipe = RecipesCollection.findOne({
+          id: orders[i].recipeId,
+        });
+        nutriscores[i] = getNutriscore(recipe);
+      } catch (error) {
+        nutriscores[i] = undefined;
+      }
+    }
+
+    const day1 = nutriscores[0];
+    const day2 = nutriscores[1];
+    const day3 = nutriscores[2];
+    const day4 = nutriscores[3];
+    const day5 = nutriscores[4];
+
+    return { day1, day2, day3, day4, day5 };
+  });
+
+  // todo: only one order per day!
 
   return (
     <Box className={classes.root}>
-      {/* <Typography className={classes.firstletter} color="secondary">A</Typography> */}
-
       <svg
         width="303"
         height="47"
@@ -133,19 +159,19 @@ export const AdherenceTimeline = ({ day1, day2, day3, day4, day5 }) => {
           strokeWidth="5"
         />
         <text x="34" y="19" className="letter">
-          {day1}
+          {getLetter(day1)}
         </text>
         <text x="84" y="19" className="letter">
-          {day2}
+          {getLetter(day2)}
         </text>
         <text x="134" y="19" className="letter">
-          {day3}
+          {getLetter(day3)}
         </text>
         <text x="184" y="19" className="letter">
-          {day4}
+          {getLetter(day4)}
         </text>
         <text x="234" y="19" className="letter">
-          {day5}
+          {getLetter(day5)}
         </text>
 
         <defs>
@@ -176,3 +202,32 @@ export const AdherenceTimeline = ({ day1, day2, day3, day4, day5 }) => {
     </Box>
   );
 };
+
+const AColor = "#006738";
+const BColor = "#8EC63E";
+const CColor = "#F5E303";
+const DColor = "#F8931D";
+const EColor = "#BF1E2E";
+
+const getColor = (day) => {
+  switch (day) {
+    case "A":
+      return AColor;
+    case "B":
+      return BColor;
+    case "C":
+      return CColor;
+    case "D":
+      return DColor;
+    case "E":
+      return EColor;
+    case null:
+      return "#4d4d4d";
+    case undefined:
+      return undefined;
+  }
+};
+
+const getLetter = (input) => {
+  return input === null ? "?" : input;
+}

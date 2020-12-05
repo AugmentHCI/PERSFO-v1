@@ -112,16 +112,20 @@ export function initData() {
   }, 25 * 60 * 1000);
 }
 
-export function getNutriscoreImage(recipe) {
+export function getNutriscore(recipe) {
   if (recipe && recipe.custom_fields) {
     for (let i = 0; i < recipe.custom_fields.length; i++) {
       let custom = recipe.custom_fields[i];
       if (custom.name == "NutriScore") {
-        return "/images/nutri" + custom.value + ".jpg";
+        return custom.value;
       }
     }
   }
-  return "/images/nutrinull.jpg";
+  return null;
+}
+
+export function getNutriscoreImage(recipe) {
+  return "/images/nutri" + getNutriscore(recipe) + ".jpg";
 }
 
 export function getImage(recipe) {
