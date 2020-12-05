@@ -142,13 +142,12 @@ export const MealScreen = ({ recipe }) => {
 
   const NutrientsBar = (props) => {
     let maxValue = props.maxValue;
-    console.log(props);
     if(props.value >= props.maxValue) { maxValue = props.value; }
     const normalise = (props.value - 0) * 100 / (maxValue - 0);
     return <div style={{padding: '4px', marginBottom: '8px'}}>
            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '2px'}}>
            <div style={{color: '#717171', fontSize: '12px'}}>{props.title}</div>
-           <div style={{color: '#717171', fontSize: '12px'}}>{props.value.toLocaleString()}/{maxValue.toLocaleString()}{String(props.unit)}</div>
+           <div style={{color: '#717171', fontSize: '12px'}}>{props.value.toLocaleString()}/<span style={{color: '#F57D20'}}>{maxValue.toLocaleString()}</span>&nbsp;{String(props.unit)}</div>
            </div>
            <BorderLinearProgress variant="determinate" value={normalise}/>
            </div>;
@@ -190,21 +189,17 @@ export const MealScreen = ({ recipe }) => {
            </div>
            </div>;
   }
-
+  // WARNING.. THIS NEEDS TO BE CORRELATED WITH USER PROFILE.
   const AllergiesContent = (props) => {
     const allergens = _.without(_.map(_.toPairs(props.recipe.allergens), function(n) { if(n[1] == 1) return n[0] }), undefined );
     const r = props.recipe.nutrition_info;
-    // <h1 className={classes.subtitle}>Severe</h1> WARNING.. THIS NEEDS TO BE CORRELATED WITH USER PROFILE.
-    // <h1 className={classes.subtitle}>Moderate</h1>
+    let render = _.map(allergens, function(a,i){ return <div className={classes.allergenBox} key={i}>{a}</div>});
+    if(_.isEmpty(allergens)) render = <p style={{color: '#afafaf', fontSize: '11px', padding: '8px'}}> No data </p>;
     return <div>
            <h1 className={classes.subtitle}>Allergens</h1>
            <div style={{overflowY: 'scroll', height: '150px'}}>
            <div style={{display: 'flex', columnGap: '8px', flexWrap: 'wrap', rowGap: '8px'}}>
-           {
-             _.map(allergens, function(a,i){
-               return <div className={classes.allergenBox} key={i}>{a}</div>
-             })
-           }
+           {render}
            </div>
            </div>
            </div>;

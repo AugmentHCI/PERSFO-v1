@@ -1,19 +1,18 @@
 import Box from "@material-ui/core/Box";
+import React, { useState } from "react";
+import { useTracker }           from "meteor/react-meteor-data";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
-import React, { Fragment, useState } from "react";
-import { ThemeProvider }   from "@material-ui/styles";
-import { useTracker }      from "meteor/react-meteor-data";
-
-import { AppBarPersfo }    from "./AppBarPersfo";
+import { ThemeProvider }        from "@material-ui/styles";
+import { AppBarPersfo }         from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
-import { TabHomeScreen } from "./TabHomeScreen";
-
+import { TabHomeScreen }        from "./TabHomeScreen";
+import { Progress }             from "./Progress";
+import { MealScreen }           from "./MealScreen";
 import { MenusCollection, OpenMealDetails, RecipesCollection, OpenProgress, OpenSettings } from '/imports/api/methods.js';
+import { Tab, Tabs, CircularProgress } from "@material-ui/core/";
 
-import { MealScreen } from "./MealScreen";
 
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
+
 
 const persfoTheme = createMuiTheme({
   palette: {
@@ -113,7 +112,7 @@ export const App = () => {
     if(user) {
       if(GetOpenMealDetails == null) {
         renderScreen = <React.Fragment>
-        <div>{isLoading && <div className="loading">loading...</div>}</div>
+        <div>{isLoading && <CircularProgress />}</div>
         <Tabs
         className={classes.tabs}
         value={value}
@@ -133,7 +132,7 @@ export const App = () => {
       }
 
       if (GetOpenProgress) {
-        renderScreen = 'Progress';
+        renderScreen = <Progress />;
       }
 
       if (GetOpenSettings) {

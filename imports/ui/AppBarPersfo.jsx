@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   backButton: {
     marginLeft: '8px',
     marginTop:  '8px',
-    background: 'rgba(175,83,12,0.6)'
+    background: 'rgba(148,148,148,0.6)'
   },
   menuButton: {
     marginLeft: '8px'
