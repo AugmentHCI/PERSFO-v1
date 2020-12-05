@@ -21,6 +21,20 @@ Meteor.methods({
     const user = Accounts.findUserByUsername(username);
     Accounts.setPassword(user._id, newPassword);
   },
+  "users.addDislikes"(dislikes) {
+    check(dislikes, Array);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    dislikes.forEach((dislike) => {
+      UserPreferences.upsert(
+        { userid: this.userId },
+        { $addToSet: { dislikes: dislike } }
+      );
+    });
+  },
   "recipes.handleLike"(recipeId) {
     check(recipeId, String);
 
@@ -74,14 +88,14 @@ Meteor.methods({
         userid: this.userId,
         recipeId: recipeId,
         timestamp: now,
-        orderday: now.toISOString().substring(0,10)
+        orderday: now.toISOString().substring(0, 10),
       });
     } else {
       // user cancelled order
       OrdersCollection.remove({
         userid: this.userId,
         recipeId: recipeId,
-        orderday: now.toISOString().substring(0,10)
+        orderday: now.toISOString().substring(0, 10),
       });
     }
   },

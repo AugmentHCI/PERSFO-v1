@@ -103,8 +103,8 @@ const useStyles = makeStyles(() => ({
 export const CardRecommendedMeal = () => {
   const classes = useStyles();
 
-  const { recipe } = useTracker(() => {
-    const noDataAvailable = { recipe: {} };
+  const { recipe, ingredients } = useTracker(() => {
+    const noDataAvailable = { recipe: {}, ingredients: [] };
     const recipeHandler = Meteor.subscribe("recipes");
     const recommendationHandler = Meteor.subscribe("recommendedrecipes");
     if (!Meteor.user()) {
@@ -118,12 +118,26 @@ export const CardRecommendedMeal = () => {
     }).recommendations;
     const recommendedRecipeId = _.filter(
       recommendedRecipes,
-      (r) => r.ranking === 1
+      (r) => r.ranking === 2
     )[0].id;
     const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
     });
-    return { recipe };
+
+    // update modal reasons with ingredients
+    const ingredients = _.map(recipe.ingredients, (ingredient) => {
+      return {
+        ingredient: ingredient,
+        label:
+          "I don't like " +
+          ingredient.description
+            .replace("[I] ", "")
+            .split("|")[0]
+            .toLowerCase(),
+      };
+    });
+
+    return { recipe, ingredients };
   });
 
   // Like logic
@@ -192,17 +206,12 @@ export const CardRecommendedMeal = () => {
     };
   }
 
-  const [reasons, updateReasons] = useState([
-    { reason: "I don't like pasta", checked: false },
-    { reason: "I don't want cheese", checked: true },
-    { reason: "I don't want leeks", checked: false },
-    { reason: "I don't want warm meals", checked: false },
-  ]);
+  const [checkboxes, updateCheckboxes] = useState([false, false, false, false]);
 
-  const handleModalReasonChange = (event, i) => {
-    let newArr = [...reasons];
-    newArr[i].checked = event.target.checked;
-    updateReasons(newArr);
+  const handleModalCheckboxChange = (event, i) => {
+    let newArr = [...checkboxes];
+    newArr[i] = event.target.checked;
+    updateCheckboxes(newArr);
   };
 
   const handleModalOpen = () => {
@@ -216,6 +225,15 @@ export const CardRecommendedMeal = () => {
     setOpen(false);
   };
   const sendModal = () => {
+    let listOfDislikes = [];
+    for(let i = 0; i < checkboxes.length; i++) {
+      let check = checkboxes[i];
+      if(check) {
+        listOfDislikes.push(ingredients[i].ingredient);
+      }
+    }
+    console.log(listOfDislikes);
+    Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
   }; // TO. DO... SEND MODAL DATA...
 
@@ -315,7 +333,7 @@ export const CardRecommendedMeal = () => {
                   rowGap: "16px",
                 }}
               >
-                {_.map(reasons, (reason, i) => {
+                {_.map(ingredients, (ingredient, i) => {
                   return (
                     <FormControlLabel
                       className={classes.checkbox}
@@ -323,11 +341,11 @@ export const CardRecommendedMeal = () => {
                       control={
                         <Checkbox
                           color="primary"
-                          checked={reason.checked}
-                          onChange={(e) => handleModalReasonChange(e, i)}
+                          checked={checkboxes[i]}
+                          onChange={(e) => handleModalCheckboxChange(e, i)}
                         />
                       }
-                      label={reason.reason}
+                      label={ingredient.label}
                       labelPlacement="start"
                     />
                   );
