@@ -11,6 +11,13 @@ body {
   font-weight: 100;
 }
 
+.auxLetter {
+  stroke: #F9F1EC;
+  font-size: 8px;
+  font-family: "roboto";
+  font-weight: 100;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }

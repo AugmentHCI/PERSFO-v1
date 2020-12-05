@@ -11,6 +11,11 @@ const useStyles = makeStyles((persfoTheme) => ({
     fontWeight: 100,
     textAlign: "center",
   },
+  auxLetter: {
+    font: "11px roboto",
+    fontWeight: 100,
+    textAlign: "center",
+  },
 }));
 
 export const AdherenceTimeline = () => {
@@ -33,33 +38,93 @@ export const AdherenceTimeline = () => {
     start.setDate(start.getDate() - 5);
     start.setHours(0, 0, 0, 0);
     let end = new Date();
-    const orders = OrdersCollection.find({
-      userid: Meteor.userId(),
-      timestamp: { $gte: start, $lt: end },
-    }, {sort: {timestamp: 1}}).fetch();
+    const orders = OrdersCollection.find(
+      {
+        userid: Meteor.userId(),
+        timestamp: { $gte: start, $lt: end },
+      },
+      { sort: { timestamp: -1 } }
+    ).fetch();
 
     const recipeHandler = Meteor.subscribe("recipes");
     if (!recipeHandler.ready()) {
       return { ...noDataAvailable };
     }
 
-    let nutriscores = [];
-    for (let i = 0; i < 5; i++) {
-      try {
+    const groupedOrders = _.groupBy(orders, "orderday");
+    let nutries = _.map(groupedOrders, (value, key) => {
+      return { day: key, score: badestNutriscore(value) };
+    });
+    console.log(nutries);
+
+    function badestNutriscore(orderArray) {
+      if (!orderArray.length > 0) return undefined;
+      let nutriResult = "A";
+      let countNulls = 0;
+      orderArray.forEach((order) => {
         let recipe = RecipesCollection.findOne({
-          id: orders[i].recipeId,
+          id: order.recipeId,
         });
-        nutriscores[i] = getNutriscore(recipe);
-      } catch (error) {
-        nutriscores[i] = undefined;
+        let tempNutriscore = getNutriscore(recipe);
+        if (tempNutriscore === null) {
+          countNulls++;
+        } else {
+          nutriResult =
+            tempNutriscore > nutriResult ? tempNutriscore : nutriResult;
+        }
+      });
+      if (countNulls === orderArray.length) {
+        return null;
       }
+      return nutriResult;
     }
 
-    const day1 = nutriscores[0];
-    const day2 = nutriscores[1];
-    const day3 = nutriscores[2];
-    const day4 = nutriscores[3];
-    const day5 = nutriscores[4];
+    let temp = new Date();
+    let today = temp.toISOString().substring(0, 10);
+    let day1ago = new Date(temp.setDate(temp.getDate() - 1))
+      .toISOString()
+      .substring(0, 10);
+    let day2ago = new Date(temp.setDate(temp.getDate() - 1))
+      .toISOString()
+      .substring(0, 10);
+    let day3ago = new Date(temp.setDate(temp.getDate() - 1))
+      .toISOString()
+      .substring(0, 10);
+    let day4ago = new Date(temp.setDate(temp.getDate() - 1))
+      .toISOString()
+      .substring(0, 10);
+
+    let day1Temp, day2Temp, day3Temp, day4Temp, day5Temp;
+    try {
+      day1Temp = _.find(nutries, (n) => n.day === day4ago).score;
+    } catch (error) {
+      // no order for this day
+    }
+    try {
+      day2Temp = _.find(nutries, (n) => n.day === day3ago).score;
+    } catch (error) {
+      // no order for this day
+    }
+    try {
+      day3Temp = _.find(nutries, (n) => n.day === day2ago).score;
+    } catch (error) {
+      // no order for this day
+    }
+    try {
+      day4Temp = _.find(nutries, (n) => n.day === day1ago).score;
+    } catch (error) {
+      // no order for this day
+    }
+    try {
+      day5Temp = _.find(nutries, (n) => n.day === today).score;
+    } catch (error) {
+      // no order for this day
+    }
+    const day1 = day1Temp;
+    const day2 = day2Temp;
+    const day3 = day3Temp;
+    const day4 = day4Temp;
+    const day5 = day5Temp;
 
     return { day1, day2, day3, day4, day5 };
   });
@@ -174,6 +239,14 @@ export const AdherenceTimeline = () => {
           {getLetter(day5)}
         </text>
 
+        <text x="230" y="39" className="auxLetter">
+          {"today"}
+        </text>
+
+        <text x="20" y="39" className="auxLetter">
+          {"five days ago"}
+        </text>
+
         <defs>
           <linearGradient
             id="paint0_linear"
@@ -230,4 +303,4 @@ const getColor = (day) => {
 
 const getLetter = (input) => {
   return input === null ? "?" : input;
-}
+};
