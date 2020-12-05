@@ -3,8 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
-import { MenusCollection, RecipesCollection, OpenMealDetails } from "/imports/api/methods.js";
-import { getImage, getNutriscoreImage }       from "/imports/api/apiPersfo";
+import {
+  MenusCollection,
+  RecipesCollection,
+  OpenMealDetails,
+  UserPreferences,
+} from "/imports/api/methods.js";
+import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
   Card,
   CardActions,
@@ -16,53 +21,53 @@ import {
   Button,
   ButtonGroup,
   Paper,
-  Typography
+  Typography,
 } from "@material-ui/core/";
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
-    minWidth: '140px',
-    maxWidth: '140px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    borderRadius: '28px'
+    minWidth: "140px",
+    maxWidth: "140px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    borderRadius: "20px",
   },
   cardTop: {
-    width: '100%',
-    display: 'flex',
-    textAlign: 'inherit',
-    flexDirection: 'column',
-    alignItems: 'center',
+    width: "100%",
+    display: "flex",
+    textAlign: "inherit",
+    flexDirection: "column",
+    alignItems: "center",
   },
   menuDescription: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   menuImage: {
-    width:  '80px',
-    height: '80px',
-    borderRadius: '100px',
-    marginTop: '8px',
-    backgroundColor: '#fafafa'
+    width: "80px",
+    height: "80px",
+    borderRadius: "100px",
+    marginTop: "8px",
+    backgroundColor: "#fafafa",
   },
   menuTitle: {
-    fontSize: '11px',
+    fontSize: "11px",
     fontWeight: 500,
-    width: '100%',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: '0px',
+    width: "100%",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    textTransform: "uppercase",
+    letterSpacing: "0px",
     lineHeight: 1,
-    textAlign: 'center',
-    color: '#717171'
+    textAlign: "center",
+    color: "#717171",
   },
   nutriscoreImage: {
     height: "24px",
-    marginBottom: '8px'
+    marginBottom: "8px",
   },
   heartButton: {
     marginRight: persfoTheme.spacing(0.5),
@@ -75,57 +80,98 @@ const useStyles = makeStyles((persfoTheme) => ({
     background: "#F6EBE4",
   },
   cardActions: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    background: '#fafafa'
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    background: "#fafafa",
   },
   cardContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: '4px'
-  }
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-around",
+    padding: "4px",
+  },
 }));
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
-  const handleIncreaseLike = () => { if(recipe) Meteor.call('recipes.handleLike', recipe.id); };
+  const handleIncreaseLike = () => {
+    if (recipe) Meteor.call("recipes.handleLike", recipe.id);
+  };
   const { recipe, nbLikesDummy } = useTracker(() => {
-    const noDataAvailable = { recipe: {}, };
-    if (!Meteor.user()) { return noDataAvailable; }
+    const noDataAvailable = { recipe: {} };
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
     const handler = Meteor.subscribe("recipes");
-    if (!handler.ready()) { return { ...noDataAvailable}; }
+    if (!handler.ready()) {
+      return { ...noDataAvailable };
+    }
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
     const nbLikesDummy = recipe.nbLikes;
     return { recipe, nbLikesDummy };
   });
 
+  const { liked } = useTracker(() => {
+    const noDataAvailable = { liked: false };
+    if (!recipe) return noDataAvailable;
+    const handler = Meteor.subscribe("userpreferences");
+    if (!handler.ready()) { return { ...noDataAvailable}; }
+    const liked =
+      UserPreferences.find({
+        userid: Meteor.userId(),
+        likedRecipes: { $in: [recipe.id] },
+      }).fetch().length > 0;
+    return { liked };
+  });
+
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipeId);
-  }
+  };
 
   return (
     <React.Fragment>
-      {recipeId ?
+      {recipeId ? (
         <Card className={classes.root}>
-          <CardActionArea className={classes.cardTop}  onClick={() => handleDetailsClick()} >
-            <CardMedia    className={classes.menuImage} image={getImage(recipe)} />
-            <CardContent  className={classes.cardContent}>
-            <Typography   className={classes.menuTitle}>{String(recipe.name).length > 36 ? recipe.name.slice(0, 36) + '...' : recipe.name }</Typography>
-            <img className={classes.nutriscoreImage} src={getNutriscoreImage(recipe)} />
+          <CardActionArea
+            className={classes.cardTop}
+            onClick={() => handleDetailsClick()}
+          >
+            <CardMedia className={classes.menuImage} image={getImage(recipe)} />
+            <CardContent className={classes.cardContent}>
+              <Typography className={classes.menuTitle}>
+                {String(recipe.name).length > 36
+                  ? recipe.name.slice(0, 36) + "..."
+                  : recipe.name}
+              </Typography>
+              <img
+                className={classes.nutriscoreImage}
+                src={getNutriscoreImage(recipe)}
+              />
             </CardContent>
           </CardActionArea>
 
           <CardActions className={classes.cardActions}>
-          <Button size="large" onClick={() => handleIncreaseLike()} color="primary">
-            <FavoriteIcon style={{ color: red[300] }} /> &nbsp; <span>{nbLikesDummy}</span>
-          </Button>
-          <Button size="large" color="primary">Order</Button>
+            <Button
+              size="large"
+              onClick={() => handleIncreaseLike()}
+              color="primary"
+              style={
+                liked
+                  ? { backgroundColor: red[100], borderRadius: "14px" }
+                  : undefined
+              }
+            >
+              <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
+              <span>{nbLikesDummy}</span>
+            </Button>
+            <Button size="large" color="primary">
+              Order
+            </Button>
           </CardActions>
         </Card>
-      : null }
+      ) : null}
     </React.Fragment>
   );
 };

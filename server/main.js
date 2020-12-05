@@ -28,7 +28,11 @@ Meteor.publish('recipes', function publishTasks() {
 });
 
 Meteor.publish('recommendedrecipes', function publishTasks() {
-  return RecommendedRecipes.find(); // todo --> only publish users recommendations
+  return RecommendedRecipes.find({userid:this.userId});
+});
+
+Meteor.publish('userpreferences', function publishTasks() {
+  return UserPreferences.find({userid:this.userId}); 
 });
 
 Meteor.startup(() => {

@@ -41,7 +41,6 @@ Meteor.methods({
         { $pull: { likedRecipes: recipeId } }
       );
     } else {
-      console.log("liked: " + recipeId);
       RecipesCollection.update({ id: recipeId }, { $inc: { nbLikes: 1 } });
       UserPreferences.upsert(
         { userid: this.userId },

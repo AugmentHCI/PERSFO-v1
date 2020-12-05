@@ -11,6 +11,7 @@ import {
   RecipesCollection,
   OpenMealDetails,
   RecommendedRecipes,
+  UserPreferences,
 } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
@@ -123,7 +124,7 @@ export const CardRecommendedMeal = () => {
 
   const handleChange = (event, i) => {
     let newArr = [...reasons];
-    newArr[i].checked = event.target.checked; 
+    newArr[i].checked = event.target.checked;
     updateReasons(newArr);
   };
 
@@ -182,6 +183,19 @@ export const CardRecommendedMeal = () => {
     return { recipe, nbLikesDummy };
   });
 
+  const { liked } = useTracker(() => {
+    const noDataAvailable = { liked: false };
+    if (!recipe) return noDataAvailable;
+    const handler = Meteor.subscribe("userpreferences");
+    if (!handler.ready()) { return { ...noDataAvailable}; }
+    const liked =
+      UserPreferences.find({
+        userid: Meteor.userId(),
+        likedRecipes: { $in: [recipe.id] },
+      }).fetch().length > 0;
+    return { liked };
+  });
+
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipe.id);
   };
@@ -225,7 +239,12 @@ export const CardRecommendedMeal = () => {
             <Button
               size="large"
               onClick={() => handleIncreaseLike()}
-              color="primary"
+              color={"primary"}
+              style={
+                liked
+                  ? { backgroundColor: red[100], borderRadius: "14px" }
+                  : undefined
+              }
             >
               <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
               <span>{nbLikesDummy}</span>
@@ -260,7 +279,11 @@ export const CardRecommendedMeal = () => {
                       className={classes.checkbox}
                       key={i + "-checkbox"}
                       control={
-                        <Checkbox color="primary" checked={reason.checked} onChange={(e) => handleChange(e, i)} />
+                        <Checkbox
+                          color="primary"
+                          checked={reason.checked}
+                          onChange={(e) => handleChange(e, i)}
+                        />
                       }
                       label={reason.reason}
                       labelPlacement="start"
