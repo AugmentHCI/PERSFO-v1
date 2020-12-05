@@ -129,7 +129,7 @@ export const CardRecommendedMeal = () => {
 
   const handleIncreaseLike = () => {
     if (recipe) {
-      Meteor.call("recipes.increaseLike", recipe.id);
+      Meteor.call("recipes.handleLike", recipe.id);
     }
   };
   const handleOrder = () => {

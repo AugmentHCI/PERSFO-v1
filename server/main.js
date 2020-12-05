@@ -4,7 +4,7 @@ import { initData } from "/imports/api/apiPersfo";
 import "/imports/api/methods.js";
 import "/imports/api/apiPersfo";
 
-import { MenusCollection, RecipesCollection, RecommendedRecipes } from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection, RecommendedRecipes, UserPreferences } from "/imports/api/methods.js";
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
 RecipesCollection.insert({_id:"1", value:"hack to create collection in meteor"});
@@ -13,6 +13,8 @@ MenusCollection.insert({_id:"1", value:"hack to create collection in meteor"});
 MenusCollection.remove({_id:"1"});
 RecommendedRecipes.insert({_id:"1", value:"hack to create collection in meteor"});
 RecommendedRecipes.remove({_id:"1"});
+UserPreferences.insert({_id:"1", value:"hack to create collection in meteor"});
+UserPreferences.remove({_id:"1"});
 
 const SEED_USERNAME = "robin";
 const SEED_PASSWORD = "hello";

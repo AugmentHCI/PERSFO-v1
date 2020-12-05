@@ -21,21 +21,33 @@ Meteor.methods({
     const user = Accounts.findUserByUsername(username);
     Accounts.setPassword(user._id, newPassword);
   },
-  "recipes.increaseLike"(recipeId) {
+  "recipes.handleLike"(recipeId) {
     check(recipeId, String);
 
     if (!this.userId) {
       throw new Meteor.Error("Not authorized.");
     }
-    RecipesCollection.update({ id: recipeId }, { $inc: { nbLikes: 1 } });
-  },
-  "recipes.decrementLike"(recipeId) {
-    check(recipeId, String);
 
-    if (!this.userId) {
-      throw new Meteor.Error("Not authorized.");
+    if (
+      UserPreferences.find({
+        userid: this.userId,
+        likedRecipes: { $in: [recipeId] },
+      }).fetch().length > 0
+    ) {
+      // recipe was already liked
+      RecipesCollection.update({ id: recipeId }, { $inc: { nbLikes: -1 } });
+      UserPreferences.update(
+        { userid: this.userId },
+        { $pull: { likedRecipes: recipeId } }
+      );
+    } else {
+      console.log("liked: " + recipeId);
+      RecipesCollection.update({ id: recipeId }, { $inc: { nbLikes: 1 } });
+      UserPreferences.upsert(
+        { userid: this.userId },
+        { $addToSet: { likedRecipes: recipeId } }
+      );
     }
-    RecipesCollection.update({ id: recipeId }, { $inc: { nbLikes: -1 } });
   },
   "orders.newOrder"(recipeId) {
     check(recipeId, String);

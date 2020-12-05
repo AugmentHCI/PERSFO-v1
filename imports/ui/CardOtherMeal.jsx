@@ -91,7 +91,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
-  const handleIncreaseLike = () => { if(recipe) Meteor.call('recipes.increaseLike', recipe.id); };
+  const handleIncreaseLike = () => { if(recipe) Meteor.call('recipes.handleLike', recipe.id); };
   const { recipe, nbLikesDummy } = useTracker(() => {
     const noDataAvailable = { recipe: {}, };
     if (!Meteor.user()) { return noDataAvailable; }
