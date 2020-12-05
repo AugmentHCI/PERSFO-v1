@@ -1,29 +1,24 @@
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@material-ui/core/";
 import { red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { useTracker } from "meteor/react-meteor-data";
-import React, { useState } from "react";
-import {
-  MenusCollection,
-  RecipesCollection,
-  OpenMealDetails,
-  UserPreferences,
-  OrdersCollection,
-} from "/imports/api/methods.js";
+import React from "react";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
-  Card,
-  CardActions,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Avatar,
-  Box,
-  Button,
-  ButtonGroup,
-  Paper,
-  Typography,
-} from "@material-ui/core/";
+  OpenMealDetails,
+  OrdersCollection,
+  RecipesCollection,
+  UserPreferences,
+} from "/imports/api/methods.js";
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
