@@ -49,12 +49,12 @@ export function initData() {
   RecipesCollection.update(
     { nbLikes: { $exists: false } },
     { $set: { nbLikes: 0 } },
-    { multi: true, upsert: true }
+    { multi: true }
   );
   RecipesCollection.update(
     { reviews: { $exists: false } },
     { $set: { reviews: [] } },
-    { multi: true, upsert: true }
+    { multi: true }
   );
   console.log("recipes loaded");
 
