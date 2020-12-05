@@ -124,7 +124,6 @@ export const CardRecommendedMeal = () => {
       id: recommendedRecipeId,
     });
 
-    // update modal reasons with ingredients
     const ingredients = _.map(recipe.ingredients, (ingredient) => {
       return {
         ingredient: ingredient,
