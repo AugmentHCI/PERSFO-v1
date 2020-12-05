@@ -133,7 +133,9 @@ export function getImage(recipe) {
       for (let i = 0; i < recipe.custom_fields.length; i++) {
         let custom = recipe.custom_fields[i];
         if (custom.name == "Picture") {
-          if (custom.value) return custom.value.replaceAll(" ", "%20");
+          if (custom.value) {
+            return custom.value.replaceAll(" ", "%20");
+          }
         }
       }
     }

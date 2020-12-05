@@ -70,6 +70,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
   useEffect(() => {
     if(GetOpenMealDetails !== null ) {
       let url = getImage(RecipesCollection.findOne({id: GetOpenMealDetails}));
+      console.log(url);
       setBackground('url('+url+')');
     }
   });
@@ -84,7 +85,7 @@ export const AppBarPersfo = ({drawerOpen, toggleDrawer}) => {
 
   return (
     // <div className={classes.rootLongTest}>
-    <AppBar position="static" style={{backgroundImage: background, backgroundSize: 'cover'}}>
+    <AppBar position="static" style={{backgroundImage: background, backgroundSize: '120% 150%'}}>
         { GetOpenMealDetails == null ?
         <div style={{display: 'flex', flexDirection: 'column', height: '100px'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px' }}>
