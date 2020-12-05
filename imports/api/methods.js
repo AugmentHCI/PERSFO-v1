@@ -31,9 +31,41 @@ Meteor.methods({
     dislikes.forEach((dislike) => {
       UserPreferences.upsert(
         { userid: this.userId },
-        { $addToSet: { dislikes: dislike } }
+        { $addToSet: { dislikedIngredients: dislike } }
       );
     });
+  },
+  "users.handleLikeRecommendation"(recipeId, keep) {
+    check(recipeId, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    if(!keep) {
+      UserPreferences.update(
+        { userid: this.userId },
+        { $pull: { likedRecommendations: recipeId } }
+      );
+    } else {
+      if (
+        UserPreferences.find({
+          userid: this.userId,
+          likedRecommendations: { $in: [recipeId] },
+        }).fetch().length > 0
+      ) {
+        // recommendation is not liked anymore
+        UserPreferences.update(
+          { userid: this.userId },
+          { $pull: { likedRecommendations: recipeId } }
+        );
+      } else {
+        UserPreferences.upsert(
+          { userid: this.userId },
+          { $addToSet: { likedRecommendations: recipeId } }
+        );
+      }
+    }
   },
   "recipes.handleLike"(recipeId) {
     check(recipeId, String);

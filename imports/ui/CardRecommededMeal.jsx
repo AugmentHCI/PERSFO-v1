@@ -139,9 +139,9 @@ export const CardRecommendedMeal = () => {
     return { recipe, ingredients };
   });
 
-  // Like logic
-  const { liked, nbLikes } = useTracker(() => {
-    const noDataAvailable = { liked: false };
+  // Like and thumb logic
+  const { liked, nbLikes, thumbsUp } = useTracker(() => {
+    const noDataAvailable = { liked: false, nbLikes: 0, thumbsUp: false };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
@@ -153,7 +153,12 @@ export const CardRecommendedMeal = () => {
         userid: Meteor.userId(),
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
-    return { liked, nbLikes };
+    const thumbsUp =
+      UserPreferences.find({
+        userid: Meteor.userId(),
+        likedRecommendations: { $in: [recipe.id] },
+      }).fetch().length > 0;
+    return { liked, nbLikes, thumbsUp };
   });
 
   const handleIncreaseLike = () => {
@@ -192,6 +197,18 @@ export const CardRecommendedMeal = () => {
     }
   };
 
+  // Thumbs state
+  const [thumbsDown, setThumbsDown] = useState(false);
+
+  const handleThumbsUp = () => {
+    if(recipe) {
+      Meteor.call("users.handleLikeRecommendation", recipe.id, true)
+      if (!thumbsUp) {
+        setThumbsDown(false);
+      }
+    }
+  };
+
   // modal logic
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
@@ -214,24 +231,28 @@ export const CardRecommendedMeal = () => {
   };
 
   const handleModalOpen = () => {
+    setThumbsDown(true);
+    Meteor.call("users.handleLikeRecommendation", recipe.id, false)
     setOpen(true);
   };
   const handleModalClose = () => {
+    setThumbsDown(false);
+    Meteor.call("users.handleLikeRecommendation", recipe.id, false)
     setOpen(false);
   };
 
   const cancelModal = () => {
+    setThumbsDown(false);
     setOpen(false);
   };
   const sendModal = () => {
     let listOfDislikes = [];
-    for(let i = 0; i < checkboxes.length; i++) {
+    for (let i = 0; i < checkboxes.length; i++) {
       let check = checkboxes[i];
-      if(check) {
+      if (check) {
         listOfDislikes.push(ingredients[i].ingredient);
       }
     }
-    console.log(listOfDislikes);
     Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
   }; // TO. DO... SEND MODAL DATA...
@@ -274,14 +295,23 @@ export const CardRecommendedMeal = () => {
             </CardActionArea>
 
             <CardActions className={classes.sideCardActions}>
-              <IconButton className={classes.likeButton}>
-                <ThumbUpIcon style={{ color: "#f7ba8b" }} />
+              <IconButton
+                onClick={() => handleThumbsUp()}
+                className={classes.likeButton}
+              >
+                <ThumbUpIcon
+                  style={thumbsUp ? { color: "#F57D20" } : { color: "#f7ba8b" }}
+                />
               </IconButton>
               <IconButton
                 className={classes.likeButton}
                 onClick={handleModalOpen}
               >
-                <ThumbDownIcon style={{ color: "#f7ba8b" }} />
+                <ThumbDownIcon
+                  style={
+                    thumbsDown ? { color: "#F57D20" } : { color: "#f7ba8b" }
+                  }
+                />
               </IconButton>
             </CardActions>
           </div>
@@ -323,7 +353,8 @@ export const CardRecommendedMeal = () => {
           <Modal open={open} onClose={handleModalClose}>
             <div style={modalStyle} className={classes.paper}>
               <h3 className={classes.modalTitle}>
-                Please help us by telling us why you dislike this menu?
+                Please help us by telling us why you dislike this
+                recommendation?
               </h3>
               <div
                 style={{

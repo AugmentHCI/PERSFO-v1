@@ -87,8 +87,8 @@ export const App = () => {
     // recalculate new recommendation on every app startup
     Meteor.call('recommender.updateRecommendations')
 
-    // let menu = MenusCollection.find({"starting_date": "2020-12-18"}).fetch(); // pick random date for testing
-    let menu = MenusCollection.find({"starting_date": new Date().toISOString().substring(0,10)}).fetch();
+    let menu = MenusCollection.find({"starting_date": "2020-12-09"}).fetch(); // pick random date for testing
+    // let menu = MenusCollection.find({"starting_date": new Date().toISOString().substring(0,10)}).fetch();
     if(menu && menu.length > 0) {
       menu = menu[0];
     } else {

@@ -141,7 +141,7 @@ export function getImage(recipe) {
     }
   }
 
-  return "/images/orange.jpg";
+  return "/images/Image-not-found.png";
 }
 
 export function getRecipeID(recipeURL) {
