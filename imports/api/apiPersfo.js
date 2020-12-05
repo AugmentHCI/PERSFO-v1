@@ -10,7 +10,6 @@ const url = "https://www.apicbase.com/api/v1/recipes/";
 var fs = require("fs");
 
 export function initData() {
-
   // first load menus to only load relevant recipes!
 
   // init menus
@@ -70,19 +69,33 @@ export function initData() {
     // function to fetch data in intervals
     function updateRecipeDetails() {
       Meteor.setTimeout(function () {
-        const currentId = allRecipes[index].id;
-        console.log("calling API: " + currentId);
-
-        let call = HTTP.call("GET", url + currentId, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (call.data) {
-          RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-          // fs.writeFile(process.env["PWD"] + "/public/newRecipeDetails/"+ currentId + ".json", JSON.stringify(call.data), (err) => {
-          //   if (err) throw err;
-          // });
+        try {
+          const currentId = allRecipes[index].id;
+          if (currentId) {
+            console.log("calling API: " + currentId);
+            let call = HTTP.call("GET", url + currentId, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (call.data) {
+              RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+              fs.writeFile(
+                process.env["PWD"] +
+                  "/public/newRecipeDetails/" +
+                  currentId +
+                  ".json",
+                JSON.stringify(call.data),
+                (err) => {
+                  if (err) throw err;
+                }
+              );
+            }
+          } else {
+            console.log("error at index: " + index);
+          }
+        } catch (error) {
+          console.log("Call error for: " + currentId);
         }
 
         index++;
@@ -96,7 +109,7 @@ export function initData() {
 
     // start the interval with the first recipe
     updateRecipeDetails(allRecipes[0].id);
-  }, 10 * 60 * 1000);
+  }, 25 * 60 * 1000);
 }
 
 export function getNutriscoreImage(recipe) {
@@ -112,14 +125,20 @@ export function getNutriscoreImage(recipe) {
 }
 
 export function getImage(recipe) {
-  if (recipe && recipe.custom_fields) {
-    for (let i = 0; i < recipe.custom_fields.length; i++) {
-      let custom = recipe.custom_fields[i];
-      if (custom.name == "Picture") {
-        if (custom.value) return custom.value.replaceAll(" ", "%20");
+  if (recipe) {
+    if (recipe.main_image) {
+      return recipe.main_image.thumb_image_url;
+    }
+    if (recipe.custom_fields) {
+      for (let i = 0; i < recipe.custom_fields.length; i++) {
+        let custom = recipe.custom_fields[i];
+        if (custom.name == "Picture") {
+          if (custom.value) return custom.value.replaceAll(" ", "%20");
+        }
       }
     }
   }
+
   return "/images/orange.jpg";
 }
 
