@@ -1,36 +1,35 @@
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  FormControlLabel,
+  IconButton,
+  Typography,
+} from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
 import { red } from "@material-ui/core/colors";
 import Modal from "@material-ui/core/Modal";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
+import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
-  RecipesCollection,
   OpenMealDetails,
+  OrdersCollection,
+  RecipesCollection,
   RecommendedRecipes,
   UserPreferences,
-  OrdersCollection,
 } from "/imports/api/methods.js";
-import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 
-import {
-  Card,
-  CardActions,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  FormControlLabel,
-  Button,
-  IconButton,
-  Typography,
-} from "@material-ui/core/";
-
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   menuImage: {
     minWidth: "80px",
     minHeight: "80px",
@@ -101,81 +100,19 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
-function getModalStyle() {
-  const top = 50; // percentages
-  const left = 50;
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
 export const CardRecommendedMeal = () => {
   const classes = useStyles();
-  const [modalStyle] = useState(getModalStyle);
-  const [open, setOpen] = useState(false);
 
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-  const [toastShown, setToast] = useState(false);
-
-  // const [reasons, setReasons] = useState(false);
-  const [checked, setChecked] = useState(false);
-
-  const [reasons, updateReasons] = useState([
-    { reason: "I don't like pasta", checked: false },
-    { reason: "I don't want cheese", checked: true },
-    { reason: "I don't want leeks", checked: false },
-    { reason: "I don't want warm meals", checked: false },
-  ]);
-
-  const handleChange = (event, i) => {
-    let newArr = [...reasons];
-    newArr[i].checked = event.target.checked;
-    updateReasons(newArr);
-  };
-
-  const handleIncreaseLike = () => {
-    if (recipe) {
-      Meteor.call("recipes.handleLike", recipe.id);
-    }
-  };
-  const handleOrder = () => {
-    if (recipe) {
-      if (!ordered) setToast(true);
-      Meteor.call("orders.handleOrder", recipe.id);
-    }
-  };
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const cancelModal = () => {
-    setOpen(false);
-  };
-  const sendModal = () => {
-    setOpen(false);
-  }; // TO. DO... SEND MODAL DATA...
-
-  const { recipe, nbLikesDummy } = useTracker(() => {
-    const noDataAvailable = { recipe: {}, nbLikesDummy: 0 };
+  const { recipe } = useTracker(() => {
+    const noDataAvailable = { recipe: {} };
     const recipeHandler = Meteor.subscribe("recipes");
     const recommendationHandler = Meteor.subscribe("recommendedrecipes");
     if (!Meteor.user()) {
       return noDataAvailable;
     }
-    if (!recipeHandler.ready()) {
+    if (!recipeHandler.ready() || !recommendationHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
-    if (!recommendationHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-    // const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0]; // todo
     const recommendedRecipes = RecommendedRecipes.findOne({
       userid: Meteor.userId(),
     }).recommendations;
@@ -183,31 +120,36 @@ export const CardRecommendedMeal = () => {
       recommendedRecipes,
       (r) => r.ranking === 1
     )[0].id;
-    const recipe = RecipesCollection.find({
+    const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
-    }).fetch()[0];
-    let nbLikesDummy = 0;
-    try {
-      nbLikesDummy = recipe.nbLikes;
-    } catch (e) {}
-    return { recipe, nbLikesDummy };
+    });
+    return { recipe };
   });
 
-  const { liked } = useTracker(() => {
+  // Like logic
+  const { liked, nbLikes } = useTracker(() => {
     const noDataAvailable = { liked: false };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
       return { ...noDataAvailable };
     }
+    const nbLikes = recipe.nbLikes;
     const liked =
       UserPreferences.find({
         userid: Meteor.userId(),
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
-    return { liked };
+    return { liked, nbLikes };
   });
 
+  const handleIncreaseLike = () => {
+    if (recipe) {
+      Meteor.call("recipes.handleLike", recipe.id);
+    }
+  };
+
+  // order logic
   const { ordered } = useTracker(() => {
     const noDataAvailable = { ordered: false };
     if (!recipe) return noDataAvailable;
@@ -219,7 +161,6 @@ export const CardRecommendedMeal = () => {
     // find only order made today
     let start = new Date();
     start.setHours(0, 0, 0, 0);
-    console.log(start);
     let end = new Date();
     end.setHours(23, 59, 59, 999);
     const orders = OrdersCollection.find({
@@ -228,16 +169,69 @@ export const CardRecommendedMeal = () => {
       timestamp: { $gte: start, $lt: end },
     }).fetch();
     const ordered = orders.length > 0;
-    console.log(orders);
     return { ordered };
   });
 
+  const handleOrder = () => {
+    if (recipe) {
+      if (!ordered) setToast(true);
+      Meteor.call("orders.handleOrder", recipe.id);
+    }
+  };
+
+  // modal logic
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  function getModalStyle() {
+    const top = 50; // percentages
+    const left = 50;
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
+  const [reasons, updateReasons] = useState([
+    { reason: "I don't like pasta", checked: false },
+    { reason: "I don't want cheese", checked: true },
+    { reason: "I don't want leeks", checked: false },
+    { reason: "I don't want warm meals", checked: false },
+  ]);
+
+  const handleModalReasonChange = (event, i) => {
+    let newArr = [...reasons];
+    newArr[i].checked = event.target.checked;
+    updateReasons(newArr);
+  };
+
+  const handleModalOpen = () => {
+    setOpen(true);
+  };
+  const handleModalClose = () => {
+    setOpen(false);
+  };
+
+  const cancelModal = () => {
+    setOpen(false);
+  };
+  const sendModal = () => {
+    setOpen(false);
+  }; // TO. DO... SEND MODAL DATA...
+
+  // Detail logic
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipe.id);
   };
 
+  // Thank you message
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
+
   return (
-    <Fragment>
+    <>
       {recipe ? (
         <Card>
           <div style={{ display: "flex" }}>
@@ -266,7 +260,10 @@ export const CardRecommendedMeal = () => {
               <IconButton className={classes.likeButton}>
                 <ThumbUpIcon style={{ color: "#f7ba8b" }} />
               </IconButton>
-              <IconButton className={classes.likeButton} onClick={handleOpen}>
+              <IconButton
+                className={classes.likeButton}
+                onClick={handleModalOpen}
+              >
                 <ThumbDownIcon style={{ color: "#f7ba8b" }} />
               </IconButton>
             </CardActions>
@@ -283,7 +280,7 @@ export const CardRecommendedMeal = () => {
               }
             >
               <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
-              <span>{nbLikesDummy}</span>
+              <span>{nbLikes}</span>
             </Button>
             <Button
               size="large"
@@ -306,7 +303,7 @@ export const CardRecommendedMeal = () => {
             </Button>
           </CardActions>
 
-          <Modal open={open} onClose={handleClose}>
+          <Modal open={open} onClose={handleModalClose}>
             <div style={modalStyle} className={classes.paper}>
               <h3 className={classes.modalTitle}>
                 Please help us by telling us why you dislike this menu?
@@ -327,7 +324,7 @@ export const CardRecommendedMeal = () => {
                         <Checkbox
                           color="primary"
                           checked={reason.checked}
-                          onChange={(e) => handleChange(e, i)}
+                          onChange={(e) => handleModalReasonChange(e, i)}
                         />
                       }
                       label={reason.reason}
@@ -372,6 +369,6 @@ export const CardRecommendedMeal = () => {
           Thank you for participating today!
         </Alert>
       </Snackbar>
-    </Fragment>
+    </>
   );
 };

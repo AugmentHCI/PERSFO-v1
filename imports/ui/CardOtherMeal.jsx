@@ -5,11 +5,13 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Typography,
+  Typography
 } from "@material-ui/core/";
 import { red } from "@material-ui/core/colors";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
@@ -17,10 +19,8 @@ import {
   OpenMealDetails,
   OrdersCollection,
   RecipesCollection,
-  UserPreferences,
+  UserPreferences
 } from "/imports/api/methods.js";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {
@@ -67,16 +67,6 @@ const useStyles = makeStyles((persfoTheme) => ({
     height: "24px",
     marginBottom: "8px",
   },
-  heartButton: {
-    marginRight: persfoTheme.spacing(0.5),
-  },
-  otherLowerButtons: {
-    textAlign: "center",
-    marginTop: "-1px",
-  },
-  otherLowerButton: {
-    background: "#F6EBE4",
-  },
   cardActions: {
     display: "flex",
     alignItems: "center",
@@ -95,21 +85,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
 
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-  const [toastShown, setToast] = useState(false);
-
-  const handleIncreaseLike = () => {
-    if (recipe) Meteor.call("recipes.handleLike", recipe.id);
-  };
-  const handleOrder = () => {
-    if (recipe) {
-      if (!ordered) setToast(true);
-      Meteor.call("orders.handleOrder", recipe.id);
-    }
-  };
-  const { recipe, nbLikesDummy } = useTracker(() => {
+  const { recipe } = useTracker(() => {
     const noDataAvailable = { recipe: {} };
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -119,24 +95,37 @@ export const CardOtherMeal = ({ recipeId }) => {
       return { ...noDataAvailable };
     }
     const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
-    const nbLikesDummy = recipe.nbLikes;
-    return { recipe, nbLikesDummy };
+    return { recipe };
   });
 
-  const { liked } = useTracker(() => {
+  // Like logic
+  const handleIncreaseLike = () => {
+    if (recipe) Meteor.call("recipes.handleLike", recipe.id);
+  };
+
+  const { liked, nbLikes } = useTracker(() => {
     const noDataAvailable = { liked: false };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
       return { ...noDataAvailable };
     }
+    const nbLikes = recipe.nbLikes;
     const liked =
       UserPreferences.find({
         userid: Meteor.userId(),
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
-    return { liked };
+    return { liked, nbLikes };
   });
+
+  // order logic
+  const handleOrder = () => {
+    if (recipe) {
+      if (!ordered) setToast(true);
+      Meteor.call("orders.handleOrder", recipe.id);
+    }
+  };
 
   const { ordered } = useTracker(() => {
     const noDataAvailable = { ordered: false };
@@ -149,7 +138,6 @@ export const CardOtherMeal = ({ recipeId }) => {
     // find only order made today
     let start = new Date();
     start.setHours(0, 0, 0, 0);
-    console.log(start);
     let end = new Date();
     end.setHours(23, 59, 59, 999);
     const orders = OrdersCollection.find({
@@ -158,16 +146,22 @@ export const CardOtherMeal = ({ recipeId }) => {
       timestamp: { $gte: start, $lt: end },
     }).fetch();
     const ordered = orders.length > 0;
-    console.log(orders);
     return { ordered };
   });
 
+  // Detail logic
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipeId);
   };
 
+  // Thank you message
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
+
   return (
-    <React.Fragment>
+    <>
       {recipeId ? (
         <Card className={classes.root}>
           <CardActionArea
@@ -200,7 +194,7 @@ export const CardOtherMeal = ({ recipeId }) => {
               }
             >
               <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
-              <span>{nbLikesDummy}</span>
+              <span>{nbLikes}</span>
             </Button>
             <Button
               size="large"
@@ -226,6 +220,6 @@ export const CardOtherMeal = ({ recipeId }) => {
           Thank you for participating today!
         </Alert>
       </Snackbar>
-    </React.Fragment>
+    </>
   );
 };
