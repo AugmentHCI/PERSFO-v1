@@ -48,18 +48,43 @@ Meteor.methods({
       );
     }
   },
-  "orders.newOrder"(recipeId) {
+  "orders.handleOrder"(recipeId) {
     check(recipeId, String);
 
     if (!this.userId) {
       throw new Meteor.Error("Not authorized.");
     }
 
-    OrdersCollection.insert({
-      userId: this.userId,
+    // check if order was already made today
+    const now = new Date();
+    let start = new Date();
+    start.setHours(0, 0, 0, 0);
+    console.log(start);
+    let end = new Date();
+    end.setHours(23, 59, 59, 999);
+    const orders = OrdersCollection.find({
+      userid: this.userId,
       recipeId: recipeId,
-      timestamp: new Date(),
-    });
+      timestamp: { $gte: start, $lt: end },
+    }).fetch();
+    const ordered = orders.length > 0;
+
+    // if not ordered yet today, add the order
+    if (!ordered) {
+      OrdersCollection.insert({
+        userid: this.userId,
+        recipeId: recipeId,
+        timestamp: now,
+        orderday: now.toISOString().substring(0,10)
+      });
+    } else {
+      // user cancelled order
+      OrdersCollection.remove({
+        userid: this.userId,
+        recipeId: recipeId,
+        orderday: now.toISOString().substring(0,10)
+      });
+    }
   },
   "recommender.updateRecommendations"() {
     // init recommendations

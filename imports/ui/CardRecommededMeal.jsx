@@ -12,6 +12,7 @@ import {
   OpenMealDetails,
   RecommendedRecipes,
   UserPreferences,
+  OrdersCollection,
 } from "/imports/api/methods.js";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 
@@ -135,7 +136,7 @@ export const CardRecommendedMeal = () => {
   };
   const handleOrder = () => {
     if (recipe) {
-      Meteor.call("orders.newOrder", recipe.id);
+      Meteor.call("orders.handleOrder", recipe.id);
     }
   };
   const handleOpen = () => {
@@ -187,13 +188,41 @@ export const CardRecommendedMeal = () => {
     const noDataAvailable = { liked: false };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
-    if (!handler.ready()) { return { ...noDataAvailable}; }
+    if (!handler.ready()) {
+      return { ...noDataAvailable };
+    }
     const liked =
       UserPreferences.find({
         userid: Meteor.userId(),
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
     return { liked };
+  });
+
+  const { ordered } = useTracker(() => {
+    const noDataAvailable = { ordered: false };
+    if (!recipe) return noDataAvailable;
+    const handler = Meteor.subscribe("orders");
+    if (!handler.ready()) {
+      return { ...noDataAvailable };
+    }
+
+    // find only order made today
+    let start = new Date();
+    start.setHours(0, 0, 0, 0);
+    console.log(start);
+    let end = new Date();
+    end.setHours(23, 59, 59, 999);
+    const orders = OrdersCollection.find(
+      {
+        userid: Meteor.userId(),
+        recipeId: recipe.id,
+        timestamp: { $gte: start, $lt: end },
+      }
+    ).fetch();
+    const ordered = orders.length > 0;
+    console.log(orders);
+    return { ordered };
   });
 
   const handleDetailsClick = () => {
@@ -256,8 +285,17 @@ export const CardRecommendedMeal = () => {
             >
               More info
             </Button>
-            <Button size="large" color="primary" onClick={() => handleOrder()}>
-              Order
+            <Button
+              size="large"
+              color="primary"
+              onClick={() => handleOrder()}
+              style={
+                ordered
+                  ? { backgroundColor: red[100], borderRadius: "14px" }
+                  : undefined
+              }
+            >
+              {ordered ? "Ordered" : "Order"}
             </Button>
           </CardActions>
 

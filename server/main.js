@@ -5,6 +5,7 @@ import "/imports/api/methods.js";
 import "/imports/api/apiPersfo";
 
 import { MenusCollection, RecipesCollection, RecommendedRecipes, UserPreferences } from "/imports/api/methods.js";
+import { OrdersCollection } from "../imports/api/methods";
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
 RecipesCollection.insert({_id:"1", value:"hack to create collection in meteor"});
@@ -33,6 +34,10 @@ Meteor.publish('recommendedrecipes', function publishTasks() {
 
 Meteor.publish('userpreferences', function publishTasks() {
   return UserPreferences.find({userid:this.userId}); 
+});
+
+Meteor.publish('orders', function publishTasks() {
+  return OrdersCollection.find({userid:this.userId}); 
 });
 
 Meteor.startup(() => {
