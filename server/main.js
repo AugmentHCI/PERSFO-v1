@@ -14,8 +14,8 @@ MenusCollection.remove({_id:"1"});
 RecommendedRecipes.insert({_id:"1", value:"hack to create collection in meteor"});
 RecommendedRecipes.remove({_id:"1"});
 
-const SEED_USERNAME = "meteorite1";
-const SEED_PASSWORD = "password";
+const SEED_USERNAME = "robin";
+const SEED_PASSWORD = "hello";
 
 Meteor.publish('menus', function publishTasks() {
   return MenusCollection.find();

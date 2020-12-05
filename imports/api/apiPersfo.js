@@ -33,9 +33,9 @@ export function initData() {
         Assets.getText("data/recipeDetails/" + recipeId + ".json")
       );
       try {
-        recipeDetails.kcal = calculateKCalforRecipe(recipeDetails);
+        recipeDetails.kcal = calculateNutrientforRecipe(recipeDetails, "kcal");
       } catch (error) {
-        recipeDetails.kcal = 0;
+        recipeDetails.kcal = -1;
       }
       RecipesCollection.upsert({ id: recipeId }, { $set: recipeDetails });
     } catch (error) {
@@ -149,7 +149,7 @@ export function getRecipeID(recipeURL) {
   }
 }
 
-function calculateKCalforRecipe(recipeDetails) {
+export function calculateNutrientforRecipe(recipeDetails, nutrient) {
   let netWeightUnit = recipeDetails.net_weight_unit;
   let multiplier = -1;
   if (netWeightUnit == "kg") {
@@ -162,7 +162,7 @@ function calculateKCalforRecipe(recipeDetails) {
     );
   }
   return (
-    (recipeDetails.nutrition_info.kcal.quantity / 100) *
-    (recipeDetails.net_weight * multiplier)
+    Math.round((recipeDetails.nutrition_info[nutrient].quantity / 100) *
+    (recipeDetails.net_weight * multiplier))
   );
 }

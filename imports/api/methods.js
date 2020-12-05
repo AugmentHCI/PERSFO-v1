@@ -69,9 +69,9 @@ Meteor.methods({
 
     // Filter allergies + consider user preferences!
 
-    // filter recipes without an image
+    // filter recipes without an image and/or no nutrient data
     todaysRecipes = _.filter(todaysRecipes, (recipe) => {
-      return recipe.main_image !== null;
+      return recipe.main_image !== null && recipe.kcal > 0;
     });
 
     // last step! Assign rankings
