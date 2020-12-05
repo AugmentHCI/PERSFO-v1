@@ -7,12 +7,10 @@ import { AppBarPersfo }         from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { TabHomeScreen }        from "./TabHomeScreen";
 import { Progress }             from "./Progress";
+import { Preferences }          from "./Preferences";
 import { MealScreen }           from "./MealScreen";
 import { MenusCollection, OpenMealDetails, RecipesCollection, OpenProgress, OpenSettings } from '/imports/api/methods.js';
 import { Tab, Tabs, CircularProgress } from "@material-ui/core/";
-
-
-
 
 const persfoTheme = createMuiTheme({
   palette: {
@@ -136,7 +134,7 @@ export const App = () => {
       }
 
       if (GetOpenSettings) {
-        renderScreen = 'Settings';
+        renderScreen = <Preferences />;
       }
 
     } else {
