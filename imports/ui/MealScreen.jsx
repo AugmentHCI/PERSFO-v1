@@ -371,7 +371,7 @@ export const MealScreen = ({ recipe }) => {
       </div>
     );
   };
-  // WARNING.. THIS NEEDS TO BE CORRELATED WITH USER PROFILE.
+
   const AllergiesContent = (props) => {
     const allergens = _.without(
       _.map(_.toPairs(props.recipe.allergens), function (n) {
@@ -445,7 +445,7 @@ export const MealScreen = ({ recipe }) => {
         <div style={{ overflowY: "scroll", height: "150px" }}>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
             {" "}
-            No data{" "}
+            Review functionality is disabled in this online-only study.{" "}
           </p>
         </div>
       </div>
