@@ -53,7 +53,6 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
       return;
     }
     setOpen(false);
-    Meteor.call("log",componentName, "handleClose");
   };
 
   const submit = (e) => {
@@ -64,7 +63,6 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
         }
       });
       Meteor.loginWithPassword(username, newPassword);
-      Meteor.call("log",componentName, "submit");
   };
 
   return (

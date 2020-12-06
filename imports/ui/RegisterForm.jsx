@@ -59,7 +59,6 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
       return;
     }
     setOpen(false);
-    Meteor.call("log", componentName, "handleClose");
   };
 
   const handleUserAlreadyExistsToastClose = (event, reason) => {
@@ -67,7 +66,6 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
       return;
     }
     setuserAlreadyExistsToastShown(false);
-    Meteor.call("log", componentName, "handleUserAlreadyExistsToastClose");
   };
 
   const submit = (e) => {
@@ -84,7 +82,6 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
     } else {
       setOpen(true);
     }
-    Meteor.call("log", componentName, "submit");
   };
 
   return (

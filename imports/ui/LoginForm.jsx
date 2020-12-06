@@ -51,15 +51,13 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
       return;
     }
     setOpen(false);
-    Meteor.call("log",componentName, "handleClose");
   };
 
   const submit = (e) => {
     e.preventDefault();
-    Meteor.loginWithPassword(username, password, () => {
+    Meteor.loginWithPassword(username, password, (error) => {
       setOpen(true);
     });
-    Meteor.call("log",componentName, "submit");
   };
 
   return (

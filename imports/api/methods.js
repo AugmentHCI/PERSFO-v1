@@ -15,7 +15,7 @@ export const OpenProgress = new ReactiveVar(false);
 export const OpenSettings = new ReactiveVar(false);
 
 Meteor.methods({
-  "log"(component, method) {
+  log(component, method) {
     check(component, String);
     check(method, String);
 
@@ -58,7 +58,7 @@ Meteor.methods({
       throw new Meteor.Error("Not authorized.");
     }
 
-    UserPreferences.update(
+    UserPreferences.upsert(
       { userid: this.userId },
       { $set: { allergens: allergens } }
     );
@@ -167,7 +167,7 @@ Meteor.methods({
     if (!menu) menu = MenusCollection.findOne();
     let todaysCourses = menu.courses;
 
-    let userpreferences = UserPreferences.findOne({"userid": this.userId});
+    let userpreferences = UserPreferences.findOne({ userid: this.userId });
 
     // Find all recipes that are available today --> TODO tailor per course
     let todaysRecipes = [];
@@ -181,12 +181,16 @@ Meteor.methods({
     }).fetch();
 
     // Filter allergies + consider user preferences!
-    const userAllergens = userpreferences.allergens;
+    let userAllergens = [];
+    try {
+      userAllergens = userpreferences.allergens;
+    } catch (error) {}
+    if (!userAllergens) userAllergens = [];
     todaysRecipes = _.filter(todaysRecipes, (recipe) => {
       const recipeAllergens = recipe.allergens;
-      for(let i = 0; i < userAllergens.length; i++) {
+      for (let i = 0; i < userAllergens.length; i++) {
         const userAllergen = userAllergens[i];
-        if(recipeAllergens[userAllergen.allergen]) {
+        if (recipeAllergens[userAllergen.allergen]) {
           return false;
         }
       }
@@ -206,7 +210,6 @@ Meteor.methods({
     }
 
     // insert/update recommendations for user
-    // todo only use ids! Otherwise data is duplicated in multiple object
     RecommendedRecipes.upsert(
       { userid: this.userId },
       { $set: { recommendations: todaysRecipes } }
