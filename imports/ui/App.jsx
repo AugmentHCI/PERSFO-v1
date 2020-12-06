@@ -155,7 +155,7 @@ export const App = () => {
     if (user) {
       if (GetOpenMealDetails == null) {
         renderScreen = (
-          <React.Fragment>
+          <>
             <div>{isLoading && <CircularProgress />}</div>
             <Tabs
               className={classes.tabs}
@@ -176,7 +176,7 @@ export const App = () => {
                 </TabPanel>
               );
             })}
-          </React.Fragment>
+          </>
         );
       } else if (GetOpenMealDetails !== null) {
         renderScreen = (
