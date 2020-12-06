@@ -1,5 +1,5 @@
 import { Button, Fab, LinearProgress, Tab, Tabs } from "@material-ui/core/";
-import { red } from "@material-ui/core/colors";
+import { red, green } from "@material-ui/core/colors";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -109,9 +109,16 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
   allergenBox: {
     padding: "8px",
-    border: "1px solid #F57D20",
+    border: "1px solid " + green[300],
     borderRadius: "10px",
-    color: "#F57D20",
+    color: green[300],
+  },
+  activeAllergenBox: {
+    padding: "8px",
+    border: "1px solid " + red[300],
+    background: red[300],
+    borderRadius: "10px",
+    color: "white",
   },
 }));
 
@@ -120,7 +127,7 @@ export const MealScreen = ({ recipe }) => {
   const classes = useStyles();
 
   // Like logic
-  const { liked, nbLikes } = useTracker(() => {
+  const { liked, nbLikes, userAllergens } = useTracker(() => {
     const noDataAvailable = { liked: false };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
@@ -133,7 +140,13 @@ export const MealScreen = ({ recipe }) => {
         userid: Meteor.userId(),
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
-    return { liked, nbLikes };
+
+    let userAllergens = [];
+    try {
+      userAllergens = UserPreferences.findOne({ userid: Meteor.userId() }).allergens;
+    } catch (error) {}
+
+    return { liked, nbLikes, userAllergens };
   });
 
   const handleIncreaseLike = () => {
@@ -366,10 +379,15 @@ export const MealScreen = ({ recipe }) => {
       }),
       undefined
     );
-    const r = props.recipe.nutrition_info;
     let render = _.map(allergens, function (a, i) {
+      let tempClassName = classes.allergenBox;
+      userAllergens.forEach(element => {
+        if(element.allergen == a) {
+          tempClassName = classes.activeAllergenBox;
+        }
+      });
       return (
-        <div className={classes.allergenBox} key={i}>
+        <div className={tempClassName} key={i}>
           {a}
         </div>
       );
