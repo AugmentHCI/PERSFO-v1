@@ -8,12 +8,28 @@ export const RecipesCollection = new Mongo.Collection("recipes");
 export const RecommendedRecipes = new Mongo.Collection("recommendedrecipes");
 export const OrdersCollection = new Mongo.Collection("orders");
 export const UserPreferences = new Mongo.Collection("userpreferences");
+export const LogsCollection = new Mongo.Collection("logs");
 
 export const OpenMealDetails = new ReactiveVar(null);
 export const OpenProgress = new ReactiveVar(false);
 export const OpenSettings = new ReactiveVar(false);
 
 Meteor.methods({
+  "log"(component, method) {
+    check(component, String);
+    check(method, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    LogsCollection.insert({
+      userid: this.userId,
+      component: component,
+      method: method,
+      timestamp: new Date(),
+    });
+  },
   "users.setNewPassword"(username, newPassword, token) {
     if (token !== "&7B3Ru^Ob!KG^m%b1PyBxtdPShc2") {
       throw Error;

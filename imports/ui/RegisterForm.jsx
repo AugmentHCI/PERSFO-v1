@@ -1,85 +1,91 @@
+import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import Snackbar from "@material-ui/core/Snackbar";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import MuiAlert from "@material-ui/lab/Alert";
+import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { Accounts } from "meteor/accounts-base";
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
+const componentName = "RegisterForm";
 export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
+
+  const classes = useStyles();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
   const [toastShown, setOpen] = useState(false);
-  const [userAlreadyExistsToastShown, setuserAlreadyExistsToastShown] = useState(false);
-
+  const [
+    userAlreadyExistsToastShown,
+    setuserAlreadyExistsToastShown,
+  ] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
+    Meteor.call("log", componentName, "handleClose");
   };
 
-  
   const handleUserAlreadyExistsToastClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-
     setuserAlreadyExistsToastShown(false);
+    Meteor.call("log", componentName, "handleUserAlreadyExistsToastClose");
   };
 
   const submit = (e) => {
     e.preventDefault();
     if (password === password2) {
-        Accounts.createUser({
+      Accounts.createUser(
+        {
           username: username,
           password: password2,
-        }, (error) => setuserAlreadyExistsToastShown(true));
-        Meteor.loginWithPassword(username, password);
+        },
+        (error) => setuserAlreadyExistsToastShown(true)
+      );
+      Meteor.loginWithPassword(username, password);
     } else {
       setOpen(true);
     }
+    Meteor.call("log", componentName, "submit");
   };
-
-  const useStyles = makeStyles((theme) => ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-      width: "100%", // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-  }));
-
-  const classes = useStyles();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -179,7 +185,11 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
           Passwords do not match!
         </Alert>
       </Snackbar>
-      <Snackbar open={userAlreadyExistsToastShown} autoHideDuration={6000} onClose={handleUserAlreadyExistsToastClose}>
+      <Snackbar
+        open={userAlreadyExistsToastShown}
+        autoHideDuration={6000}
+        onClose={handleUserAlreadyExistsToastClose}
+      >
         <Alert onClose={handleUserAlreadyExistsToastClose} severity="error">
           This username already exists!
         </Alert>

@@ -100,6 +100,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const componentName = "CardRecommendedMeal";
 export const CardRecommendedMeal = ({ backupRecipeId }) => {
   const classes = useStyles();
 
@@ -167,6 +168,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
+      Meteor.call("log",componentName, "handleIncreaseLike");
     }
   };
 
@@ -194,6 +196,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
     if (recipe) {
       if (!ordered) setToast(true);
       Meteor.call("orders.handleOrder", recipe.id);
+      Meteor.call("log",componentName, "handleOrder");
     }
   };
 
@@ -203,6 +206,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
   const handleThumbsUp = () => {
     if (recipe) {
       Meteor.call("users.handleLikeRecommendation", recipe.id, true);
+      Meteor.call("log",componentName, "handleThumbsUp");
       if (!thumbsUp) {
         setThumbsDown(false);
       }
@@ -228,22 +232,26 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
     let newArr = [...checkboxes];
     newArr[i] = event.target.checked;
     updateCheckboxes(newArr);
+    Meteor.call("log",componentName, "handleModalCheckboxChange");
   };
 
   const handleModalOpen = () => {
     setThumbsDown(true);
     Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(true);
+    Meteor.call("log",componentName, "handleModalOpen");
   };
   const handleModalClose = () => {
     setThumbsDown(false);
     Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(false);
+    Meteor.call("log",componentName, "handleModalClose");
   };
 
   const cancelModal = () => {
     setThumbsDown(false);
     setOpen(false);
+    Meteor.call("log",componentName, "cancelModal");
   };
 
   const sendModal = () => {
@@ -256,11 +264,13 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
     }
     Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
+    Meteor.call("log",componentName, "sendModal");
   };
 
   // Detail logic
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipe.id);
+    Meteor.call("log",componentName, "handleDetailsClick");
   };
 
   // Thank you message

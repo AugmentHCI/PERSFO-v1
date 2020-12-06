@@ -6,7 +6,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import {
   calculateNutrientforRecipe,
-  getNutriscoreImage,
+  getNutriscoreImage
 } from "/imports/api/apiPersfo";
 import { UserPreferences } from "/imports/api/methods.js";
 
@@ -112,6 +112,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
+const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
   const classes = useStyles();
 
@@ -135,6 +136,7 @@ export const MealScreen = ({ recipe }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
+      Meteor.call("log",componentName, "handleIncreaseLike");
     }
   };
 
@@ -143,6 +145,7 @@ export const MealScreen = ({ recipe }) => {
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
+    Meteor.call("log",componentName, "handleChange");
   };
 
   const getKcalInfo = () => {

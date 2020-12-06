@@ -1,11 +1,11 @@
-import { useTracker } from "meteor/react-meteor-data";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
+import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
-import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
+const componentName = "AuthenticationScreen";
 export const AuthenticationScreen = () => {
-  // account logic
+
   const [existingUser, setExistingUser] = useState(true);
   const [forgotPassword, setForgotPassword] = useState(false);
 

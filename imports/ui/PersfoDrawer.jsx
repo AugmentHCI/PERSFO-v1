@@ -1,4 +1,5 @@
 import { Divider } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -9,8 +10,11 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import HomeIcon from "@material-ui/icons/Home";
 import SettingsIcon from "@material-ui/icons/Settings";
 import React from "react";
-import Box from "@material-ui/core/Box";
-import { RecipesCollection, OpenMealDetails, OpenProgress, OpenSettings } from '/imports/api/methods.js';
+import {
+  OpenMealDetails,
+  OpenProgress,
+  OpenSettings,
+} from "/imports/api/methods.js";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -22,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const componentName = "PersfoDrawer";
 export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
   const classes = useStyles();
 
@@ -29,19 +34,22 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenMealDetails.set(null);
     OpenProgress.set(false);
     OpenSettings.set(false);
-  }
+    Meteor.call("log", componentName, "handleHomeButton");
+  };
 
   const handleProgress = () => {
     OpenMealDetails.set(null);
     OpenSettings.set(false);
     OpenProgress.set(true);
-  }
+    Meteor.call("log", componentName, "handleProgress");
+  };
 
   const handleSettings = () => {
     OpenMealDetails.set(null);
     OpenProgress.set(false);
     OpenSettings.set(true);
-  }
+    Meteor.call("log", componentName, "handleSettings");
+  };
   return (
     <SwipeableDrawer
       anchor="left"
@@ -60,27 +68,19 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
         onKeyDown={toggleDrawer(false)}
       >
         <List>
-          <ListItem button key={"home"} onClick={() => handleHomeButton() }>
+          <ListItem button key={"home"} onClick={() => handleHomeButton()}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary={"Home"} />
           </ListItem>
-          <ListItem
-            button
-            key={"progress"}
-            onClick={() => handleProgress() }
-          >
+          <ListItem button key={"progress"} onClick={() => handleProgress()}>
             <ListItemIcon>
               <AssessmentIcon />
             </ListItemIcon>
             <ListItemText primary={"Progress"} />
           </ListItem>
-          <ListItem
-            button
-            key={"settings"}
-            onClick={() => handleSettings() }
-          >
+          <ListItem button key={"settings"} onClick={() => handleSettings()}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
@@ -88,7 +88,6 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
           </ListItem>
         </List>
       </div>
-      {/* {list("left")} */}
     </SwipeableDrawer>
   );
 };

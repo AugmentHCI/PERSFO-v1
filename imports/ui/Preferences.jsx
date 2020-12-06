@@ -67,6 +67,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
+const componentName = "Preferences";
 export const Preferences = () => {
   const classes = useStyles();
 
@@ -133,7 +134,6 @@ export const Preferences = () => {
       };
     });
     const allergens = _.sortBy(tempAllergens, "allergen");
-    console.log(allergens);
     const allergenCheckboxes = _.map(
       allergens,
       (allergen) => !!allergen.present
@@ -156,6 +156,7 @@ export const Preferences = () => {
       }
     }
     Meteor.call("users.updateAllergens", listAllergens);
+    Meteor.call("log", componentName, "handleAllergenCheckboxChange");
   };
 
   const getAllergenBar = (allergen, i) => {

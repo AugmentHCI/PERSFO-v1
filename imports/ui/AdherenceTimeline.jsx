@@ -18,6 +18,35 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
+const AColor = "#006738";
+const BColor = "#8EC63E";
+const CColor = "#F5E303";
+const DColor = "#F8931D";
+const EColor = "#BF1E2E";
+
+const getColor = (day) => {
+  switch (day) {
+    case "A":
+      return AColor;
+    case "B":
+      return BColor;
+    case "C":
+      return CColor;
+    case "D":
+      return DColor;
+    case "E":
+      return EColor;
+    case null:
+      return "#4d4d4d";
+    case undefined:
+      return undefined;
+  }
+};
+
+const getLetter = (input) => {
+  return input === null ? "?" : input;
+};
+
 export const AdherenceTimeline = () => {
   const classes = useStyles();
 
@@ -127,8 +156,6 @@ export const AdherenceTimeline = () => {
 
     return { day1, day2, day3, day4, day5 };
   });
-
-  // todo: only one order per day!
 
   return (
     <Box className={classes.root}>
@@ -273,33 +300,4 @@ export const AdherenceTimeline = () => {
       </svg>
     </Box>
   );
-};
-
-const AColor = "#006738";
-const BColor = "#8EC63E";
-const CColor = "#F5E303";
-const DColor = "#F8931D";
-const EColor = "#BF1E2E";
-
-const getColor = (day) => {
-  switch (day) {
-    case "A":
-      return AColor;
-    case "B":
-      return BColor;
-    case "C":
-      return CColor;
-    case "D":
-      return DColor;
-    case "E":
-      return EColor;
-    case null:
-      return "#4d4d4d";
-    case undefined:
-      return undefined;
-  }
-};
-
-const getLetter = (input) => {
-  return input === null ? "?" : input;
 };

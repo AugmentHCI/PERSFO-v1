@@ -82,6 +82,7 @@ const useStyles = makeStyles((persfoTheme) => ({
   },
 }));
 
+const componentName = "CardOtherMeal";
 export const CardOtherMeal = ({ recipeId }) => {
   const classes = useStyles();
 
@@ -100,7 +101,10 @@ export const CardOtherMeal = ({ recipeId }) => {
 
   // Like logic
   const handleIncreaseLike = () => {
-    if (recipe) Meteor.call("recipes.handleLike", recipe.id);
+    if (recipe) {
+      Meteor.call("recipes.handleLike", recipe.id);
+      Meteor.call("log",componentName, "handleIncreaseLike");
+    }
   };
 
   const { liked, nbLikes } = useTracker(() => {
@@ -124,6 +128,7 @@ export const CardOtherMeal = ({ recipeId }) => {
     if (recipe) {
       if (!ordered) setToast(true);
       Meteor.call("orders.handleOrder", recipe.id);
+      Meteor.call("log",componentName, "handleOrder");
     }
   };
 
@@ -149,6 +154,7 @@ export const CardOtherMeal = ({ recipeId }) => {
   // Detail logic
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipeId);
+    Meteor.call("log",componentName, "handleDetailsClick");
   };
 
   // Thank you message

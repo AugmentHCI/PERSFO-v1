@@ -1,7 +1,6 @@
 import {
   MenusCollection,
-  RecipesCollection,
-  RecommendedRecipes,
+  RecipesCollection
 } from "/imports/api/methods.js";
 
 const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
