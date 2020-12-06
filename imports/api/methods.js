@@ -159,6 +159,8 @@ Meteor.methods({
   "recommender.updateRecommendations"() {
     // init recommendations
 
+    console.log("updating recommendations");
+
     // find today's menu
     let menu = MenusCollection.findOne({
       starting_date: new Date().toISOString().substring(0, 10),
@@ -180,7 +182,7 @@ Meteor.methods({
       id: { $in: todaysRecipes },
     }).fetch();
 
-    // Filter allergies + consider user preferences!
+    // Filter allergies
     let userAllergens = [];
     try {
       userAllergens = userpreferences.allergens;
@@ -203,8 +205,9 @@ Meteor.methods({
     });
 
     // last step! Assign rankings
-    // find recipe with lowest kcal --> TODO make smarter
-    todaysRecipes = _.sortBy(todaysRecipes, ["kcal"]);
+    // find recipe with most likes --> TODO make smarter
+    todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
+    todaysRecipes = _.reverse(todaysRecipes);
     for (let i = 0; i < todaysRecipes.length; i++) {
       todaysRecipes[i].ranking = i + 1;
     }

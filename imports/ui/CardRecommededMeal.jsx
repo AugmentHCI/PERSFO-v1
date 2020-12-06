@@ -121,7 +121,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
       }).recommendations;
       recommendedRecipeId = _.filter(
         recommendedRecipes,
-        (r) => r.ranking === 3
+        (r) => r.ranking === 1
       )[0].id;
     } catch (error) {
       // no recommendations yet
@@ -129,6 +129,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
 
     // in case no recipe can be found, pick a random recipe from today's menu
     if (!recommendedRecipeId) recommendedRecipeId = backupRecipeId;
+
     const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
     });

@@ -1,7 +1,9 @@
 import IconButton from "@material-ui/core/IconButton";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import React from "react";
+import MuiAlert from "@material-ui/lab/Alert";
+import React, { useState } from "react";
 import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
 import { getRecipeID } from "/imports/api/apiPersfo";
@@ -37,11 +39,21 @@ const componentName = "TabHomeScreen";
 export const TabHomeScreen = ({ recipeURLs }) => {
   const classes = useStyles();
 
+  const handleInfo = () => {
+    setToast(true);
+  };
+
+  // Info message
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
+
   return (
     <>
       <div className={classes.titleContent}>
         <h1 className={classes.title}>RECOMMENDED</h1>
-        <IconButton>
+        <IconButton onClick={handleInfo}>
           <HelpOutlineIcon fontSize="small" />
         </IconButton>
       </div>
@@ -64,6 +76,15 @@ export const TabHomeScreen = ({ recipeURLs }) => {
           );
         })}
       </div>
+      <Snackbar
+        open={toastShown}
+        autoHideDuration={6000}
+        onClose={() => setToast(false)}
+      >
+        <Alert onClose={() => setToast(false)} severity="info">
+          In this limited pilot study, recommendations are based on the most popular meals, while also considering your allergies.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
