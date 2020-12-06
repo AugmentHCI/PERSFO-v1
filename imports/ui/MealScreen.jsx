@@ -251,34 +251,13 @@ export const MealScreen = ({ recipe }) => {
     let prot = calculateNutrientforRecipe(recipe, "protein");
     let fibr = calculateNutrientforRecipe(recipe, "fibre");
     let potss = calculateNutrientforRecipe(recipe, "potassium");
-    let ukcal = "";
-    try {
-      ukcal = r.kcal.unit;
-    } catch (e) {}
-    let ufat = "";
-    try {
-      ufat = r.fat.unit;
-    } catch (e) {}
-    let usat = "";
-    try {
-      usat = r.saturated_fat.unit;
-    } catch (e) {}
-    let usug = "";
-    try {
-      usug = r.sugar.unit;
-    } catch (e) {}
-    let uprot = "";
-    try {
-      uprot = r.protein.unit;
-    } catch (e) {}
-    let ufibr = "";
-    try {
-      ufibr = r.fibre.unit;
-    } catch (e) {}
-    let upotss = "";
-    try {
-      upotss = r.potassium.unit;
-    } catch (e) {}
+    let ukcal = r.kcal.unit ? r.kcal.unit : "";
+    let ufat = r.fat.unit ? r.fat.unit : "";
+    let usat = r.saturated_fat.unit ? r.saturated_fat.unit : "";
+    let usug = r.sugar.unit ? r.sugar.unit : "";
+    let uprot = r.protein.unit ? r.protein.unit : "";
+    let ufibr = r.fibre.unit ? r.fibre.unit : "";
+    let upotss = r.potassium.unit ? r.potassium.unit : "";
 
     let noData = null;
     if (_.sum([kcal, fat, sat, sug, prot, fibr, potss]) == 0)
