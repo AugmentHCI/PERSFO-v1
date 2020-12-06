@@ -22,48 +22,54 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
-const useStyles = makeStyles((persfoTheme) => ({
-  menuTitle: {
-    color: "#726f6c",
-    margin: "4px",
-    fontSize: "13px",
-    fontFamily: "Roboto",
-    fontWeight: 600,
-  },
-  titleContent: {
-    height: "40px",
-    display: "flex",
-    alignItems: "center",
-  },
-  mainContent: {
-    background: "white",
-    borderRadius: "25px",
-    padding: "16px",
-    borderRadius: "30px 0px 0px 30px",
-    height: "200px",
-    marginLeft: "16px",
-    color: "#717171",
-    fontFamily: "sans-serif",
-  },
-  stat: {
-    fontSize: "13px",
-  },
-  statTitle: {
-    color: "#726f6c",
-    fontSize: "13px",
-    fontFamily: "Roboto",
-    fontWeight: 600,
-  },
-  statNum: {
-    color: "#F57D20",
-    fontWeight: 600,
-    fontSize: "14px",
-  },
-}));
-
 // recipeURL come from menu --> courses
 const componentName = "Progress";
 export const Progress = ({ recipeURLs }) => {
+  const [componentHeight, setComponentHeight] = useState(window.innerHeight);
+
+  window.addEventListener("resize", () => {
+    setComponentHeight(window.innerHeight);
+  });
+
+  const useStyles = makeStyles((persfoTheme) => ({
+    menuTitle: {
+      color: "#726f6c",
+      margin: "4px",
+      fontSize: "13px",
+      fontFamily: "Roboto",
+      fontWeight: 600,
+    },
+    titleContent: {
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+    },
+    mainContent: {
+      background: "white",
+      borderRadius: "25px",
+      padding: "16px",
+      borderRadius: "30px 0px 0px 30px",
+      height: componentHeight >= 640 ? "200px" : "120px",
+      marginLeft: "16px",
+      color: "#717171",
+      fontFamily: "sans-serif",
+    },
+    stat: {
+      fontSize: "13px",
+    },
+    statTitle: {
+      color: "#726f6c",
+      fontSize: "13px",
+      fontFamily: "Roboto",
+      fontWeight: 600,
+    },
+    statNum: {
+      color: "#F57D20",
+      fontWeight: 600,
+      fontSize: "14px",
+    },
+  }));
+
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
@@ -83,7 +89,8 @@ export const Progress = ({ recipeURLs }) => {
         return { ...noDataAvailable, isLoading: true };
       }
 
-      const daysActive = Math.floor(( new Date() - Meteor.user().createdAt ) / 86400000) + 1;
+      const daysActive =
+        Math.floor((new Date() - Meteor.user().createdAt) / 86400000) + 1;
       const userName = Meteor.user().username;
 
       const GetOpenMealDetails = OpenMealDetails.get();
@@ -168,13 +175,12 @@ export const Progress = ({ recipeURLs }) => {
             }}
           >
             <div className={classes.stat}>
-              Hello,{" "}
-              <span className={classes.statNum}>{userName}</span>
+              Hello, <span className={classes.statNum}>{userName}</span>
             </div>
             <div className={classes.stat}>
               You are now using this pilot app for{" "}
-              <span className={classes.statNum}>{"" + daysActive}</span> days. Please
-              keep using the app before we can create an weekly overview.
+              <span className={classes.statNum}>{"" + daysActive}</span> days.
+              Please keep using the app before we can create an weekly overview.
             </div>
             {/* <div className={classes.stat}>
               Last week you ordered <span className={classes.statNum}>3</span>{" "}

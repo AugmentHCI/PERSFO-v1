@@ -43,6 +43,12 @@ export const TabHomeScreen = ({ recipeURLs, courseName }) => {
     setToast(true);
   };
 
+  const [componentHeight, setComponentHeight] = useState(window.innerHeight);
+
+  window.addEventListener("resize", () => {
+    setComponentHeight(window.innerHeight);
+  });
+
   // Info message
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -51,11 +57,12 @@ export const TabHomeScreen = ({ recipeURLs, courseName }) => {
 
   return (
     <>
-      <div className={classes.titleContent}>
-        <h1 className={classes.title}>Today's options in {courseName}</h1>
-        <IconButton></IconButton>
-      </div>
-
+      {componentHeight >= 640 ? (
+        <div className={classes.titleContent}>
+          <h1 className={classes.title}>Today's options in {courseName}</h1>
+          <IconButton></IconButton>
+        </div>
+      ) : null}
       <div className={classes.otherMeals}>
         {_.map(recipeURLs, function (recipe, i) {
           return (
