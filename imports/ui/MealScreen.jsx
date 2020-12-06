@@ -33,9 +33,12 @@ const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
 
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
+  const [heightBuffer, setHeightBuffer] = useState(0);
+
 
   window.addEventListener("resize", () => {
     setComponentHeight(window.innerHeight);
+    setHeightBuffer(window.innerHeight >= 640 ? 60 : 0);
   });
 
   const useStyles = makeStyles((persfoTheme) => ({
@@ -90,7 +93,7 @@ export const MealScreen = ({ recipe }) => {
       fontSize: "14px",
     },
     tabContent: {
-      height: componentHeight - 325 - 125 + "px",
+      height: componentHeight - 325 - 125 - heightBuffer + "px",
       background: "white",
       padding: "8px",
       fontSize: "14px",
@@ -105,7 +108,7 @@ export const MealScreen = ({ recipe }) => {
       justifyContent: "space-between",
       alignItems: "flex-end",
       position: "absolute",
-      bottom: "8px",
+      bottom: (heightBuffer + 8) + "px", // room for Snackbar
       fontSize: "14px",
       fontFamily: "sans-serif",
     },
@@ -304,7 +307,7 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Nutrients</h1>
-        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 125 - 30 + "px" }}>
+        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60+ "px" }}>
           {noData}
           {kcal == 0 ? null : (
             <NutrientsBar
