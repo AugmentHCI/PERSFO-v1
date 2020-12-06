@@ -142,6 +142,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             color="primary"
             className={classes.submit}
             onClick={submit}
+            style={{ color: "white" }}
           >
             Register
           </Button>

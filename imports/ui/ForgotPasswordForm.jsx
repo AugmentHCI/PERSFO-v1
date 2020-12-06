@@ -73,7 +73,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Forgot password
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -116,8 +116,9 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
             color="primary"
             className={classes.submit}
             onClick={submit}
+            style={{ color: "white" }}
           >
-            Register
+            Reset password
           </Button>
           <Button
             type="submit"

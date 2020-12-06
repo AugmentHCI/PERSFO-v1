@@ -106,6 +106,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             color="primary"
             className={classes.submit}
             onClick={submit}
+            style={{ color: "white" }}
           >
             Sign In
           </Button>
