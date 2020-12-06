@@ -36,7 +36,7 @@ const persfoTheme = createMuiTheme({
   overrides: {
     MuiAppBar: {
       root: {
-        borderRadius: "0px 0px 75px 0px",
+        borderRadius: "0px 0px 40px 0px",
       },
     },
     MuiButton: {
