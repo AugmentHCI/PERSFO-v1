@@ -1,7 +1,4 @@
-import {
-  MenusCollection,
-  RecipesCollection
-} from "/imports/api/methods.js";
+import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
 const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
 const url = "https://www.apicbase.com/api/v1/recipes/";
@@ -154,19 +151,26 @@ export function getRecipeID(recipeURL) {
 }
 
 export function calculateNutrientforRecipe(recipeDetails, nutrient) {
-  let netWeightUnit = recipeDetails.net_weight_unit;
-  let multiplier = -1;
-  if (netWeightUnit == "kg") {
-    multiplier = 1000;
-  } else if (netWeightUnit == "g") {
-    multiplier = 1;
-  } else {
-    console.log(
-      "other weight unit: " + netWeightUnit + " for recipe: " + recipeDetails.id
+  try {
+    let netWeightUnit = recipeDetails.net_weight_unit;
+    let multiplier = -1;
+    if (netWeightUnit == "kg") {
+      multiplier = 1000;
+    } else if (netWeightUnit == "g") {
+      multiplier = 1;
+    } else {
+      console.log(
+        "other weight unit: " +
+          netWeightUnit +
+          " for recipe: " +
+          recipeDetails.id
+      );
+    }
+    return Math.round(
+      (recipeDetails.nutrition_info[nutrient].quantity / 100) *
+        (recipeDetails.net_weight * multiplier)
     );
+  } catch (error) {
+    return 0;
   }
-  return (
-    Math.round((recipeDetails.nutrition_info[nutrient].quantity / 100) *
-    (recipeDetails.net_weight * multiplier))
-  );
 }

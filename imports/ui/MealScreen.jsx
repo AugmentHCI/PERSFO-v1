@@ -8,10 +8,9 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import {
   calculateNutrientforRecipe,
-  getNutriscoreImage
+  getNutriscoreImage,
 } from "/imports/api/apiPersfo";
 import { OrdersCollection, UserPreferences } from "/imports/api/methods.js";
-
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -143,7 +142,8 @@ export const MealScreen = ({ recipe }) => {
 
     let userAllergens = [];
     try {
-      userAllergens = UserPreferences.findOne({ userid: Meteor.userId() }).allergens;
+      userAllergens = UserPreferences.findOne({ userid: Meteor.userId() })
+        .allergens;
     } catch (error) {}
 
     return { liked, nbLikes, userAllergens };
@@ -244,35 +244,13 @@ export const MealScreen = ({ recipe }) => {
   const NutrientsContent = (props) => {
     const r = props.recipe.nutrition_info;
     const recipe = props.recipe;
-    let kcal = 0;
-    try {
-      kcal = calculateNutrientforRecipe(recipe, "kcal");
-    } catch (e) {}
-    let fat = 0;
-    try {
-      fat = calculateNutrientforRecipe(recipe, "fat");
-    } catch (e) {}
-    let sat = 0;
-    try {
-      sat = calculateNutrientforRecipe(recipe, "saturated_fat");
-    } catch (e) {}
-    let sug = 0;
-    try {
-      sug = calculateNutrientforRecipe(recipe, "sugar");
-    } catch (e) {}
-    let prot = 0;
-    try {
-      prot = calculateNutrientforRecipe(recipe, "protein");
-    } catch (e) {}
-    let fibr = 0;
-    try {
-      fibr = calculateNutrientforRecipe(recipe, "fibre");
-    } catch (e) {}
-    let potss = 0;
-    try {
-      potss = calculateNutrientforRecipe(recipe, "potassium");
-    } catch (e) {}
-
+    let kcal = calculateNutrientforRecipe(recipe, "kcal");
+    let fat = calculateNutrientforRecipe(recipe, "fat");
+    let sat = calculateNutrientforRecipe(recipe, "saturated_fat");
+    let sug = calculateNutrientforRecipe(recipe, "sugar");
+    let prot = calculateNutrientforRecipe(recipe, "protein");
+    let fibr = calculateNutrientforRecipe(recipe, "fibre");
+    let potss = calculateNutrientforRecipe(recipe, "potassium");
     let ukcal = "";
     try {
       ukcal = r.kcal.unit;
@@ -381,8 +359,8 @@ export const MealScreen = ({ recipe }) => {
     );
     let render = _.map(allergens, function (a, i) {
       let tempClassName = classes.allergenBox;
-      userAllergens.forEach(element => {
-        if(element.allergen == a) {
+      userAllergens.forEach((element) => {
+        if (element.allergen == a) {
           tempClassName = classes.activeAllergenBox;
         }
       });
