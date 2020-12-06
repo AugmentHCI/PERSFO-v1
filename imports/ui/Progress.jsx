@@ -208,10 +208,14 @@ export const Progress = ({ recipeURLs }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-around",
+              justifyContent: "start",
             }}
           >
-            <GoalsBar
+            <div className={classes.stat}>
+              Feature expected on December 14, 2020. Please continue logging your daily orders to
+              enable personalized goal setting.
+            </div>
+            {/* <GoalsBar
               title="Eat less calories"
               value={1200}
               maxValue={2500}
@@ -228,7 +232,7 @@ export const Progress = ({ recipeURLs }) => {
               value={6}
               maxValue={7}
               unit={"days"}
-            />
+            /> */}
           </div>
         )}
 
