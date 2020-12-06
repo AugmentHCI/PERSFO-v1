@@ -146,6 +146,8 @@ Meteor.methods({
     // TODO select today's course
     let todaysCourses = MenusCollection.findOne().courses;
 
+    let userpreferences = UserPreferences.findOne({"userid": this.userId});
+
     // Find all recipes that are available today --> TODO tailor per course
     let todaysRecipes = [];
     todaysCourses.forEach((course) => {
@@ -158,6 +160,17 @@ Meteor.methods({
     }).fetch();
 
     // Filter allergies + consider user preferences!
+    const userAllergens = userpreferences.allergens;
+    todaysRecipes = _.filter(todaysRecipes, (recipe) => {
+      const recipeAllergens = recipe.allergens;
+      for(let i = 0; i < userAllergens.length; i++) {
+        const userAllergen = userAllergens[i];
+        if(recipeAllergens[userAllergen.allergen]) {
+          return false;
+        }
+      }
+      return true;
+    });
 
     // filter recipes without an image and/or no nutrient data
     todaysRecipes = _.filter(todaysRecipes, (recipe) => {

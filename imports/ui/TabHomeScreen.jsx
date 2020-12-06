@@ -47,7 +47,7 @@ export const TabHomeScreen = ({ recipeURLs }) => {
       </div>
 
       <div style={{ padding: '4px'}}>
-      <CardRecommendedMeal/>
+      <CardRecommendedMeal backupRecipeId={getRecipeID(recipeURLs[0])}/>
       </div>
       <div className={classes.titleContent}>
       <h1  className={classes.title}>OTHER</h1><IconButton></IconButton>

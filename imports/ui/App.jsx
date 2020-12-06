@@ -75,6 +75,7 @@ export const App = () => {
     const noDataAvailable = { menu: { courses: [], }, };
     const handler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
+    const preferencesHandler = Meteor.subscribe("userpreferences");
 
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
@@ -82,8 +83,9 @@ export const App = () => {
     if (!Meteor.user()) { return noDataAvailable; }
     if (!handler.ready()) { return { ...noDataAvailable, isLoading: true }; }
     if (!recipesHandler.ready()) { return { ...noDataAvailable, isLoading: true }; }
+    if (!preferencesHandler.ready()) { return { ...noDataAvailable, isLoading: true }; }
 
-    // wait for menus and recipes to load before initializing recommendations
+    // wait for menus, recipes, AND userpreferences to load before initializing recommendations
     // recalculate new recommendation on every app startup
     Meteor.call('recommender.updateRecommendations')
 

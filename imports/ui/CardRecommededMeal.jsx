@@ -100,7 +100,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const CardRecommendedMeal = () => {
+export const CardRecommendedMeal = ({ backupRecipeId }) => {
   const classes = useStyles();
 
   const { recipe, ingredients } = useTracker(() => {
@@ -116,10 +116,13 @@ export const CardRecommendedMeal = () => {
     const recommendedRecipes = RecommendedRecipes.findOne({
       userid: Meteor.userId(),
     }).recommendations;
-    const recommendedRecipeId = _.filter(
+    let recommendedRecipeId = _.filter(
       recommendedRecipes,
-      (r) => r.ranking === 2
+      (r) => r.ranking === 1
     )[0].id;
+
+    // in case no recipe can be found, pick a random recipe from today's menu
+    if (!recommendedRecipeId) recommendedRecipeId = backupRecipeId;
     const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
     });
@@ -198,8 +201,8 @@ export const CardRecommendedMeal = () => {
   const [thumbsDown, setThumbsDown] = useState(false);
 
   const handleThumbsUp = () => {
-    if(recipe) {
-      Meteor.call("users.handleLikeRecommendation", recipe.id, true)
+    if (recipe) {
+      Meteor.call("users.handleLikeRecommendation", recipe.id, true);
       if (!thumbsUp) {
         setThumbsDown(false);
       }
@@ -229,12 +232,12 @@ export const CardRecommendedMeal = () => {
 
   const handleModalOpen = () => {
     setThumbsDown(true);
-    Meteor.call("users.handleLikeRecommendation", recipe.id, false)
+    Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(true);
   };
   const handleModalClose = () => {
     setThumbsDown(false);
-    Meteor.call("users.handleLikeRecommendation", recipe.id, false)
+    Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(false);
   };
 
@@ -242,6 +245,7 @@ export const CardRecommendedMeal = () => {
     setThumbsDown(false);
     setOpen(false);
   };
+
   const sendModal = () => {
     let listOfDislikes = [];
     for (let i = 0; i < checkboxes.length; i++) {
@@ -252,7 +256,7 @@ export const CardRecommendedMeal = () => {
     }
     Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
-  }; // TO. DO... SEND MODAL DATA...
+  };
 
   // Detail logic
   const handleDetailsClick = () => {
