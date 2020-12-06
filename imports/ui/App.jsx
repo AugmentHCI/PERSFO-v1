@@ -14,7 +14,8 @@ import {
   MenusCollection,
   OpenMealDetails,
   OpenProgress,
-  OpenSettings, RecipesCollection
+  OpenSettings,
+  RecipesCollection,
 } from "/imports/api/methods.js";
 
 const persfoTheme = createMuiTheme({
@@ -80,14 +81,14 @@ export const App = () => {
       return;
     }
     setState(open);
-    Meteor.call("log",componentName, "toggleDrawer");
+    Meteor.call("log", componentName, "toggleDrawer");
   };
 
   // tab logic
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    Meteor.call("log",componentName, "handleChange");
+    Meteor.call("log", componentName, "handleChange");
   };
 
   const {
@@ -123,13 +124,14 @@ export const App = () => {
     // recalculate new recommendation on every app startup
     Meteor.call("recommender.updateRecommendations");
 
-    let menu = MenusCollection.find({ starting_date: "2020-12-09" }).fetch(); // pick random date for testing
-    // let menu = MenusCollection.find({"starting_date": new Date().toISOString().substring(0,10)}).fetch();
-    if (menu && menu.length > 0) {
-      menu = menu[0];
-    } else {
-      menu = MenusCollection.findOne();
-    }
+    // pick random date for testing
+    // let menu = MenusCollection.find({ starting_date: "2020-12-10" }).fetch();
+    
+    let menu = MenusCollection.findOne({
+      starting_date: new Date().toISOString().substring(0, 10),
+    });
+    // pick random menu when no menu available today
+    if (!menu) menu = MenusCollection.findOne();
     return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, menu };
   });
 

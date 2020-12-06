@@ -159,8 +159,13 @@ Meteor.methods({
   "recommender.updateRecommendations"() {
     // init recommendations
 
-    // TODO select today's course
-    let todaysCourses = MenusCollection.findOne().courses;
+    // find today's menu
+    let menu = MenusCollection.findOne({
+      starting_date: new Date().toISOString().substring(0, 10),
+    });
+    // pick random menu when no menu available today
+    if (!menu) menu = MenusCollection.findOne();
+    let todaysCourses = menu.courses;
 
     let userpreferences = UserPreferences.findOne({"userid": this.userId});
 
