@@ -30,7 +30,7 @@ const BorderLinearProgress = withStyles((theme) => ({
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
-  const [heightBuffer, setHeightBuffer] = useState(0);
+  const [heightBuffer, setHeightBuffer] = useState(window.innerHeight >= 640 ? 60 : 0);
 
   window.addEventListener("resize", () => {
     setComponentHeight(window.innerHeight);
