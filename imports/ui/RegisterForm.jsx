@@ -26,6 +26,8 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
   const [password2, setPassword2] = useState("");
 
   const [toastShown, setOpen] = useState(false);
+  const [userAlreadyExistsToastShown, setuserAlreadyExistsToastShown] = useState(false);
+
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -35,14 +37,23 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
     setOpen(false);
   };
 
+  
+  const handleUserAlreadyExistsToastClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setuserAlreadyExistsToastShown(false);
+  };
+
   const submit = (e) => {
     e.preventDefault();
     if (password === password2) {
-      Accounts.createUser({
-        username: username,
-        password: password2,
-      });
-      Meteor.loginWithPassword(username, password);
+        Accounts.createUser({
+          username: username,
+          password: password2,
+        }, (error) => setuserAlreadyExistsToastShown(true));
+        Meteor.loginWithPassword(username, password);
     } else {
       setOpen(true);
     }
@@ -166,6 +177,11 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Passwords do not match!
+        </Alert>
+      </Snackbar>
+      <Snackbar open={userAlreadyExistsToastShown} autoHideDuration={6000} onClose={handleUserAlreadyExistsToastClose}>
+        <Alert onClose={handleUserAlreadyExistsToastClose} severity="error">
+          This username already exists!
         </Alert>
       </Snackbar>
     </Container>

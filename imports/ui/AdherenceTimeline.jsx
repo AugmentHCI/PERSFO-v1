@@ -55,7 +55,6 @@ export const AdherenceTimeline = () => {
     let nutries = _.map(groupedOrders, (value, key) => {
       return { day: key, score: badestNutriscore(value) };
     });
-    console.log(nutries);
 
     function badestNutriscore(orderArray) {
       if (!orderArray.length > 0) return undefined;
