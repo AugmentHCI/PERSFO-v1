@@ -44,6 +44,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     display: "flex",
     flexDirection: "column",
     marginBottom: "8px",
+    marginRight: "-12px"
   },
   sliderTitle: {
     display: "flex",
@@ -165,7 +166,7 @@ export const Preferences = () => {
         className={classes.checkbox}
         key={"bar-" + allergen.allergen}
         control={
-          <Checkbox
+          <Switch
             color="primary"
             checked={allergenCheckboxes[i]}
             onChange={(e) => handleAllergenCheckboxChange(e, i)}
@@ -179,7 +180,7 @@ export const Preferences = () => {
 
   return (
     <div className={classes.mainWindow}>
-      <h1 className={classes.title}>FOOD PREFERENCES</h1>
+      <h1 className={classes.title}>Configure your goals</h1>
 
       <div className={classes.formContainer}>
         <h1 className={classes.subtitle}>Nutrients</h1>
@@ -236,6 +237,7 @@ export const Preferences = () => {
         </div>
       </div>
 
+      <h1 className={classes.title}>Save your allergies</h1>
       <div
         className={classes.formContainer}
         style={{ marginTop: "16px", marginBottom: "200px" }}
