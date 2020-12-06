@@ -8,10 +8,9 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import {
   calculateNutrientforRecipe,
-  getNutriscoreImage
+  getNutriscoreImage,
 } from "/imports/api/apiPersfo";
 import { OrdersCollection, UserPreferences } from "/imports/api/methods.js";
-
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -28,13 +27,10 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
-
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
-
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
   const [heightBuffer, setHeightBuffer] = useState(0);
-
 
   window.addEventListener("resize", () => {
     setComponentHeight(window.innerHeight);
@@ -108,7 +104,7 @@ export const MealScreen = ({ recipe }) => {
       justifyContent: "space-between",
       alignItems: "flex-end",
       position: "absolute",
-      bottom: (heightBuffer + 8) + "px", // room for Snackbar
+      bottom: heightBuffer + 8 + "px", // room for Snackbar
       fontSize: "14px",
       fontFamily: "sans-serif",
     },
@@ -140,10 +136,14 @@ export const MealScreen = ({ recipe }) => {
 
   const classes = useStyles();
 
-
   // Like logic
-  const { liked, nbLikes, userAllergens } = useTracker(() => {
-    const noDataAvailable = { liked: false };
+  const { liked, nbLikes, userAllergens, nutrientGoals } = useTracker(() => {
+    const noDataAvailable = {
+      liked: false,
+      nbLikes: 0,
+      userAllergens: [],
+      nutrientGoals: {},
+    };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
@@ -156,12 +156,25 @@ export const MealScreen = ({ recipe }) => {
         likedRecipes: { $in: [recipe.id] },
       }).fetch().length > 0;
 
+    const userPreferences = UserPreferences.findOne({
+      userid: Meteor.userId(),
+    });
     let userAllergens = [];
     try {
-      userAllergens = UserPreferences.findOne({ userid: Meteor.userId() }).allergens;
+      userAllergens = userPreferences.allergens;
     } catch (error) {}
-
-    return { liked, nbLikes, userAllergens };
+    let nutrientGoals = {};
+    try {
+      const userNutrientGoals = userPreferences.nutrientGoals;
+      const userActiveNutrientGoals = userPreferences.activeNutrientGoals;
+      _.keys(userActiveNutrientGoals).forEach((key) => {
+        if (userActiveNutrientGoals[key]) {
+          nutrientGoals[key] = userNutrientGoals[key] + 0.0000001; // otherwise considered false
+        }
+      });
+      console.log(nutrientGoals);
+    } catch (error) {}
+    return { liked, nbLikes, userAllergens, nutrientGoals };
   });
 
   const handleIncreaseLike = () => {
@@ -245,8 +258,8 @@ export const MealScreen = ({ recipe }) => {
           </div>
           <div style={{ color: "#717171", fontSize: "12px" }}>
             {props.value.toLocaleString()}/
-            <span style={{ color: "#F57D20" }}>
-              {maxValue.toLocaleString()}
+            <span style={{ color: props.color }}>
+              {props.maxValue < 0.001 ? 0 : maxValue.toLocaleString()}
             </span>
             &nbsp;{String(props.unit)}
           </div>
@@ -255,7 +268,7 @@ export const MealScreen = ({ recipe }) => {
       </div>
     );
   };
-  // TODO... MAX VALUES TO BE GET FROM THE PREFERENCES.
+
   const NutrientsContent = (props) => {
     const r = props.recipe.nutrition_info;
     const recipe = props.recipe;
@@ -307,21 +320,32 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Nutrients</h1>
-        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60+ "px" }}>
+        <div
+          style={{
+            overflowY: "scroll",
+            height: componentHeight - 325 - 125 - 30 - 60 + "px",
+          }}
+        >
           {noData}
           {kcal == 0 ? null : (
             <NutrientsBar
               title="Energy"
               value={kcal}
-              maxValue={2500}
+              maxValue={
+                nutrientGoals["energy"] ? nutrientGoals["energy"] : 2500
+              }
               unit={ukcal}
+              color={nutrientGoals["energy"] ? "#F57D20" : undefined}
             />
           )}
           {fat == 0 ? null : (
             <NutrientsBar
               title="Total fat"
               value={fat}
-              maxValue={77}
+              maxValue={
+                nutrientGoals["totalFat"] ? nutrientGoals["totalFat"] : 77
+              }
+              color={nutrientGoals["totalFat"] ? "#F57D20" : undefined}
               unit={ufat}
             />
           )}
@@ -329,18 +353,28 @@ export const MealScreen = ({ recipe }) => {
             <NutrientsBar
               title="Saturated fats"
               value={sat}
-              maxValue={20}
+              maxValue={nutrientGoals["satFat"] ? nutrientGoals["satFat"] : 20}
+              color={nutrientGoals["satFat"] ? "#F57D20" : undefined}
               unit={usat}
             />
           )}
           {sug == 0 ? null : (
-            <NutrientsBar title="Sugar" value={sug} maxValue={36} unit={usug} />
+            <NutrientsBar
+              title="Sugar"
+              value={sug}
+              maxValue={nutrientGoals["sugar"] ? nutrientGoals["sugar"] : 36}
+              color={nutrientGoals["sugar"] ? "#F57D20" : undefined}
+              unit={usug}
+            />
           )}
           {prot == 0 ? null : (
             <NutrientsBar
               title="Proteins"
               value={prot}
-              maxValue={56}
+              maxValue={
+                nutrientGoals["protein"] ? nutrientGoals["protein"] : 56
+              }
+              color={nutrientGoals["protein"] ? "#F57D20" : undefined}
               unit={uprot}
             />
           )}
@@ -348,7 +382,8 @@ export const MealScreen = ({ recipe }) => {
             <NutrientsBar
               title="Fiber"
               value={fibr}
-              maxValue={30}
+              maxValue={nutrientGoals["fiber"] ? nutrientGoals["fiber"] : 30}
+              color={nutrientGoals["fiber"] ? "#F57D20" : undefined}
               unit={ufibr}
             />
           )}
@@ -356,7 +391,7 @@ export const MealScreen = ({ recipe }) => {
             <NutrientsBar
               title="Potassium"
               value={potss}
-              maxValue={6}
+              maxValue={6000}
               unit={upotss}
             />
           )}
@@ -374,8 +409,8 @@ export const MealScreen = ({ recipe }) => {
     );
     let render = _.map(allergens, function (a, i) {
       let tempClassName = classes.allergenBox;
-      userAllergens.forEach(element => {
-        if(element.allergen == a) {
+      userAllergens.forEach((element) => {
+        if (element.allergen == a) {
           tempClassName = classes.activeAllergenBox;
         }
       });
