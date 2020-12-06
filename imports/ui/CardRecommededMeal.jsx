@@ -104,8 +104,8 @@ const componentName = "CardRecommendedMeal";
 export const CardRecommendedMeal = ({ backupRecipeId }) => {
   const classes = useStyles();
 
-  const { recipe, ingredients } = useTracker(() => {
-    const noDataAvailable = { recipe: {}, ingredients: [] };
+  const { recipe, ingredients, thumbsDown } = useTracker(() => {
+    const noDataAvailable = { recipe: {}, ingredients: [], thumbsDown: false };
     const recipeHandler = Meteor.subscribe("recipes");
     const recommendationHandler = Meteor.subscribe("recommendedrecipes");
     if (!Meteor.user()) {
@@ -115,6 +115,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
       return { ...noDataAvailable, isLoading: true };
     }
     let recommendedRecipeId = backupRecipeId;
+    let thumbsDown = false;
     try {
       const recommendedRecipes = RecommendedRecipes.findOne({
         userid: Meteor.userId(),
@@ -124,6 +125,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
         (r) => r.ranking === 1
       )[0].id;
     } catch (error) {
+      thumbsDown = true;
       // no recommendations yet
     }
 
@@ -146,12 +148,17 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
       };
     });
 
-    return { recipe, ingredients };
+    return { recipe, ingredients, thumbsDown };
   });
 
   // Like and thumb logic
   const { liked, nbLikes, thumbsUp } = useTracker(() => {
-    const noDataAvailable = { liked: false, nbLikes: 0, thumbsUp: false };
+    const noDataAvailable = {
+      liked: false,
+      nbLikes: 0,
+      thumbsUp: false,
+      thumbsDown: false,
+    };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
@@ -207,15 +214,15 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
   };
 
   // Thumbs state
-  const [thumbsDown, setThumbsDown] = useState(false);
+  // const [thumbsDown, setThumbsDown] = useState(false);
 
   const handleThumbsUp = () => {
     if (recipe) {
       Meteor.call("users.handleLikeRecommendation", recipe.id, true);
       Meteor.call("log", componentName, "handleThumbsUp");
-      if (!thumbsUp) {
-        setThumbsDown(false);
-      }
+      // if (!thumbsUp) {
+      //   setThumbsDown(false);
+      // }
     }
   };
 
@@ -242,20 +249,22 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
   };
 
   const handleModalOpen = () => {
-    setThumbsDown(true);
-    Meteor.call("users.handleLikeRecommendation", recipe.id, false);
-    setOpen(true);
-    Meteor.call("log", componentName, "handleModalOpen");
+    if (!thumbsDown) {
+      // setThumbsDown(true);
+      Meteor.call("users.handleLikeRecommendation", recipe.id, false);
+      setOpen(true);
+      Meteor.call("log", componentName, "handleModalOpen");
+    }
   };
   const handleModalClose = () => {
-    setThumbsDown(false);
+    // setThumbsDown(false);
     Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(false);
     Meteor.call("log", componentName, "handleModalClose");
   };
 
   const cancelModal = () => {
-    setThumbsDown(false);
+    // setThumbsDown(false);
     setOpen(false);
     Meteor.call("log", componentName, "cancelModal");
   };

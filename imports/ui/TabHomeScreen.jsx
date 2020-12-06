@@ -82,7 +82,8 @@ export const TabHomeScreen = ({ recipeURLs }) => {
         onClose={() => setToast(false)}
       >
         <Alert onClose={() => setToast(false)} severity="info">
-          In this limited pilot study, recommendations are based on the most popular meals, while also considering your allergies.
+          In this pilot study, recommendations are based on the most popular
+          meals, while also considering your allergies and disliked ingredients.
         </Alert>
       </Snackbar>
     </>

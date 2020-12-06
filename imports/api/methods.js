@@ -159,8 +159,6 @@ Meteor.methods({
   "recommender.updateRecommendations"() {
     // init recommendations
 
-    console.log("updating recommendations");
-
     // find today's menu
     let menu = MenusCollection.findOne({
       starting_date: new Date().toISOString().substring(0, 10),
@@ -203,6 +201,26 @@ Meteor.methods({
     todaysRecipes = _.filter(todaysRecipes, (recipe) => {
       return recipe.main_image !== null && recipe.kcal > 0;
     });
+
+    // filter recipes with disliked ingredients
+    try {
+      let dislikedIngredients = UserPreferences.findOne({ userid: this.userId }).dislikedIngredients;
+      todaysRecipes = _.filter(todaysRecipes, (recipe) => {
+        for(let i = 0; i < dislikedIngredients.length; i++ ) {
+          const ingredient = dislikedIngredients[i];
+          for(let j = 0; j < recipe.ingredients.length; j++) {
+            if(ingredient.description === recipe.ingredients[j].description) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+    } catch (error) {
+      
+    }
+
+
 
     // last step! Assign rankings
     // find recipe with most likes --> TODO make smarter
