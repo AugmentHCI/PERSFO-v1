@@ -65,7 +65,6 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
   useEffect(() => {
     if (GetOpenMealDetails !== null) {
       let url = getImage(RecipesCollection.findOne({ id: GetOpenMealDetails }));
-      console.log(url);
       setBackground("url('" + url + "')");
     }
   });
