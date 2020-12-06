@@ -71,7 +71,6 @@ export function initData() {
         try {
           const currentId = allRecipes[index].id;
           if (currentId) {
-            console.log("calling API: " + currentId);
             let call = HTTP.call("GET", url + currentId, {
               headers: {
                 Authorization: `Bearer ${token}`,
