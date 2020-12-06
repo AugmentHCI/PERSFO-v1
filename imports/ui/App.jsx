@@ -126,7 +126,6 @@ export const App = () => {
 
     // pick random date for testing
     // let menu = MenusCollection.find({ starting_date: "2020-12-10" }).fetch();
-    
     let menu = MenusCollection.findOne({
       starting_date: new Date().toISOString().substring(0, 10),
     });
@@ -169,7 +168,7 @@ export const App = () => {
             {_.map(menu.courses, function (n, i) {
               return (
                 <TabPanel key={i} value={value} index={i}>
-                  <TabHomeScreen recipeURLs={menu.courses[i].recipes} />
+                  <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
                 </TabPanel>
               );
             })}

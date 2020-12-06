@@ -29,6 +29,7 @@ import {
   UserPreferences,
 } from "/imports/api/methods.js";
 
+
 const useStyles = makeStyles(() => ({
   menuImage: {
     minWidth: "80px",

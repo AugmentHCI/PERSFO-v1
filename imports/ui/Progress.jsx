@@ -229,9 +229,6 @@ export const Progress = ({ recipeURLs }) => {
         <div>
           <div className={classes.titleContent}>
             <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
-            <IconButton>
-              <HelpOutlineIcon fontSize="small" />
-            </IconButton>
           </div>
           <div style={{ padding: "4px" }}>
             <CardRecommendedMeal />

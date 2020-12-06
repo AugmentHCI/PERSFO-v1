@@ -36,7 +36,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 // recipeURL come from menu --> courses
 const componentName = "TabHomeScreen";
-export const TabHomeScreen = ({ recipeURLs }) => {
+export const TabHomeScreen = ({ recipeURLs, courseName }) => {
   const classes = useStyles();
 
   const handleInfo = () => {
@@ -52,17 +52,7 @@ export const TabHomeScreen = ({ recipeURLs }) => {
   return (
     <>
       <div className={classes.titleContent}>
-        <h1 className={classes.title}>RECOMMENDED</h1>
-        <IconButton onClick={handleInfo}>
-          <HelpOutlineIcon fontSize="small" />
-        </IconButton>
-      </div>
-
-      <div style={{ padding: "4px" }}>
-        <CardRecommendedMeal backupRecipeId={getRecipeID(recipeURLs[0])} />
-      </div>
-      <div className={classes.titleContent}>
-        <h1 className={classes.title}>OTHER</h1>
+        <h1 className={classes.title}>Today's options in {courseName}</h1>
         <IconButton></IconButton>
       </div>
 
@@ -76,6 +66,17 @@ export const TabHomeScreen = ({ recipeURLs }) => {
           );
         })}
       </div>
+
+      <div className={classes.titleContent}>
+        <h1 className={classes.title}>TODAY'S RECOMMENDATION</h1>
+        <IconButton onClick={handleInfo}>
+          <HelpOutlineIcon fontSize="small" />
+        </IconButton>
+      </div>
+      <div style={{ padding: "4px" }}>
+        <CardRecommendedMeal backupRecipeId={getRecipeID(recipeURLs[0])} />
+      </div>
+
       <Snackbar
         open={toastShown}
         autoHideDuration={6000}
