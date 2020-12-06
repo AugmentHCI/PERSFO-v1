@@ -416,15 +416,20 @@ export const Preferences = () => {
       <h1 className={classes.title}>Configure your goals</h1>
 
       <div className={classes.formContainer}>
-        <h1 className={classes.subtitle}>Set your maximum nutrient value</h1>
+        <h1 className={classes.subtitle}>Set your desired maximum nutrient value</h1>
         <div className={classes.form}>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Energy</div>
+            <div className={classes.sliderTitle}>
+              Energy ({EnergySlider} kcal)
+            </div>
             <div className={classes.slider}>
               <Slider
                 disabled={!EnergySwitch}
                 value={EnergySlider}
                 onChange={energySliderChange}
+                min={0}
+                max={5000}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -434,12 +439,17 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Total Fat</div>
+            <div className={classes.sliderTitle}>
+              Total Fat ({TotalFatSlider} g)
+            </div>
             <div className={classes.slider}>
               <Slider
                 disabled={!TotalFatSwitch}
                 value={TotalFatSlider}
                 onChange={totalFatSliderChange}
+                min={0}
+                max={200}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -449,12 +459,17 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Saturated Fats</div>
+            <div className={classes.sliderTitle}>
+              Saturated Fats ({SatfatSlider} g)
+            </div>
             <div className={classes.slider}>
               <Slider
                 disabled={!SatfatSwitch}
                 value={SatfatSlider}
                 onChange={satfatSliderChange}
+                min={0}
+                max={200}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -464,12 +479,15 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Sugars</div>
+            <div className={classes.sliderTitle}>Sugars ({SugarSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!SugarSwitch}
                 value={SugarSlider}
                 onChange={sugarSliderChange}
+                min={0}
+                max={200}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -479,12 +497,17 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Proteins</div>
+            <div className={classes.sliderTitle}>
+              Proteins ({ProteinSlider} g)
+            </div>
             <div className={classes.slider}>
               <Slider
                 disabled={!ProteinSwitch}
                 value={ProteinSlider}
                 onChange={proteinSliderChange}
+                min={0}
+                max={200}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -494,12 +517,15 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Salt</div>
+            <div className={classes.sliderTitle}>Salt ({SaltSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!SaltSwitch}
                 value={SaltSlider}
                 onChange={saltSliderChange}
+                min={0}
+                max={100}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
@@ -509,12 +535,15 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Fiber</div>
+            <div className={classes.sliderTitle}>Fiber ({FiberSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!FiberSwitch}
                 value={FiberSlider}
                 onChange={fiberSliderChange}
+                min={0}
+                max={200}
+                valueLabelDisplay="auto"
               />
               <Switch
                 color="primary"
