@@ -83,7 +83,7 @@ export const Progress = ({ recipeURLs }) => {
         return { ...noDataAvailable, isLoading: true };
       }
 
-      const daysActive = Math.floor(( new Date() - Meteor.user().createdAt ) / 86400000);
+      const daysActive = Math.floor(( new Date() - Meteor.user().createdAt ) / 86400000) + 1;
       const userName = Meteor.user().username;
 
       const GetOpenMealDetails = OpenMealDetails.get();
