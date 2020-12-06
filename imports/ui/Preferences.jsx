@@ -1,7 +1,4 @@
-import {
-  FormControlLabel, Slider,
-  Switch
-} from "@material-ui/core/";
+import { FormControlLabel, Slider, Switch } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
@@ -76,6 +73,13 @@ export const Preferences = () => {
     ProteinSlider,
     SaltSlider,
     FiberSlider,
+    EnergySwitch,
+    TotalFatSwitch,
+    SatfatSwitch,
+    SugarSwitch,
+    ProteinSwitch,
+    SaltSwitch,
+    FiberSwitch,
   } = useTracker(() => {
     const noDataAvailable = {
       EnergySlider: 0,
@@ -85,22 +89,61 @@ export const Preferences = () => {
       ProteinSlider: 0,
       SaltSlider: 0,
       FiberSlider: 0,
+      EnergySwitch: false,
+      TotalFatSwitch: false,
+      SatfatSwitch: false,
+      SugarSwitch: false,
+      ProteinSwitch: false,
+      SaltSwitch: false,
+      FiberSwitch: false,
     };
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
       return { ...noDataAvailable };
     }
     let nutrientGoals = [];
+    let activeNutrientGoals = [];
+    const userPreferences = UserPreferences.findOne({
+      userid: Meteor.userId(),
+    });
+    let EnergySlider = 0,
+      TotalFatSlider = 0,
+      SatfatSlider = 0,
+      SugarSlider = 0,
+      ProteinSlider = 0,
+      SaltSlider = 0,
+      FiberSlider = 0,
+      EnergySwitch = false,
+      TotalFatSwitch = false,
+      SatfatSwitch = false,
+      SugarSwitch = false,
+      ProteinSwitch = false,
+      SaltSwitch = false,
+      FiberSwitch = false;
     try {
-      nutrientGoals = UserPreferences.findOne({userid: Meteor.userId()}).nutrientGoals;
+      if (userPreferences.nutrientGoals) {
+        nutrientGoals = userPreferences.nutrientGoals;
 
-      const EnergySlider = nutrientGoals["energy"];
-      const TotalFatSlider = nutrientGoals["totalFat"];
-      const SatfatSlider = nutrientGoals["satFat"];
-      const SugarSlider = nutrientGoals["sugar"];
-      const ProteinSlider = nutrientGoals["protein"];
-      const SaltSlider = nutrientGoals["salt"];
-      const FiberSlider = nutrientGoals["fiber"];
+        EnergySlider = nutrientGoals["energy"];
+        TotalFatSlider = nutrientGoals["totalFat"];
+        SatfatSlider = nutrientGoals["satFat"];
+        SugarSlider = nutrientGoals["sugar"];
+        ProteinSlider = nutrientGoals["protein"];
+        SaltSlider = nutrientGoals["salt"];
+        FiberSlider = nutrientGoals["fiber"];
+      }
+
+      if (userPreferences.activeNutrientGoals) {
+        activeNutrientGoals = userPreferences.activeNutrientGoals;
+
+        EnergySwitch = activeNutrientGoals["energy"];
+        TotalFatSwitch = activeNutrientGoals["totalFat"];
+        SatfatSwitch = activeNutrientGoals["satFat"];
+        SugarSwitch = activeNutrientGoals["sugar"];
+        ProteinSwitch = activeNutrientGoals["protein"];
+        SaltSwitch = activeNutrientGoals["salt"];
+        FiberSwitch = activeNutrientGoals["fiber"];
+      }
 
       return {
         EnergySlider,
@@ -110,6 +153,13 @@ export const Preferences = () => {
         ProteinSlider,
         SaltSlider,
         FiberSlider,
+        EnergySwitch,
+        TotalFatSwitch,
+        SatfatSwitch,
+        SugarSwitch,
+        ProteinSwitch,
+        SaltSwitch,
+        FiberSwitch,
       };
     } catch (error) {
       return { ...noDataAvailable };
@@ -118,87 +168,172 @@ export const Preferences = () => {
 
   const energySliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": newValue,
-      "totalFat":TotalFatSlider,
-      "satFat":SatfatSlider,
-      "sugar":SugarSlider,
-      "protein":ProteinSlider,
-      "salt":SaltSlider,
-      "fiber":FiberSlider,
+      energy: newValue,
+      totalFat: TotalFatSlider,
+      satFat: SatfatSlider,
+      sugar: SugarSlider,
+      protein: ProteinSlider,
+      salt: SaltSlider,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "energySliderChange");
+    Meteor.call("log", componentName, "energySliderChange");
   };
   const totalFatSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":newValue,
-      "satFat":SatfatSlider,
-      "sugar":SugarSlider,
-      "protein":ProteinSlider,
-      "salt":SaltSlider,
-      "fiber":FiberSlider,
+      energy: EnergySlider,
+      totalFat: newValue,
+      satFat: SatfatSlider,
+      sugar: SugarSlider,
+      protein: ProteinSlider,
+      salt: SaltSlider,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "totalFatSliderChange");
+    Meteor.call("log", componentName, "totalFatSliderChange");
   };
   const satfatSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":TotalFatSlider,
-      "satFat":newValue,
-      "sugar":SugarSlider,
-      "protein":ProteinSlider,
-      "salt":SaltSlider,
-      "fiber":FiberSlider,
+      energy: EnergySlider,
+      totalFat: TotalFatSlider,
+      satFat: newValue,
+      sugar: SugarSlider,
+      protein: ProteinSlider,
+      salt: SaltSlider,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "satfatSliderChange");
+    Meteor.call("log", componentName, "satfatSliderChange");
   };
   const sugarSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":TotalFatSlider,
-      "satFat":SatfatSlider,
-      "sugar":newValue,
-      "protein":ProteinSlider,
-      "salt":SaltSlider,
-      "fiber":FiberSlider,
+      energy: EnergySlider,
+      totalFat: TotalFatSlider,
+      satFat: SatfatSlider,
+      sugar: newValue,
+      protein: ProteinSlider,
+      salt: SaltSlider,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "sugarSliderChange");
+    Meteor.call("log", componentName, "sugarSliderChange");
   };
   const proteinSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":TotalFatSlider,
-      "satFat":SatfatSlider,
-      "sugar":SugarSlider,
-      "protein":newValue,
-      "salt":SaltSlider,
-      "fiber":FiberSlider,
+      energy: EnergySlider,
+      totalFat: TotalFatSlider,
+      satFat: SatfatSlider,
+      sugar: SugarSlider,
+      protein: newValue,
+      salt: SaltSlider,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "proteinSliderChange");
+    Meteor.call("log", componentName, "proteinSliderChange");
   };
   const saltSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":TotalFatSlider,
-      "satFat":SatfatSlider,
-      "sugar":SugarSlider,
-      "protein":ProteinSlider,
-      "salt":newValue,
-      "fiber":FiberSlider,
+      energy: EnergySlider,
+      totalFat: TotalFatSlider,
+      satFat: SatfatSlider,
+      sugar: SugarSlider,
+      protein: ProteinSlider,
+      salt: newValue,
+      fiber: FiberSlider,
     });
-    Meteor.call("log",componentName, "saltSliderChange");
+    Meteor.call("log", componentName, "saltSliderChange");
   };
   const fiberSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
-      "energy": EnergySlider,
-      "totalFat":TotalFatSlider,
-      "satFat":SatfatSlider,
-      "sugar":SugarSlider,
-      "protein":ProteinSlider,
-      "salt":SaltSlider,
-      "fiber":newValue,
+      energy: EnergySlider,
+      totalFat: TotalFatSlider,
+      satFat: SatfatSlider,
+      sugar: SugarSlider,
+      protein: ProteinSlider,
+      salt: SaltSlider,
+      fiber: newValue,
     });
-    Meteor.call("log",componentName, "fiberSliderChange");
+    Meteor.call("log", componentName, "fiberSliderChange");
+  };
+
+  const energySwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: newValue,
+      totalFat: TotalFatSwitch,
+      satFat: SatfatSwitch,
+      sugar: SugarSwitch,
+      protein: ProteinSwitch,
+      salt: SaltSwitch,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "energySwitchChange");
+  };
+  const totalFatSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: newValue,
+      satFat: SatfatSwitch,
+      sugar: SugarSwitch,
+      protein: ProteinSwitch,
+      salt: SaltSwitch,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "totalFatSwitchChange");
+  };
+  const satfatSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: TotalFatSwitch,
+      satFat: newValue,
+      sugar: SugarSwitch,
+      protein: ProteinSwitch,
+      salt: SaltSwitch,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "satfatSwitchChange");
+  };
+  const sugarSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: TotalFatSwitch,
+      satFat: SatfatSwitch,
+      sugar: newValue,
+      protein: ProteinSwitch,
+      salt: SaltSwitch,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "sugarSwitchChange");
+  };
+  const proteinSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: TotalFatSwitch,
+      satFat: SatfatSwitch,
+      sugar: SugarSwitch,
+      protein: newValue,
+      salt: SaltSwitch,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "proteinSwitchChange");
+  };
+  const saltSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: TotalFatSwitch,
+      satFat: SatfatSwitch,
+      sugar: SugarSwitch,
+      protein: ProteinSwitch,
+      salt: newValue,
+      fiber: FiberSwitch,
+    });
+    Meteor.call("log", componentName, "saltSwitchChange");
+  };
+  const fiberSwitchChange = (event, newValue) => {
+    Meteor.call("users.updateActiveNutrientGoals", {
+      energy: EnergySwitch,
+      totalFat: TotalFatSwitch,
+      satFat: SatfatSwitch,
+      sugar: SugarSwitch,
+      protein: ProteinSwitch,
+      salt: SaltSwitch,
+      fiber: newValue,
+    });
+    Meteor.call("log", componentName, "fiberSwitchChange");
   };
 
   const { allergens, allergenCheckboxes } = useTracker(() => {
@@ -286,50 +421,106 @@ export const Preferences = () => {
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Energy</div>
             <div className={classes.slider}>
-              <Slider value={EnergySlider} onChange={energySliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!EnergySwitch}
+                value={EnergySlider}
+                onChange={energySliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={EnergySwitch}
+                onChange={energySwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Total Fat</div>
             <div className={classes.slider}>
-              <Slider value={TotalFatSlider} onChange={totalFatSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!TotalFatSwitch}
+                value={TotalFatSlider}
+                onChange={totalFatSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={TotalFatSwitch}
+                onChange={totalFatSwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Saturated Fats</div>
             <div className={classes.slider}>
-              <Slider value={SatfatSlider} onChange={satfatSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!SatfatSwitch}
+                value={SatfatSlider}
+                onChange={satfatSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={SatfatSwitch}
+                onChange={satfatSwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Sugars</div>
             <div className={classes.slider}>
-              <Slider value={SugarSlider} onChange={sugarSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!SugarSwitch}
+                value={SugarSlider}
+                onChange={sugarSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={SugarSwitch}
+                onChange={sugarSwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Proteins</div>
             <div className={classes.slider}>
-              <Slider value={ProteinSlider} onChange={proteinSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!ProteinSwitch}
+                value={ProteinSlider}
+                onChange={proteinSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={ProteinSwitch}
+                onChange={proteinSwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Salt</div>
             <div className={classes.slider}>
-              <Slider value={SaltSlider} onChange={saltSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!SaltSwitch}
+                value={SaltSlider}
+                onChange={saltSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={SaltSwitch}
+                onChange={saltSwitchChange}
+              />
             </div>
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>Fiber</div>
             <div className={classes.slider}>
-              <Slider value={FiberSlider} onChange={fiberSliderChange} />
-              <Switch color="primary" checked={true} />
+              <Slider
+                disabled={!FiberSwitch}
+                value={FiberSlider}
+                onChange={fiberSliderChange}
+              />
+              <Switch
+                color="primary"
+                checked={FiberSwitch}
+                onChange={fiberSwitchChange}
+              />
             </div>
           </div>
         </div>
