@@ -28,103 +28,115 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
-const useStyles = makeStyles((persfoTheme) => ({
-  mealTitleCard: {
-    display: "flex",
-    borderRadius: "60px 60px 0px 0px",
-    width: "auto",
-    height: "200px",
-    marginTop: "12px",
-    flexDirection: "column",
-    background: "white",
-  },
-  menuTitle: {
-    fontSize: "16px",
-    fontWeight: 600,
-    width: "184px",
-    height: "40px",
-    display: "flex",
-    alignItems: "center",
-    textTransform: "uppercase",
-    letterSpacing: "0px",
-    lineHeight: 1.5,
-    color: "#717171",
-    fontFamily: "sans-serif",
-  },
-  nutriscore: {
-    height: "32px",
-  },
-  tabFont: {
-    fontSize: "10px",
-  },
-  kcal: {
-    fontFamily: "sans-serif",
-    fontSize: "14px",
-    color: "#717171",
-    padding: "6px 8px",
-    display: "flex",
-    alignItems: "center",
-  },
-  pricing: {
-    color: "#F57D20",
-    fontFamily: "sans-serif",
-    fontSize: "32px",
-  },
-  heartButton: {
-    overflow: "visible",
-    marginRight: "4px",
-  },
-  heartButtonText: {
-    color: "#717171",
-    fontFamily: "sans-serif",
-    fontSize: "14px",
-  },
-  tabContent: {
-    height: "180px",
-    background: "white",
-    padding: "8px",
-    fontSize: "14px",
-    fontFamily: "sans-serif",
-  },
-  recipeDescription: {
-    height: "80px",
-    background: "white",
-    padding: "8px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontSize: "14px",
-    fontFamily: "sans-serif",
-  },
-  subtitle: {
-    color: "#717171",
-    width: "100%",
-    display: "flex",
-    fontSize: "12px",
-    alignItems: "center",
-    fontWeight: 600,
-    lineHeight: 1,
-    letterSpacing: "0px",
-    textTransform: "uppercase",
-  },
-  allergenBox: {
-    padding: "8px",
-    border: "1px solid " + green[300],
-    borderRadius: "10px",
-    color: green[300],
-  },
-  activeAllergenBox: {
-    padding: "8px",
-    border: "1px solid " + red[300],
-    background: red[300],
-    borderRadius: "10px",
-    color: "white",
-  },
-}));
 
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
+
+  const [componentHeight, setComponentHeight] = useState(window.innerHeight);
+
+  window.addEventListener("resize", () => {
+    setComponentHeight(window.innerHeight);
+  });
+
+  const useStyles = makeStyles((persfoTheme) => ({
+    mealTitleCard: {
+      display: "flex",
+      borderRadius: "60px 60px 0px 0px",
+      width: "auto",
+      height: "200px",
+      marginTop: "12px",
+      flexDirection: "column",
+      background: "white",
+    },
+    menuTitle: {
+      fontSize: "16px",
+      fontWeight: 600,
+      width: "184px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      textTransform: "uppercase",
+      letterSpacing: "0px",
+      lineHeight: 1.5,
+      color: "#717171",
+      fontFamily: "sans-serif",
+    },
+    nutriscore: {
+      height: "32px",
+    },
+    tabFont: {
+      fontSize: "10px",
+    },
+    kcal: {
+      fontFamily: "sans-serif",
+      fontSize: "14px",
+      color: "#717171",
+      padding: "6px 8px",
+      display: "flex",
+      alignItems: "center",
+    },
+    pricing: {
+      color: "#F57D20",
+      fontFamily: "sans-serif",
+      fontSize: "32px",
+    },
+    heartButton: {
+      overflow: "visible",
+      marginRight: "4px",
+    },
+    heartButtonText: {
+      color: "#717171",
+      fontFamily: "sans-serif",
+      fontSize: "14px",
+    },
+    tabContent: {
+      height: componentHeight - 325 - 125 + "px",
+      background: "white",
+      padding: "8px",
+      fontSize: "14px",
+      fontFamily: "sans-serif",
+    },
+    recipeDescription: {
+      height: "80px",
+      width: "96%", // no idea why ¯\_(ツ)_/¯
+      background: "white",
+      padding: "8px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      position: "absolute",
+      bottom: "8px",
+      fontSize: "14px",
+      fontFamily: "sans-serif",
+    },
+    subtitle: {
+      color: "#717171",
+      width: "100%",
+      display: "flex",
+      fontSize: "12px",
+      alignItems: "center",
+      fontWeight: 600,
+      lineHeight: 1,
+      letterSpacing: "0px",
+      textTransform: "uppercase",
+    },
+    allergenBox: {
+      padding: "8px",
+      border: "1px solid " + green[300],
+      borderRadius: "10px",
+      color: green[300],
+    },
+    activeAllergenBox: {
+      padding: "8px",
+      border: "1px solid " + red[300],
+      background: red[300],
+      borderRadius: "10px",
+      color: "white",
+    },
+  }));
+
   const classes = useStyles();
+
 
   // Like logic
   const { liked, nbLikes, userAllergens } = useTracker(() => {
@@ -292,7 +304,7 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Nutrients</h1>
-        <div style={{ overflowY: "scroll", height: "150px" }}>
+        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 125 - 30 + "px" }}>
           {noData}
           {kcal == 0 ? null : (
             <NutrientsBar
