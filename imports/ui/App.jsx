@@ -8,6 +8,7 @@ import { AppBarPersfo } from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { MealScreen } from "./MealScreen";
 import { Preferences } from "./Preferences";
+import { Feedback } from "./Feedback";
 import { Progress } from "./Progress";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
@@ -15,6 +16,7 @@ import {
   OpenMealDetails,
   OpenProgress,
   OpenSettings,
+  OpenFeedback,
   RecipesCollection,
 } from "/imports/api/methods.js";
 
@@ -95,6 +97,7 @@ export const App = () => {
     GetOpenMealDetails,
     GetOpenProgress,
     GetOpenSettings,
+    GetOpenFeedback,
     menu,
     isLoading,
   } = useTracker(() => {
@@ -106,6 +109,7 @@ export const App = () => {
 
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
+    const GetOpenFeedback = OpenFeedback.get();
 
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -131,7 +135,7 @@ export const App = () => {
     });
     // pick random menu when no menu available today
     if (!menu) menu = MenusCollection.findOne();
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, menu };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu };
   });
 
   const getCoursesTabs = () => {
@@ -188,6 +192,10 @@ export const App = () => {
 
       if (GetOpenSettings) {
         renderScreen = <Preferences />;
+      }
+
+      if (GetOpenFeedback) {
+        renderScreen = <Feedback />;
       }
     } else {
       renderScreen = <AuthenticationScreen />;

@@ -12,6 +12,7 @@ import {
   OpenMealDetails,
   OpenProgress,
   OpenSettings,
+  OpenFeedback,
   RecipesCollection,
 } from "/imports/api/methods.js";
 
@@ -47,18 +48,21 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
 
   const [background, setBackground] = useState("none");
 
-  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings } = useTracker(
+  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback } = useTracker(
     () => {
       const GetOpenMealDetails = OpenMealDetails.get();
       const GetOpenProgress = OpenProgress.get();
       const GetOpenSettings = OpenSettings.get();
-      return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings };
+      const GetOpenFeedback = OpenFeedback.get();
+      return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback };
     }
   );
 
-  document.addEventListener('backbutton', function(){ 
-    handleDetailsClick();
-  });
+  document.addEventListener("backbutton", onBackKeyDown, false);
+
+  function onBackKeyDown() {
+      handleDetailsClick();
+  }
 
   const handleDetailsClick = () => {
     OpenMealDetails.set(null);
@@ -81,6 +85,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
     if (GetOpenMealDetails !== null) title = "";
     if (GetOpenProgress) title = "Progress";
     if (GetOpenSettings) title = "Settings";
+    if (GetOpenFeedback) title = "Feedback";
     return title;
   };
 

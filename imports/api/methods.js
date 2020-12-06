@@ -9,10 +9,12 @@ export const RecommendedRecipes = new Mongo.Collection("recommendedrecipes");
 export const OrdersCollection = new Mongo.Collection("orders");
 export const UserPreferences = new Mongo.Collection("userpreferences");
 export const LogsCollection = new Mongo.Collection("logs");
+export const FeedbackCollection = new Mongo.Collection("feedback");
 
 export const OpenMealDetails = new ReactiveVar(null);
 export const OpenProgress = new ReactiveVar(false);
 export const OpenSettings = new ReactiveVar(false);
+export const OpenFeedback = new ReactiveVar(false);
 
 Meteor.methods({
   log(component, method) {
@@ -180,6 +182,15 @@ Meteor.methods({
       });
     }
   },
+  "feedback.submitNewFeedback"(feedback) {
+    check(feedback, String);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    FeedbackCollection.insert({ userid: this.userId, feedback: feedback, timestamp: new Date() });
+  },
   "recommender.updateRecommendations"() {
     // init recommendations
 
@@ -228,23 +239,20 @@ Meteor.methods({
 
     // filter recipes with disliked ingredients
     try {
-      let dislikedIngredients = UserPreferences.findOne({ userid: this.userId }).dislikedIngredients;
+      let dislikedIngredients = UserPreferences.findOne({ userid: this.userId })
+        .dislikedIngredients;
       todaysRecipes = _.filter(todaysRecipes, (recipe) => {
-        for(let i = 0; i < dislikedIngredients.length; i++ ) {
+        for (let i = 0; i < dislikedIngredients.length; i++) {
           const ingredient = dislikedIngredients[i];
-          for(let j = 0; j < recipe.ingredients.length; j++) {
-            if(ingredient.description === recipe.ingredients[j].description) {
+          for (let j = 0; j < recipe.ingredients.length; j++) {
+            if (ingredient.description === recipe.ingredients[j].description) {
               return false;
             }
           }
         }
         return true;
       });
-    } catch (error) {
-      
-    }
-
-
+    } catch (error) {}
 
     // last step! Assign rankings
     // find recipe with most likes --> TODO make smarter
