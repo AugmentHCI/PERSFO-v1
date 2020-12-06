@@ -124,7 +124,7 @@ export const Preferences = () => {
       // no allergens set yet
     }
 
-    const allergens = _.map(recipe.allergens, (value, allergen) => {
+    let  tempAllergens = _.map(recipe.allergens, (value, allergen) => {
       let userPresent = _.find(userAllergens, (ua) => ua.allergen === allergen);
       userPresent = userPresent ? userPresent.present : 0;
       return {
@@ -132,6 +132,8 @@ export const Preferences = () => {
         present: userPresent,
       };
     });
+    const allergens = _.sortBy(tempAllergens, "allergen");
+    console.log(allergens);
     const allergenCheckboxes = _.map(
       allergens,
       (allergen) => !!allergen.present
