@@ -1,14 +1,17 @@
 import { Button, Fab, LinearProgress, Tab, Tabs } from "@material-ui/core/";
 import { red } from "@material-ui/core/colors";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import {
   calculateNutrientforRecipe,
   getNutriscoreImage
 } from "/imports/api/apiPersfo";
-import { UserPreferences } from "/imports/api/methods.js";
+import { OrdersCollection, UserPreferences } from "/imports/api/methods.js";
+
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
@@ -136,16 +139,50 @@ export const MealScreen = ({ recipe }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
-      Meteor.call("log",componentName, "handleIncreaseLike");
+      Meteor.call("log", componentName, "handleIncreaseLike");
     }
   };
+
+  // order logic
+  const handleOrder = () => {
+    if (recipe) {
+      if (!ordered) setToast(true);
+      Meteor.call("orders.handleOrder", recipe.id);
+      Meteor.call("log", componentName, "handleOrder");
+    }
+  };
+
+  const { ordered } = useTracker(() => {
+    const noDataAvailable = { ordered: false };
+    const handler = Meteor.subscribe("orders");
+    if (!handler.ready()) {
+      return { ...noDataAvailable };
+    }
+    if (!recipe) return { ...noDataAvailable };
+
+    // find only orders made today
+    const now = new Date();
+    const orders = OrdersCollection.find({
+      userid: Meteor.userId(),
+      recipeId: recipe.id,
+      orderday: now.toISOString().substring(0, 10),
+    }).fetch();
+    const ordered = orders.length > 0;
+    return { ordered };
+  });
+
+  // Thank you message
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [toastShown, setToast] = useState(false);
 
   // tab logic
   const [tabValue, setTabValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
-    Meteor.call("log",componentName, "handleChange");
+    Meteor.call("log", componentName, "handleChange");
   };
 
   const getKcalInfo = () => {
@@ -497,9 +534,7 @@ export const MealScreen = ({ recipe }) => {
           </Tabs>
         </div>
       </div>
-
       <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
-
       <div className={classes.recipeDescription}>
         <div style={{ alignSelf: "flex-start" }}>
           <h1 className={classes.subtitle}>Description</h1>
@@ -510,14 +545,33 @@ export const MealScreen = ({ recipe }) => {
         </div>
         <Fab
           variant="extended"
+          size="medium"
           color="primary"
           aria-label="add"
+          onClick={() => handleOrder()}
           className={classes.margin}
-          style={{ color: "white" }}
+          style={
+            ordered
+              ? {
+                  backgroundColor: red[100],
+                  borderRadius: "14px",
+                  color: "#F57D20",
+                }
+              : { color: "white" }
+          }
         >
-          Order
+          {ordered ? "Ordered" : "Order"}
         </Fab>
-      </div>
+      </div>{" "}
+      <Snackbar
+        open={toastShown}
+        autoHideDuration={6000}
+        onClose={() => setToast(false)}
+      >
+        <Alert onClose={() => setToast(false)} severity="success">
+          Thank you for participating today!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
