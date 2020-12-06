@@ -1,16 +1,12 @@
 import {
-  Checkbox,
-  MenuItem,
-  Select,
-  Slider,
-  Switch,
-  FormControlLabel,
+  FormControlLabel, Slider,
+  Switch
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
+import React from "react";
+import { capitalizeFirstLetter, makeArrayOf } from "/imports/api/auxMethods";
 import { RecipesCollection, UserPreferences } from "/imports/api/methods.js";
-import React, { useState } from "react";
-import { makeArrayOf, capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const useStyles = makeStyles((persfoTheme) => ({
   mainWindow: {
