@@ -12,10 +12,12 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
+import Grid from "@material-ui/core/Grid";
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -120,7 +122,27 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
           >
             Reset password
           </Button>
-          <Button
+          <Grid container>
+            <Grid item xs>
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setForgotPassword(false)}
+              >
+                Cancel
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => setForgotPassword(false)}
+              >
+                {"Already have an account? Sign In"}
+              </Link>
+            </Grid>
+          </Grid>
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -128,8 +150,8 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
             className={classes.submit}
             onClick={() => setForgotPassword(false)}
           >
-            cancel
-          </Button>
+            Cancel
+          </Button> */}
         </form>
       </div>
       <Box mt={8}>

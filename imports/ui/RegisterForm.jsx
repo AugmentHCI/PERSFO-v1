@@ -17,7 +17,7 @@ import React, { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(6),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -131,10 +131,6 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             onChange={(e) => setPassword2(e.target.value)}
             autoComplete="current-password"
           />
-          {/* <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        /> */}
           <Button
             type="submit"
             fullWidth
