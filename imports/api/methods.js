@@ -103,14 +103,11 @@ Meteor.methods({
 
     // check if order was already made today
     const now = new Date();
-    let start = new Date();
-    start.setHours(0, 0, 0, 0);
-    let end = new Date();
-    end.setHours(23, 59, 59, 999);
+    const nowString = now.toISOString().substring(0, 10);
     const orders = OrdersCollection.find({
       userid: this.userId,
       recipeId: recipeId,
-      timestamp: { $gte: start, $lt: end },
+      orderday: nowString,
     }).fetch();
     const ordered = orders.length > 0;
 
@@ -120,14 +117,14 @@ Meteor.methods({
         userid: this.userId,
         recipeId: recipeId,
         timestamp: now,
-        orderday: now.toISOString().substring(0, 10),
+        orderday: nowString,
       });
     } else {
       // user cancelled order
       OrdersCollection.remove({
         userid: this.userId,
         recipeId: recipeId,
-        orderday: now.toISOString().substring(0, 10),
+        orderday: nowString,
       });
     }
   },

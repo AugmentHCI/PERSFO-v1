@@ -129,21 +129,18 @@ export const CardOtherMeal = ({ recipeId }) => {
 
   const { ordered } = useTracker(() => {
     const noDataAvailable = { ordered: false };
-    if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("orders");
     if (!handler.ready()) {
       return { ...noDataAvailable };
     }
+    if (!recipe) return { ...noDataAvailable };
 
-    // find only order made today
-    let start = new Date();
-    start.setHours(0, 0, 0, 0);
-    let end = new Date();
-    end.setHours(23, 59, 59, 999);
+    // find only orders made today
+    const now = new Date();
     const orders = OrdersCollection.find({
       userid: Meteor.userId(),
       recipeId: recipe.id,
-      timestamp: { $gte: start, $lt: end },
+      orderday: now.toISOString().substring(0, 10),
     }).fetch();
     const ordered = orders.length > 0;
     return { ordered };
