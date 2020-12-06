@@ -56,6 +56,10 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
     }
   );
 
+  document.addEventListener('backbutton', function(){ 
+    handleDetailsClick();
+  });
+
   const handleDetailsClick = () => {
     OpenMealDetails.set(null);
     setBackground("none");

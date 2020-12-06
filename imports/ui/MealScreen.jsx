@@ -41,6 +41,11 @@ export const MealScreen = ({ recipe }) => {
     setHeightBuffer(window.innerHeight >= 640 ? 60 : 0);
   });
 
+  document.addEventListener('backbutton', function(){ 
+    console.log("back pressed");
+  });
+
+
   const useStyles = makeStyles((persfoTheme) => ({
     mealTitleCard: {
       display: "flex",
