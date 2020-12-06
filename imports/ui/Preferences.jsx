@@ -1,6 +1,16 @@
-import { Checkbox, MenuItem, Select, Slider, Switch } from "@material-ui/core/";
+import {
+  Checkbox,
+  MenuItem,
+  Select,
+  Slider,
+  Switch,
+  FormControlLabel,
+} from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
+import { useTracker } from "meteor/react-meteor-data";
+import { RecipesCollection, UserPreferences } from "/imports/api/methods.js";
 import React, { useState } from "react";
+import { makeArrayOf, capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const useStyles = makeStyles((persfoTheme) => ({
   mainWindow: {
@@ -59,6 +69,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 export const Preferences = () => {
   const classes = useStyles();
+
   const [EnergySlider, setEnergySlider] = useState(0);
   const [TotalFatSlider, setTotalFatSlider] = useState(0);
   const [SatfatSlider, setSatfatSlider] = useState(0);
@@ -90,41 +101,79 @@ export const Preferences = () => {
     setFiberSlider(newValue);
   };
 
-  const [MilkBox, setMilkBox] = useState(false);
-  const [EggsBox, setEggsBox] = useState(false);
-  const [NutsBox, setNutsBox] = useState(false);
-  const [PeanutsBox, setPeanutsBox] = useState(false);
-  const [ShellBox, setShellBox] = useState(false);
-  const [WheatBox, setWheatBox] = useState(false);
-  const [SoyBox, setSoyBox] = useState(false);
-  const [FishBox, setFishBox] = useState(false);
-  // Checkbox
-  const handleMilkBox = (event, newValue) => {
-    setMilkBox(newValue);
-  };
-  const handleEggsBox = (event, newValue) => {
-    setEggsBox(newValue);
-  };
-  const handleNutsBox = (event, newValue) => {
-    setNutsBox(newValue);
-  };
-  const handlePeanutsBox = (event, newValue) => {
-    setPeanutsBox(newValue);
-  };
-  const handleShellBox = (event, newValue) => {
-    setShellBox(newValue);
-  };
-  const handleWheatBox = (event, newValue) => {
-    setWheatBox(newValue);
-  };
-  const handleSoyBox = (event, newValue) => {
-    setSoyBox(newValue);
-  };
-  const handleFishBox = (event, newValue) => {
-    setFishBox(newValue);
+  const { allergens, allergenCheckboxes } = useTracker(() => {
+    const noDataAvailable = {
+      allergens: [],
+      allergenCheckboxes: makeArrayOf(false, 34),
+    };
+    const recipeHandler = Meteor.subscribe("recipes");
+    const preferencesHandler = Meteor.subscribe("userpreferences");
+
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
+    if (!recipeHandler.ready() || !preferencesHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+    const recipe = RecipesCollection.findOne({});
+    const preferences = UserPreferences.findOne({ userid: Meteor.userId() });
+    let userAllergens = [];
+    try {
+      userAllergens = preferences.allergens;
+    } catch (error) {
+      // no allergens set yet
+    }
+
+    const allergens = _.map(recipe.allergens, (value, allergen) => {
+      let userPresent = _.find(userAllergens, (ua) => ua.allergen === allergen);
+      userPresent = userPresent ? userPresent.present : 0;
+      return {
+        allergen: allergen,
+        present: userPresent,
+      };
+    });
+    const allergenCheckboxes = _.map(
+      allergens,
+      (allergen) => !!allergen.present
+    );
+
+    return { allergens, allergenCheckboxes };
+  });
+
+  const handleAllergenCheckboxChange = (event, i) => {
+    let newArr = [...allergenCheckboxes];
+    newArr[i] = event.target.checked;
+    let listAllergens = [];
+    for (let i = 0; i < newArr.length; i++) {
+      let check = newArr[i];
+      if (check) {
+        listAllergens.push({
+          allergen: allergens[i].allergen,
+          present: 1,
+        });
+      }
+    }
+    Meteor.call("users.updateAllergens", listAllergens);
   };
 
-  const handleChange = (event, newValue) => {};
+  const getAllergenBar = (allergen, i) => {
+    return (
+      <FormControlLabel
+        className={classes.checkbox}
+        key={"bar-" + allergen.allergen}
+        control={
+          <Checkbox
+            color="primary"
+            checked={allergenCheckboxes[i]}
+            onChange={(e) => handleAllergenCheckboxChange(e, i)}
+          />
+        }
+        label={capitalizeFirstLetter(allergen.allergen.replaceAll("_", " "))}
+        labelPlacement="start"
+      />
+    );
+  };
+
   return (
     <div className={classes.mainWindow}>
       <h1 className={classes.title}>FOOD PREFERENCES</h1>
@@ -190,141 +239,7 @@ export const Preferences = () => {
       >
         <h1 className={classes.subtitle}>Allergies</h1>
         <div className={classes.form}>
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={MilkBox}
-                  onChange={handleMilkBox}
-                />
-                <div className={classes.sliderTitle}>Cow's Milk</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={EggsBox}
-                  onChange={handleEggsBox}
-                />
-                <div className={classes.sliderTitle}>Eggs</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={NutsBox}
-                  onChange={handleNutsBox}
-                />
-                <div className={classes.sliderTitle}>Tree Nuts</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={PeanutsBox}
-                  onChange={handlePeanutsBox}
-                />
-                <div className={classes.sliderTitle}>Peanuts</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={ShellBox}
-                  onChange={handleShellBox}
-                />
-                <div className={classes.sliderTitle}>Shellfish</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={WheatBox}
-                  onChange={handleWheatBox}
-                />
-                <div className={classes.sliderTitle}>Wheat</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={SoyBox}
-                  onChange={handleSoyBox}
-                />
-                <div className={classes.sliderTitle}>Soy</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className={classes.sliderContainer}>
-            <div className={classes.checkbox}>
-              <div className={classes.innerCheckbox}>
-                <Checkbox
-                  color="primary"
-                  checked={FishBox}
-                  onChange={handleFishBox}
-                />
-                <div className={classes.sliderTitle}>Fish</div>
-              </div>
-              <Select className={classes.select}>
-                <MenuItem value={1}>Severe</MenuItem>
-                <MenuItem value={2}>Moderate</MenuItem>
-              </Select>
-            </div>
-          </div>
+          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
         </div>
       </div>
     </div>

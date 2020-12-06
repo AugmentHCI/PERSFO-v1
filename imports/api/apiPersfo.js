@@ -80,16 +80,16 @@ export function initData() {
             });
             if (call.data) {
               RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-              // fs.writeFile(
-              //   process.env["PWD"] +
-              //     "/public/newRecipeDetails/" +
-              //     currentId +
-              //     ".json",
-              //   JSON.stringify(call.data),
-              //   (err) => {
-              //     if (err) throw err;
-              //   }
-              // );
+              fs.writeFile(
+                process.env["PWD"] +
+                  "/public/newRecipeDetails/" +
+                  currentId +
+                  ".json",
+                JSON.stringify(call.data),
+                (err) => {
+                  if (err) throw err;
+                }
+              );
             }
           } else {
             console.log("error at index: " + index);

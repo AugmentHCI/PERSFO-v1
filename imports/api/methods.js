@@ -35,6 +35,18 @@ Meteor.methods({
       );
     });
   },
+  "users.updateAllergens"(allergens) {
+    check(allergens, Array);
+
+    if (!this.userId) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    UserPreferences.update(
+      { userid: this.userId },
+      { $set: { allergens: allergens } }
+    );
+  },
   "users.handleLikeRecommendation"(recipeId, keep) {
     check(recipeId, String);
 
@@ -42,7 +54,7 @@ Meteor.methods({
       throw new Meteor.Error("Not authorized.");
     }
 
-    if(!keep) {
+    if (!keep) {
       UserPreferences.update(
         { userid: this.userId },
         { $pull: { likedRecommendations: recipeId } }
