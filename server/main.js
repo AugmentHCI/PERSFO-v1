@@ -60,6 +60,15 @@ Meteor.publish("logs", function publishTasks() {
   return LogsCollection.find({ userid: this.userId });
 });
 
+Meteor.publish('userData', function () {
+  if (this.userId) {
+    return Meteor.users.find({ _id: this.userId }, {
+      fields: { createdAt: 1 }
+    });
+  } else {
+    this.ready();
+  }
+});
 Meteor.startup(() => {
   if (!Accounts.findUserByUsername(SEED_USERNAME)) {
     Accounts.createUser({

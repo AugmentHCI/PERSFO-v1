@@ -67,12 +67,34 @@ export const Progress = ({ recipeURLs }) => {
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
-  const { user, isLoggedIn, GetOpenMealDetails } = useTracker(() => {
-    const user = Meteor.user();
-    const userId = Meteor.userId();
-    const GetOpenMealDetails = OpenMealDetails.get();
-    return { GetOpenMealDetails, user, userId, isLoggedIn: !!userId };
-  });
+  const { userName, isLoggedIn, GetOpenMealDetails, daysActive } = useTracker(
+    () => {
+      const noDataAvailable = {
+        userName: "",
+        GetOpenMealDetails: undefined,
+        daysActive: 0,
+      };
+
+      if (!Meteor.user()) {
+        return noDataAvailable;
+      }
+      const userHandler = Meteor.subscribe("userData");
+      if (!userHandler.ready()) {
+        return { ...noDataAvailable, isLoading: true };
+      }
+
+      const daysActive = Math.floor(( new Date() - Meteor.user().createdAt ) / 86400000);
+      const userName = Meteor.user().username;
+
+      const GetOpenMealDetails = OpenMealDetails.get();
+      return {
+        userName,
+        GetOpenMealDetails,
+        isLoggedIn: !!Meteor.userId(),
+        daysActive,
+      };
+    }
+  );
 
   if (!isLoggedIn) {
     return null;
@@ -142,14 +164,19 @@ export const Progress = ({ recipeURLs }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between",
+              justifyContent: "start",
             }}
           >
             <div className={classes.stat}>
               Hello,{" "}
-              <span className={classes.statNum}>{Meteor.user().username}</span>
+              <span className={classes.statNum}>{userName}</span>
             </div>
             <div className={classes.stat}>
+              You are now using this pilot app for{" "}
+              <span className={classes.statNum}>{"" + daysActive}</span> days. Please
+              keep using the app before we can create an weekly overview.
+            </div>
+            {/* <div className={classes.stat}>
               Last week you ordered <span className={classes.statNum}>3</span>{" "}
               Nutriscore <span className={classes.statNum}>A</span> meals
             </div>
@@ -167,7 +194,7 @@ export const Progress = ({ recipeURLs }) => {
             <div className={classes.stat}>
               reduced your carbon footprint with{" "}
               <span className={classes.statNum}>7%</span>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div
