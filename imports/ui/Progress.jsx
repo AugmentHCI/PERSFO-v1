@@ -1,10 +1,12 @@
-import { IconButton, LinearProgress, Tab, Tabs } from "@material-ui/core/";
+import { LinearProgress, Tab, Tabs } from "@material-ui/core/";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import { OrdersCollection, UserPreferences } from "../api/methods";
 import { CardRecommendedMeal } from "./CardRecommededMeal";
 import { MealScreen } from "./MealScreen";
+import { calculateNutrientforRecipe } from "/imports/api/apiPersfo";
+import { capitalizeFirstLetter } from "/imports/api/auxMethods";
 import { OpenMealDetails, RecipesCollection } from "/imports/api/methods.js";
 
 const BorderLinearProgress = withStyles((theme) => ({
@@ -73,35 +75,77 @@ export const Progress = ({ recipeURLs }) => {
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
-  const { userName, isLoggedIn, GetOpenMealDetails, daysActive } = useTracker(
-    () => {
-      const noDataAvailable = {
-        userName: "",
-        GetOpenMealDetails: undefined,
-        daysActive: 0,
-      };
+  const {
+    userName,
+    isLoggedIn,
+    GetOpenMealDetails,
+    daysActive,
+    orders,
+    nbLikes,
+    nbDislikes,
+  } = useTracker(() => {
+    const noDataAvailable = {
+      userName: "",
+      GetOpenMealDetails: undefined,
+      daysActive: 0,
+      orders: [],
+      nbLikes: 0,
+      nbDislikes: 0,
+    };
 
-      if (!Meteor.user()) {
-        return noDataAvailable;
-      }
-      const userHandler = Meteor.subscribe("userData");
-      if (!userHandler.ready()) {
-        return { ...noDataAvailable, isLoading: true };
-      }
-
-      const daysActive =
-        Math.floor((new Date() - Meteor.user().createdAt) / 86400000) + 1;
-      const userName = Meteor.user().username;
-
-      const GetOpenMealDetails = OpenMealDetails.get();
-      return {
-        userName,
-        GetOpenMealDetails,
-        isLoggedIn: !!Meteor.userId(),
-        daysActive,
-      };
+    if (!Meteor.user()) {
+      return noDataAvailable;
     }
-  );
+    const userHandler = Meteor.subscribe("userData");
+    if (!userHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+    const orderHandler = Meteor.subscribe("orders");
+    if (!orderHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+
+    const recipeHandler = Meteor.subscribe("recipes");
+    if (!recipeHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+
+    const userPreferencesHandler = Meteor.subscribe("userpreferences");
+    if (!userPreferencesHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+
+    const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
+    let nbLikes = 0;
+    try {
+      nbLikes = userPreferences.likedRecipes.length;
+    } catch (error) {}
+
+    let nbDislikes = 0;
+    try {
+      nbDislikes = userPreferences.dislikedIngredients.length;
+    } catch (error) {}
+
+    let orders = OrdersCollection.find({ userid: Meteor.userId() }).fetch();
+    orders = _.map(orders, (order) => {
+      return RecipesCollection.findOne({ id: order.recipeId });
+    });
+
+    const daysActive =
+      Math.floor((new Date() - Meteor.user().createdAt) / 86400000) + 1;
+    const userName = capitalizeFirstLetter(Meteor.user().username);
+
+    const GetOpenMealDetails = OpenMealDetails.get();
+    return {
+      userName,
+      GetOpenMealDetails,
+      isLoggedIn: !!Meteor.userId(),
+      daysActive,
+      orders,
+      nbLikes,
+      nbDislikes,
+    };
+  });
 
   if (!isLoggedIn) {
     return null;
@@ -171,22 +215,35 @@ export const Progress = ({ recipeURLs }) => {
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "start",
+              justifyContent: "space-between",
             }}
           >
             <div className={classes.stat}>
               Hello, <span className={classes.statNum}>{userName}</span>
             </div>
             <div className={classes.stat}>
-              You are now using this pilot app for{" "}
-              <span className={classes.statNum}>{"" + daysActive}</span> days.
-              Please keep using the app before we can create an weekly overview.
+              You created your account{" "}
+              <span className={classes.statNum}>{"" + daysActive}</span> days
+              ago.
             </div>
-            {/* <div className={classes.stat}>
-              Last week you ordered <span className={classes.statNum}>3</span>{" "}
-              Nutriscore <span className={classes.statNum}>A</span> meals
+            <div className={classes.stat}>
+              Since you started using this app, you ordered{" "}
+              <span className={classes.statNum}>{orders.length}</span> meals. Which add up to{" "}
+              <span className={classes.statNum}>
+                {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
+                  ? _.sumBy(orders, (o) =>
+                      calculateNutrientforRecipe(o, "kcal")
+                    )
+                  : 0}
+              </span>{" "}
+              kcal in total.
             </div>
-            <div className={classes.statTitle}>Doing so you:</div>
+            <div className={classes.stat}>
+              You liked <span className={classes.statNum}>{nbLikes}</span>{" "}meals
+              and disliked <span className={classes.statNum}>{nbDislikes}</span>{" "}
+              ingredients.
+            </div>
+            {/*<div className={classes.statTitle}>Doing so you:</div>
             <div className={classes.stat}>
               ate <span className={classes.statNum}>25%</span> less fat
             </div>
@@ -212,8 +269,8 @@ export const Progress = ({ recipeURLs }) => {
             }}
           >
             <div className={classes.stat}>
-              Feature expected on December 14, 2020. Please continue logging your daily orders to
-              enable personalized goal setting.
+              Feature expected on December 14, 2020. Please continue logging
+              your daily orders to enable personalized goal setting.
             </div>
             {/* <GoalsBar
               title="Eat less calories"
