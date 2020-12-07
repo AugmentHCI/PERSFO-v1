@@ -1,6 +1,6 @@
 import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
-const token = "0LcZPFZ89gWDUEWMs55GYVEZwXy95J";
+const token = "uX15MB8UTvvgSPjbfBjQ9iO8i0qV4i";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
 var fs = require("fs");
@@ -55,7 +55,7 @@ export function initData() {
   console.log("recipes loaded");
 
   Meteor.setInterval(function () {
-    console.log("Hourly updated started");
+    console.log("Hourly updated started: " + new Date());
 
     // fetch all recipes in database
     const allRecipes = RecipesCollection.find({}).fetch();
@@ -97,14 +97,14 @@ export function initData() {
         if (index < allRecipes.length) {
           updateRecipeDetails();
         } else {
-          console.log("hourly update finished");
+          console.log("hourly update finished: " + new Date());
         }
       }, 1001);
     }
 
     // start the interval with the first recipe
     updateRecipeDetails(allRecipes[0].id);
-  }, 15 * 60 * 1000);
+  }, 30 * 60 * 1000);
 }
 
 export function getNutriscore(recipe) {

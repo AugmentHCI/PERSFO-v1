@@ -172,7 +172,6 @@ export const MealScreen = ({ recipe }) => {
           nutrientGoals[key] = userNutrientGoals[key] + 0.0000001; // otherwise considered false
         }
       });
-      console.log(nutrientGoals);
     } catch (error) {}
     return { liked, nbLikes, userAllergens, nutrientGoals };
   });
