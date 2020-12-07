@@ -409,11 +409,13 @@ export const MealScreen = ({ recipe }) => {
     );
     let render = _.map(allergens, function (a, i) {
       let tempClassName = classes.allergenBox;
-      userAllergens.forEach((element) => {
-        if (element.allergen == a) {
-          tempClassName = classes.activeAllergenBox;
-        }
-      });
+      try {
+        userAllergens.forEach((element) => {
+          if (element.allergen == a) {
+            tempClassName = classes.activeAllergenBox;
+          }
+        });
+      } catch (error) {}
       return (
         <div className={tempClassName} key={i}>
           {a}
