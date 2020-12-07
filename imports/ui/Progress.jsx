@@ -132,7 +132,7 @@ export const Progress = ({ recipeURLs }) => {
     });
 
     const daysActive =
-      Math.floor((new Date() - Meteor.user().createdAt) / 86400000) + 1;
+      Math.floor((new Date() - Meteor.user().createdAt) / 86400000);
     const userName = capitalizeFirstLetter(Meteor.user().username);
 
     const GetOpenMealDetails = OpenMealDetails.get();
