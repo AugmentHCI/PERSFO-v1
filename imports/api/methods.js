@@ -263,9 +263,22 @@ Meteor.methods({
       });
     } catch (error) {}
 
-    // last step! Assign rankings
+    // filter smoothies
+    todaysRecipes = _.filter(todaysRecipes, recipe => {
+      if(recipe.recipe_type_other) {
+        return recipe.recipe_type_other !== "Smoothie";
+      } else {
+        return true;
+      }
+    });
+
     // find recipe with most likes --> TODO make smarter
     todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
+
+
+
+
+    // last step! Assign rankings
     todaysRecipes = _.reverse(todaysRecipes);
     for (let i = 0; i < todaysRecipes.length; i++) {
       todaysRecipes[i].ranking = i + 1;

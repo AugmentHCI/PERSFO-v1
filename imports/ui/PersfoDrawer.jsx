@@ -42,8 +42,8 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
 
   const handleProgress = () => {
     OpenMealDetails.set(null);
-    OpenSettings.set(false);
     OpenProgress.set(true);
+    OpenSettings.set(false);
     OpenFeedback.set(false);
     Meteor.call("log", componentName, "handleProgress");
   };

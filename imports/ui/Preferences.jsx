@@ -405,7 +405,7 @@ export const Preferences = () => {
             onChange={(e) => handleAllergenCheckboxChange(e, i)}
           />
         }
-        label={capitalizeFirstLetter(allergen.allergen.replaceAll("_", " "))}
+        label={capitalizeFirstLetter(allergen.allergen.split("_").join(" "))}
         labelPlacement="start"
       />
     );
