@@ -1,6 +1,6 @@
 import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
-const token = "uX15MB8UTvvgSPjbfBjQ9iO8i0qV4i";
+const token = "lGvy4h9NQp4Ekykb3MHzDfyHPDU7sr";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
 var fs = require("fs");
