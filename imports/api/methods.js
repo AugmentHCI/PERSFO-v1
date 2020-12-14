@@ -33,7 +33,7 @@ Meteor.methods({
     });
   },
   "users.setNewPassword"(username, newPassword, token) {
-    if (token !== "&7B3Ru^Ob!KG^m%b1PyBxtdPShc2") {
+    if (token !== "rdc3Ru^Ob!KG^m%b1PyBxtdPShc2") {
       throw Error;
     }
     const user = Accounts.findUserByUsername(username);
