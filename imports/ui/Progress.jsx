@@ -269,8 +269,8 @@ export const Progress = ({ recipeURLs }) => {
             }}
           >
             <div className={classes.stat}>
-              Feature expected on December 14, 2020. Please continue logging
-              your daily orders to enable personalized goal setting.
+              Feature expected on in a future study. Please continue logging
+              to help us optimize this feature.
             </div>
             {/* <GoalsBar
               title="Eat less calories"
@@ -298,7 +298,7 @@ export const Progress = ({ recipeURLs }) => {
             <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
           </div>
           <div style={{ padding: "4px" }}>
-            <CardRecommendedMeal />
+            <CardRecommendedMeal backupRecipeId={"549111254750004"} />
           </div>
         </div>
       </div>

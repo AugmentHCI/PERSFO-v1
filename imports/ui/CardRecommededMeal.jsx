@@ -133,6 +133,9 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
     // in case no recipe can be found, pick a random recipe from today's menu
     if (!recommendedRecipeId) recommendedRecipeId = backupRecipeId;
 
+    // in case no backup was provided, suggest a sandwhich
+    if(!recommendedRecipeId) recommendedRecipeId = "549111135960007";
+
     const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
     });
