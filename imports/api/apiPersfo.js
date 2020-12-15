@@ -75,16 +75,16 @@ export function initData() {
             });
             if (call.data) {
               RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-              fs.writeFile(
-                process.env["PWD"] +
-                  "/public/newRecipeDetails/" +
-                  currentId +
-                  ".json",
-                JSON.stringify(call.data),
-                (err) => {
-                  if (err) throw err;
-                }
-              );
+              // fs.writeFile(
+              //   process.env["PWD"] +
+              //     "/public/newRecipeDetails/" +
+              //     currentId +
+              //     ".json",
+              //   JSON.stringify(call.data),
+              //   (err) => {
+              //     if (err) throw err;
+              //   }
+              // );
             }
           } else {
             console.log("error at index: " + index);
@@ -104,7 +104,7 @@ export function initData() {
 
     // start the interval with the first recipe
     updateRecipeDetails(allRecipes[0].id);
-  }, 5 * 60 * 1000);
+  }, 30 * 60 * 1000);
 }
 
 export function getNutriscore(recipe) {
