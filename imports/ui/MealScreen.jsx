@@ -30,7 +30,9 @@ const BorderLinearProgress = withStyles((theme) => ({
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
-  const [heightBuffer, setHeightBuffer] = useState(window.innerHeight >= 640 ? 60 : 0);
+  const [heightBuffer, setHeightBuffer] = useState(
+    window.innerHeight >= 640 ? 60 : 0
+  );
 
   window.addEventListener("resize", () => {
     setComponentHeight(window.innerHeight);
@@ -124,6 +126,12 @@ export const MealScreen = ({ recipe }) => {
       border: "1px solid " + green[300],
       borderRadius: "10px",
       color: green[300],
+    },
+    ingredientBox: {
+      padding: "8px",
+      border: "1px solid #F57D20",
+      borderRadius: "10px",
+      color: "#F57D20",
     },
     activeAllergenBox: {
       padding: "8px",
@@ -447,6 +455,54 @@ export const MealScreen = ({ recipe }) => {
     );
   };
 
+  const IngredientContent = (props) => {
+    let tempIngredients = [];
+    if (props.recipe.remarks) {
+      // remove all html tags --> remove all info between brackets
+      tempIngredients = props.recipe.remarks
+        .replace(/<[^>]*>?/gm, "")
+        .replace(/ *\([^)]*\) */g, "")
+        .split(",");
+      // remove trailing spaces, unneeded quotes and stars
+      tempIngredients = _.map(tempIngredients, (ingredient) =>
+        ingredient.trim().replace(/['"*]+/g, "")
+      );
+      tempIngredients = tempIngredients.sort();
+    }
+    const ingredients = tempIngredients;
+    let render = _.map(ingredients, function (a, i) {
+      return (
+        <div className={classes.ingredientBox} key={i}>
+          {a}
+        </div>
+      );
+    });
+    if (_.isEmpty(ingredients) || ingredients[0] === "")
+      render = (
+        <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
+          {" "}
+          No ingredients known yet.{" "}
+        </p>
+      );
+    return (
+      <div>
+        <h1 className={classes.subtitle}>Ingredients</h1>
+        <div style={{ overflowY: "scroll", height: "150px" }}>
+          <div
+            style={{
+              display: "flex",
+              columnGap: "8px",
+              flexWrap: "wrap",
+              rowGap: "8px",
+            }}
+          >
+            {render}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const SustainabilityContent = (props) => {
     return (
       <div>
@@ -487,14 +543,17 @@ export const MealScreen = ({ recipe }) => {
         return <NutrientsContent recipe={recipe} />;
         break;
       case 1:
-        return <AllergiesContent recipe={recipe} />;
+        return <IngredientContent recipe={recipe} />;
         break;
       case 2:
-        return <SustainabilityContent recipe={recipe} />;
+        return <AllergiesContent recipe={recipe} />;
         break;
       case 3:
-        return <RewiewsContent recipe={recipe} />;
+        return <SustainabilityContent recipe={recipe} />;
         break;
+      // case 3:
+      //   return <RewiewsContent recipe={recipe} />;
+      //   break;
     }
   };
 
@@ -568,16 +627,20 @@ export const MealScreen = ({ recipe }) => {
             />
             <Tab
               key={"key2"}
-              label={<span className={classes.tabFont}>Allergens</span>}
+              label={<span className={classes.tabFont}>Ingredients</span>}
             />
             <Tab
               key={"key3"}
-              label={<span className={classes.tabFont}>Sustainability</span>}
+              label={<span className={classes.tabFont}>Allergens</span>}
             />
             <Tab
               key={"key4"}
-              label={<span className={classes.tabFont}>Reviews</span>}
+              label={<span className={classes.tabFont}>Sustainability</span>}
             />
+            {/* <Tab
+              key={"key4"}
+              label={<span className={classes.tabFont}>Reviews</span>}
+            /> */}
           </Tabs>
         </div>
       </div>
