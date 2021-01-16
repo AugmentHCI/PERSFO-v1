@@ -33,8 +33,8 @@ UserPreferences.insert({
 });
 UserPreferences.remove({ _id: "1" });
 
-const SEED_USERNAME = "robin";
-const SEED_PASSWORD = "hello";
+const SEED_USERNAME = "demo";
+const SEED_PASSWORD = "persfo";
 
 Meteor.publish("menus", function publishTasks() {
   return MenusCollection.find();
@@ -78,4 +78,5 @@ Meteor.startup(() => {
   }
 
   initData();
+
 });

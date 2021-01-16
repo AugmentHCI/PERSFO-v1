@@ -128,11 +128,12 @@ export const App = () => {
     // recalculate new recommendation on every app startup
     Meteor.call("recommender.updateRecommendations");
 
-    // pick random date for testing
-    // let menu = MenusCollection.find({ starting_date: "2020-12-10" }).fetch();
-    let menu = MenusCollection.findOne({
-      starting_date: new Date().toISOString().substring(0, 10),
-    });
+    // pick specific date for demo
+    let menu = MenusCollection.findOne({ starting_date: "2020-12-17" });
+    // console.log(menu);
+    // let menu = MenusCollection.findOne({
+    //   starting_date: new Date().toISOString().substring(0, 10),
+    // });
     // pick random menu when no menu available today
     if (!menu) menu = MenusCollection.findOne();
     return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu };

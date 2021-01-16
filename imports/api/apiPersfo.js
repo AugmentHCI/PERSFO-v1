@@ -1,6 +1,6 @@
 import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
 
-const token = "lGvy4h9NQp4Ekykb3MHzDfyHPDU7sr";
+const token = "";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
 var fs = require("fs");
@@ -54,57 +54,57 @@ export function initData() {
   );
   console.log("recipes loaded");
 
-  Meteor.setInterval(function () {
-    console.log("Hourly updated started: " + new Date());
+  // Meteor.setInterval(function () {
+  //   console.log("Hourly updated started: " + new Date());
 
-    // fetch all recipes in database
-    const allRecipes = RecipesCollection.find({}).fetch();
+  //   // fetch all recipes in database
+  //   const allRecipes = RecipesCollection.find({}).fetch();
 
-    let index = 0;
+  //   let index = 0;
 
-    // function to fetch data in intervals
-    function updateRecipeDetails() {
-      Meteor.setTimeout(function () {
-        try {
-          const currentId = allRecipes[index].id;
-          if (currentId) {
-            let call = HTTP.call("GET", url + currentId, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            if (call.data) {
-              RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-              // fs.writeFile(
-              //   process.env["PWD"] +
-              //     "/public/newRecipeDetails/" +
-              //     currentId +
-              //     ".json",
-              //   JSON.stringify(call.data),
-              //   (err) => {
-              //     if (err) throw err;
-              //   }
-              // );
-            }
-          } else {
-            console.log("error at index: " + index);
-          }
-        } catch (error) {
-          console.log("Call error for: " + currentId);
-        }
+  //   // function to fetch data in intervals
+  //   function updateRecipeDetails() {
+  //     Meteor.setTimeout(function () {
+  //       try {
+  //         const currentId = allRecipes[index].id;
+  //         if (currentId) {
+  //           let call = HTTP.call("GET", url + currentId, {
+  //             headers: {
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           });
+  //           if (call.data) {
+  //             RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+  //             fs.writeFile(
+  //               process.env["PWD"] +
+  //               "/public/newRecipeDetails/" +
+  //               currentId +
+  //               ".json",
+  //               JSON.stringify(call.data),
+  //               (err) => {
+  //                 if (err) throw err;
+  //               }
+  //             );
+  //           }
+  //         } else {
+  //           console.log("error at index: " + index);
+  //         }
+  //       } catch (error) {
+  //         console.log("Call error for: " + currentId);
+  //       }
 
-        index++;
-        if (index < allRecipes.length) {
-          updateRecipeDetails();
-        } else {
-          console.log("hourly update finished: " + new Date());
-        }
-      }, 1001);
-    }
+  //       index++;
+  //       if (index < allRecipes.length) {
+  //         updateRecipeDetails();
+  //       } else {
+  //         console.log("hourly update finished: " + new Date());
+  //       }
+  //     }, 1001);
+  //   }
 
-    // start the interval with the first recipe
-    updateRecipeDetails(allRecipes[0].id);
-  }, 30 * 60 * 1000);
+  //   // start the interval with the first recipe
+  //   updateRecipeDetails(allRecipes[0].id);
+  // }, 60 * 60 * 1000);
 }
 
 export function getNutriscore(recipe) {
@@ -125,6 +125,12 @@ export function getNutriscoreImage(recipe) {
 
 export function getImage(recipe) {
   if (recipe) {
+    if (recipe.id) { // cached images for demo version
+      const demoIds = ["149111125750001", "249111155760009", "249111385740003", "249111465720005", "349111275700004", "349111555940007", "349111745970001", "349111926820003", "349111926820003", "449111635760002", "549111135960007", "549111625900005", "949111468960002", "949111745730006"];
+      if (demoIds.findIndex(element => element === recipe.id)) {
+        return "/images/demo/" + recipe.id + ".jpg";
+      }
+    }
     if (recipe.main_image) {
       return recipe.main_image.thumb_image_url;
     }
@@ -161,14 +167,14 @@ export function calculateNutrientforRecipe(recipeDetails, nutrient) {
     } else {
       console.log(
         "other weight unit: " +
-          netWeightUnit +
-          " for recipe: " +
-          recipeDetails.id
+        netWeightUnit +
+        " for recipe: " +
+        recipeDetails.id
       );
     }
     return Math.round(
       (recipeDetails.nutrition_info[nutrient].quantity / 100) *
-        (recipeDetails.net_weight * multiplier)
+      (recipeDetails.net_weight * multiplier)
     );
   } catch (error) {
     return 0;
