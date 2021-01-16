@@ -127,7 +127,7 @@ export function getImage(recipe) {
   if (recipe) {
     if (recipe.id) { // cached images for demo version
       const demoIds = ["149111125750001", "249111155760009", "249111385740003", "249111465720005", "349111275700004", "349111555940007", "349111745970001", "349111926820003", "349111926820003", "449111635760002", "549111135960007", "549111625900005", "949111468960002", "949111745730006"];
-      if (demoIds.findIndex(element => element === recipe.id)) {
+      if (demoIds.findIndex(element => element === recipe.id) > -1) {
         return "/images/demo/" + recipe.id + ".jpg";
       } else {
         console.log(recipe.id);
