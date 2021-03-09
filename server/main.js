@@ -1,5 +1,6 @@
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
+import { initFFQ } from "../imports/api/apiFFQ";
 import { LogsCollection, OrdersCollection } from "../imports/api/methods";
 import "/imports/api/apiPersfo";
 import { initData } from "/imports/api/apiPersfo";
@@ -78,5 +79,6 @@ Meteor.startup(() => {
   }
 
   initData();
+  initFFQ();
 
 });
