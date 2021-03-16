@@ -140,17 +140,29 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
       id: recommendedRecipeId,
     });
 
-    const ingredients = _.map(recipe.ingredients, (ingredient) => {
-      return {
-        ingredient: ingredient,
-        label:
-          "I don't like " +
-          ingredient.description
-            .replace("[I] ", "")
-            .split("|")[0]
-            .toLowerCase(),
-      };
-    });
+    let tempIngredients = recipe.remarks
+        .replace(/<[^>]*>?/gm, "")
+        .replace(/ *\([^)]*\) */g, "")
+        .split(",");
+      // remove trailing spaces, unneeded quotes and stars
+      tempIngredients = _.map(tempIngredients, (ingredient) =>
+        ingredient.trim().replace(/['"*]+/g, "")
+      );
+      tempIngredients = tempIngredients.sort();
+
+    const ingredients = tempIngredients;
+
+    // const ingredients = _.map(recipe.ingredients, (ingredient) => {
+    //   return {
+    //     ingredient: ingredient,
+    //     label:
+    //       "I don't like " +
+    //       ingredient.description
+    //         .replace("[I] ", "")
+    //         .split("|")[0]
+    //         .toLowerCase(),
+    //   };
+    // });
 
     return { recipe, ingredients, thumbsDown };
   });
@@ -406,6 +418,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
                         />
                       }
                       label={ingredient.label}
+                      label={ingredient}
                       labelPlacement="start"
                     />
                   );

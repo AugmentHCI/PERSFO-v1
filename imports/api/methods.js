@@ -9,7 +9,6 @@ export const RecommendedRecipes = new Mongo.Collection("recommendedrecipes");
 export const OrdersCollection = new Mongo.Collection("orders");
 export const UserPreferences = new Mongo.Collection("userpreferences");
 export const LogsCollection = new Mongo.Collection("logs");
-export const FeedbackCollection = new Mongo.Collection("feedback");
 
 export const OpenMealDetails = new ReactiveVar(null);
 export const OpenProgress = new ReactiveVar(false);
@@ -181,24 +180,6 @@ Meteor.methods({
         orderday: nowString,
       });
     }
-  },
-  "feedback.submitNewFeedback"(feedback) {
-    check(feedback, String);
-
-    if (!this.userId) {
-      throw new Meteor.Error("Not authorized.");
-    }
-
-    const userPreferences = UserPreferences.findOne({ userid: this.userId });
-    const recommendations = RecommendedRecipes.findOne({ userid: this.userId });
-
-    FeedbackCollection.insert({
-      userid: this.userId,
-      feedback: feedback,
-      timestamp: new Date(),
-      userPreferences: userPreferences,
-      recommendedRecipes: recommendations,
-    });
   },
   "recommender.updateRecommendations"() {
     // init recommendations
