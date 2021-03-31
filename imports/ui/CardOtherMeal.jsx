@@ -16,11 +16,11 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
-  OpenMealDetails,
-  OrdersCollection,
-  RecipesCollection,
-  UserPreferences
+  OpenMealDetails
 } from "/imports/api/methods.js";
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles((persfoTheme) => ({
   root: {

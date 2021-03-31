@@ -1,9 +1,10 @@
-import { Box, Typography } from "@material-ui/core/";
+import { Box } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
 import { useTracker } from "meteor/react-meteor-data";
-import { OrdersCollection, RecipesCollection } from "../api/methods";
+import React from "react";
 import { getNutriscore } from "../api/apiPersfo";
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
 const useStyles = makeStyles((persfoTheme) => ({
   letter: {

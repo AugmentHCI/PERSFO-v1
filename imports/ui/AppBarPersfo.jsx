@@ -9,12 +9,11 @@ import { AdherenceTimeline } from "./AdherenceTimeline";
 import { PersfoDrawer } from "./PersfoDrawer";
 import { getImage } from "/imports/api/apiPersfo";
 import {
-  OpenMealDetails,
+  OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenFeedback,
-  RecipesCollection,
+  OpenSettings
 } from "/imports/api/methods.js";
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
 const logout = () => Meteor.logout();
 

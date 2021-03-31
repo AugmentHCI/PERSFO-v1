@@ -3,7 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
 import { capitalizeFirstLetter, makeArrayOf } from "/imports/api/auxMethods";
-import { RecipesCollection, UserPreferences } from "/imports/api/methods.js";
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles((persfoTheme) => ({
   mainWindow: {

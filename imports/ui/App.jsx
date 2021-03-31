@@ -6,19 +6,18 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { AppBarPersfo } from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
+import { Feedback } from "./Feedback";
 import { MealScreen } from "./MealScreen";
 import { Preferences } from "./Preferences";
-import { Feedback } from "./Feedback";
 import { Progress } from "./Progress";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
-  MenusCollection,
-  OpenMealDetails,
+  OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenFeedback,
-  RecipesCollection,
+  OpenSettings
 } from "/imports/api/methods.js";
+import { MenusCollection } from '/imports/db/menus/MenusCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
 const persfoTheme = createMuiTheme({
   palette: {

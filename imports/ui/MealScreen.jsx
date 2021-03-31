@@ -1,5 +1,5 @@
 import { Button, Fab, LinearProgress, Tab, Tabs } from "@material-ui/core/";
-import { red, green } from "@material-ui/core/colors";
+import { green, red } from "@material-ui/core/colors";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -8,9 +8,11 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import {
   calculateNutrientforRecipe,
-  getNutriscoreImage,
+  getNutriscoreImage
 } from "/imports/api/apiPersfo";
-import { OrdersCollection, UserPreferences } from "/imports/api/methods.js";
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {

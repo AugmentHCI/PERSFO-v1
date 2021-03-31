@@ -7,15 +7,14 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
+import FeedbackIcon from '@material-ui/icons/Feedback';
 import HomeIcon from "@material-ui/icons/Home";
 import SettingsIcon from "@material-ui/icons/Settings";
-import FeedbackIcon from '@material-ui/icons/Feedback';
 import React from "react";
 import {
-  OpenMealDetails,
+  OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenFeedback,
+  OpenSettings
 } from "/imports/api/methods.js";
 
 const useStyles = makeStyles((theme) => ({

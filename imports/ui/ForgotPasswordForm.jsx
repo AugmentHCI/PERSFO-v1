@@ -3,6 +3,7 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,7 +13,6 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
 
 
 const useStyles = makeStyles((theme) => ({

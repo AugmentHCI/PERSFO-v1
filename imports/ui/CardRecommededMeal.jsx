@@ -7,7 +7,7 @@ import {
   CardMedia,
   FormControlLabel,
   IconButton,
-  Typography,
+  Typography
 } from "@material-ui/core/";
 import Checkbox from "@material-ui/core/Checkbox";
 import { red } from "@material-ui/core/colors";
@@ -22,12 +22,12 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import {
-  OpenMealDetails,
-  OrdersCollection,
-  RecipesCollection,
-  RecommendedRecipes,
-  UserPreferences,
+  OpenMealDetails
 } from "/imports/api/methods.js";
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 
 const useStyles = makeStyles(() => ({

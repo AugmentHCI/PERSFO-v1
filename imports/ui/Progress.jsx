@@ -2,12 +2,17 @@ import { LinearProgress, Tab, Tabs } from "@material-ui/core/";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
-import { OrdersCollection, UserPreferences } from "../api/methods";
-import { CardRecommendedMeal } from "./CardRecommededMeal";
+import { MenusCollection } from '/imports/db/menus/MenusCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import { FeedbackCollection } from '/imports/db/feedback/FeedbackCollection';
+import { LogsCollection } from '/imports/db/logs/LogsCollection';
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';import { CardRecommendedMeal } from "./CardRecommededMeal";
 import { MealScreen } from "./MealScreen";
 import { calculateNutrientforRecipe } from "/imports/api/apiPersfo";
 import { capitalizeFirstLetter } from "/imports/api/auxMethods";
-import { OpenMealDetails, RecipesCollection } from "/imports/api/methods.js";
+import { OpenMealDetails } from "/imports/api/methods.js";
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {

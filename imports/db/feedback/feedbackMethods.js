@@ -1,5 +1,5 @@
 import { check } from 'meteor/check';
-import { FeedbackCollection } from '/imports/db/FeedbackCollection';
+import { FeedbackCollection } from '/imports/db/feedback/FeedbackCollection';
 
 Meteor.methods({
     "feedback.submitNewFeedback"(feedback) {
@@ -9,15 +9,16 @@ Meteor.methods({
           throw new Meteor.Error("Not authorized.");
         }
     
-        const userPreferences = UserPreferences.findOne({ userid: this.userId });
-        const recommendations = RecommendedRecipes.findOne({ userid: this.userId });
+        // todo: current preferences needed?
+        // const userPreferences = UserPreferences.findOne({ userid: this.userId });
+        // const recommendations = RecommendedRecipes.findOne({ userid: this.userId });
     
         FeedbackCollection.insert({
           userid: this.userId,
           feedback: feedback,
           timestamp: new Date(),
-          userPreferences: userPreferences,
-          recommendedRecipes: recommendations,
+          // userPreferences: userPreferences,
+          // recommendedRecipes: recommendations,
         });
       }
-})
+});

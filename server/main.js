@@ -1,16 +1,16 @@
 import { Accounts } from "meteor/accounts-base";
 import { Meteor } from "meteor/meteor";
 import { initFFQ } from "../imports/api/apiFFQ";
-import { LogsCollection, OrdersCollection } from "../imports/api/methods";
-import "/imports/api/apiPersfo";
 import { initData } from "/imports/api/apiPersfo";
-import "/imports/api/methods.js";
-import {
-  MenusCollection,
-  RecipesCollection,
-  RecommendedRecipes,
-  UserPreferences,
-} from "/imports/api/methods.js";
+import "/imports/db/dbMethods.js";
+import "/imports/db/dbPublications.js";
+import "/imports/api/apiPersfo";
+
+import { MenusCollection } from '/imports/db/menus/MenusCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
 RecipesCollection.insert({
@@ -37,29 +37,6 @@ UserPreferences.remove({ _id: "1" });
 const SEED_USERNAME = "demo";
 const SEED_PASSWORD = "persfo";
 
-Meteor.publish("menus", function publishTasks() {
-  return MenusCollection.find();
-});
-
-Meteor.publish("recipes", function publishTasks() {
-  return RecipesCollection.find();
-});
-
-Meteor.publish("recommendedrecipes", function publishTasks() {
-  return RecommendedRecipes.find({ userid: this.userId });
-});
-
-Meteor.publish("userpreferences", function publishTasks() {
-  return UserPreferences.find({ userid: this.userId });
-});
-
-Meteor.publish("orders", function publishTasks() {
-  return OrdersCollection.find({ userid: this.userId });
-});
-
-Meteor.publish("logs", function publishTasks() {
-  return LogsCollection.find({ userid: this.userId });
-});
 
 Meteor.publish('userData', function () {
   if (this.userId) {

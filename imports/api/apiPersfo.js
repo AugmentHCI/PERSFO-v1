@@ -1,4 +1,5 @@
-import { MenusCollection, RecipesCollection } from "/imports/api/methods.js";
+import { MenusCollection } from "/imports/db/menus/MenusCollection";
+import { RecipesCollection } from "/imports/db/recipes/RecipesCollection";
 
 const token = "";
 const url = "https://www.apicbase.com/api/v1/recipes/";
