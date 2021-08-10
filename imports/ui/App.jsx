@@ -10,11 +10,13 @@ import { Feedback } from "./Feedback";
 import { MealScreen } from "./MealScreen";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
+import { Survey } from "./Survey";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings
+  OpenSettings,
+  OpenSurvey
 } from "/imports/api/methods.js";
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
@@ -97,6 +99,7 @@ export const App = () => {
     GetOpenProgress,
     GetOpenSettings,
     GetOpenFeedback,
+    GetOpenSurvey,
     menu,
     isLoading,
   } = useTracker(() => {
@@ -109,6 +112,7 @@ export const App = () => {
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
+    const GetOpenSurvey = OpenSurvey.get();
 
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -135,7 +139,7 @@ export const App = () => {
     // });
     // pick random menu when no menu available today
     if (!menu) menu = MenusCollection.findOne();
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu };
   });
 
   const getCoursesTabs = () => {
@@ -196,6 +200,10 @@ export const App = () => {
 
       if (GetOpenFeedback) {
         renderScreen = <Feedback />;
+      }
+
+      if (GetOpenSurvey) {
+        renderScreen = <Survey />;
       }
     } else {
       renderScreen = <AuthenticationScreen />;

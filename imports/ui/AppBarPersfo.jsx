@@ -11,7 +11,8 @@ import { getImage } from "/imports/api/apiPersfo";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings
+  OpenSettings,
+  OpenSurvey
 } from "/imports/api/methods.js";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
@@ -47,12 +48,13 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
 
   const [background, setBackground] = useState("none");
 
-  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback } = useTracker(
+  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey } = useTracker(
     () => {
       const GetOpenMealDetails = OpenMealDetails.get();
       const GetOpenProgress = OpenProgress.get();
       const GetOpenSettings = OpenSettings.get();
       const GetOpenFeedback = OpenFeedback.get();
+      const GetOpenSurvey = OpenSurvey.get();
       return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback };
     }
   );
@@ -85,6 +87,8 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
     if (GetOpenProgress) title = "Progress";
     if (GetOpenSettings) title = "Settings";
     if (GetOpenFeedback) title = "Feedback";
+    if (GetOpenSurvey) title = "Survey";
+
     return title;
   };
 

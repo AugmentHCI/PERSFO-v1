@@ -14,7 +14,8 @@ import React from "react";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings
+  OpenSettings,
+  OpenSurvey
 } from "/imports/api/methods.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +37,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(false);
+    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleHomeButton");
   };
 
@@ -44,6 +46,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(true);
     OpenSettings.set(false);
     OpenFeedback.set(false);
+    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleProgress");
   };
 
@@ -52,15 +55,28 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(true);
     OpenFeedback.set(false);
+    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleSettings");
   };
+
   const handleFeedback = () => {
     OpenMealDetails.set(null);
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(true);
+    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleFeedback");
   };
+
+  const handleSurvey = () => {
+    OpenMealDetails.set(null);
+    OpenProgress.set(false);
+    OpenSettings.set(false);
+    OpenFeedback.set(false);
+    OpenSurvey.set(true);
+    Meteor.call("log", componentName, "handleFeedback");
+  };
+
   return (
     <SwipeableDrawer
       anchor="left"
@@ -103,6 +119,12 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
               <FeedbackIcon />
             </ListItemIcon>
             <ListItemText primary={"feedback"} />
+          </ListItem>
+          <ListItem button key={"survey"} onClick={() => handleSurvey()}>
+            <ListItemIcon>
+              <FeedbackIcon />
+            </ListItemIcon>
+            <ListItemText primary={"survey"} />
           </ListItem>
         </List>
       </div>
