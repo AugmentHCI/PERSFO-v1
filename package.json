@@ -8,16 +8,16 @@
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
-    "@material-ui/core": "^4.11.3",
+    "@babel/runtime": "^7.14.8",
+    "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@material-ui/styles": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@material-ui/styles": "^4.11.4",
     "bcrypt": "^5.0.1",
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "imports": "^1.0.0",
-    "meteor-node-stubs": "^1.0.3",
+    "meteor-node-stubs": "^1.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

@@ -1,6 +1,6 @@
 import { CircularProgress, Tab, Tabs } from "@material-ui/core/";
 import Box from "@material-ui/core/Box";
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+import { createTheme, makeStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
@@ -19,7 +19,7 @@ import {
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
-const persfoTheme = createMuiTheme({
+const persfoTheme = createTheme({
   palette: {
     primary: {
       main: "#F57D20",
