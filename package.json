@@ -17,9 +17,13 @@
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "imports": "^1.0.0",
+    "markdown": "^0.5.0",
     "meteor-node-stubs": "^1.1.0",
     "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react-dom": "^16.14.0",
+    "showdown": "^1.9.1",
+    "survey-react": "^1.8.59",
+    "surveyjs": "^3.0.2"
   },
   "meteor": {
     "mainModule": {

@@ -1,7 +1,7 @@
 body {
   background: #f9f1ec;
   margin: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .letter {

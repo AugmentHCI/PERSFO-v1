@@ -10,7 +10,7 @@ import { Feedback } from "./Feedback";
 import { MealScreen } from "./MealScreen";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
-import { Survey } from "./Survey";
+import { SurveyForm } from "./SurveyForm";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
@@ -203,7 +203,7 @@ export const App = () => {
       }
 
       if (GetOpenSurvey) {
-        renderScreen = <Survey />;
+        renderScreen = <SurveyForm />;
       }
     } else {
       renderScreen = <AuthenticationScreen />;

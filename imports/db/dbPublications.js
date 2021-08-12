@@ -5,3 +5,5 @@ import "/imports/db/orders/ordersPublications.js";
 import "/imports/db/recipes/recipesPublications.js";
 import "/imports/db/recommendedRecipes/recommendedRecipesPublications.js";
 import "/imports/db/userPreferences/userPreferencesPublications.js";
+
+import "/imports/db/surveys/FFQPublications.js";
