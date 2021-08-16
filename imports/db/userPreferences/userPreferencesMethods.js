@@ -1,4 +1,5 @@
 import { check } from 'meteor/check';
+import { food4me } from '../../api/apiFFQ';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 Meteor.methods({
@@ -22,6 +23,20 @@ Meteor.methods({
                 { $addToSet: { dislikedIngredients: dislike } }
             );
         });
+    },
+    "users.saveSurvey"(SurveyAnswers) {
+        check(SurveyAnswers, Object);
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $addToSet: { ffq: SurveyAnswers } }
+        );
+
+        food4me(SurveyAnswers);
     },
     "users.updateAllergens"(allergens) {
         check(allergens, Array);

@@ -3,6 +3,7 @@ import { FFQCollection } from "../db/surveys/FFQCollection";
 const token = "";
 const language = "nl-NL"
 const url = "https://quisper.onsafecape.gr/FFQ/questionnaire?lang=";
+const food4meURL = "https://api.quisper.eu/nutrient-intake-values/beta/ffq/1";
 
 
 var fs = require("fs");
@@ -23,6 +24,21 @@ export function initFFQ() {
         } else {
             FFQCollection.insert({ version: call.data.Version, survey: call.data.Groups });
         }
+    }
+}
+
+export function food4me(FFQ) {
+    let call = HTTP.call("POST", food4meURL, {
+        headers: {
+            "x-api-key": "dOETXx7hPv7aJHKUMlLfJ3NxhEY9UFEe8UPf19K9",
+            Accept: "application/json",
+        },
+        data: FFQ
+    });
+
+    if (call.data) {
+        console.log(call.data);
+        FFQCollection.insert({ food4me: call.data });
     }
 }
 

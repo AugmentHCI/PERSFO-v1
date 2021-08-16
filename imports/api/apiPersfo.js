@@ -1,5 +1,6 @@
 import { MenusCollection } from "/imports/db/menus/MenusCollection";
 import { RecipesCollection } from "/imports/db/recipes/RecipesCollection";
+import { HexadCollection } from "../db/surveys/HexadCollection";
 
 const token = "";
 const url = "https://www.apicbase.com/api/v1/recipes/";
@@ -10,8 +11,7 @@ export function initData() {
   // first load menus to only load relevant recipes!
 
   // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json"))
-    .results;
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
   let allRecipeIds = [];
 
   allMenus.forEach((menu) => {
@@ -26,9 +26,7 @@ export function initData() {
 
   allRecipeIds.forEach((recipeId) => {
     try {
-      let recipeDetails = JSON.parse(
-        Assets.getText("data/recipeDetails/" + recipeId + ".json")
-      );
+      let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/" + recipeId + ".json"));
       try {
         recipeDetails.kcal = calculateNutrientforRecipe(recipeDetails, "kcal");
       } catch (error) {
@@ -54,6 +52,11 @@ export function initData() {
     { multi: true }
   );
   console.log("recipes loaded");
+
+
+  // init hexad
+  let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad.json"));
+  HexadCollection.upsert({ version: "1" }, { $set: { survey: hexadQuestions } });
 
   // Meteor.setInterval(function () {
   //   console.log("Hourly updated started: " + new Date());
@@ -106,6 +109,8 @@ export function initData() {
   //   // start the interval with the first recipe
   //   updateRecipeDetails(allRecipes[0].id);
   // }, 60 * 60 * 1000);
+
+
 }
 
 export function getNutriscore(recipe) {

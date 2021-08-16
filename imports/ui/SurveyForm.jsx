@@ -5,6 +5,7 @@ import React from "react";
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
 import { FFQCollection } from "../db/surveys/FFQCollection";
+import { HexadCollection } from "../db/surveys/HexadCollection";
 
 
 const useStyles = makeStyles((persfoTheme) => ({
@@ -27,18 +28,28 @@ export const SurveyForm = () => {
         if (!Meteor.user()) {
             return noDataAvailable;
         }
-        const handler = Meteor.subscribe("survey-ffq");
-        if (!handler.ready()) {
+        const handlerFFQ = Meteor.subscribe("survey-ffq");
+        if (!handlerFFQ.ready()) {
             return { ...noDataAvailable };
         }
-        const survey = FFQCollection.find({}, { sort: { version: -1, limit: 1 } }).fetch()[0].survey;
+        const handlerHexad = Meteor.subscribe("survey-hexad");
+        if (!handlerHexad.ready()) {
+            return { ...noDataAvailable };
+        }
+
+        let pages = [];
+        const surveyFFQ = FFQCollection.find({}, { sort: { version: -1, limit: 1 } }).fetch()[0].survey;
+        const surveyHexad = HexadCollection.find({}, { sort: { version: -1, limit: 1 } }).fetch()[0].survey;
+
+        pages = pages.concat(surveyHexad, surveyFFQ);
 
         let json = {
             pages: [],
             showProgressBar: "bottom",
         };
 
-        survey.forEach(page => {
+
+        pages.forEach(page => {
             // per Page
             let description = "";
             let questions = [];
@@ -74,13 +85,9 @@ export const SurveyForm = () => {
         const QuestionTitle = question.Title.replace(/<BR\/>/i, "\n").replace(/\(optioneel\)/i, "\n"); //TODO remove optional from more languages
         let visible = "true";
 
-        if(question.DependsOn) {
-            // find depending question
-
+        if (question.DependsOn) {
+            // TODO: depend on certain answer, query 
             visible = "{" + question.DependsOn + "} notempty";
-            console.log(visible);
-            console.log(question.Answers);
-
         }
 
         if (question.DependsOn != null) {
@@ -129,6 +136,7 @@ export const SurveyForm = () => {
         });
 
         console.log(parsedOutput);
+        Meteor.call('users.saveSurvey', parsedOutput);
     }
 
     var defaultThemeColors = Survey
@@ -150,7 +158,7 @@ export const SurveyForm = () => {
 
     return (
         <Container>
-            <h1 className={classes.title}>Food Frequency Questionnaire</h1>
+            <h1 className={classes.title}>Onboarding questionnaires</h1>
             <Survey.Survey model={model} onComplete={onComplete} />
         </Container>
     );

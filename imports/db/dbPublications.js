@@ -7,3 +7,4 @@ import "/imports/db/recommendedRecipes/recommendedRecipesPublications.js";
 import "/imports/db/userPreferences/userPreferencesPublications.js";
 
 import "/imports/db/surveys/FFQPublications.js";
+import "/imports/db/surveys/HexadPublications.js";

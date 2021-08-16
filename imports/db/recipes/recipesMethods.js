@@ -1,5 +1,6 @@
 import { check } from 'meteor/check';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 Meteor.methods({
     "recipes.handleLike"(recipeId) {

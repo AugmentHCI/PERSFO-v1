@@ -10,6 +10,7 @@ import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import { HexadCollection } from "/imports/db/surveys/HexadCollection";
 
 
 // hack to create the RecipesCollection. Upsert does not create a collection.
@@ -33,6 +34,11 @@ UserPreferences.insert({
   value: "hack to create collection in meteor",
 });
 UserPreferences.remove({ _id: "1" });
+HexadCollection.insert({
+  _id: "1",
+  value: "hack to create collection in meteor",
+});
+HexadCollection.remove({ _id: "1" });
 
 const SEED_USERNAME = "demo";
 const SEED_PASSWORD = "persfo";
