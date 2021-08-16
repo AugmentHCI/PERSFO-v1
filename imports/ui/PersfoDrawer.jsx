@@ -10,6 +10,7 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import HomeIcon from "@material-ui/icons/Home";
 import SettingsIcon from "@material-ui/icons/Settings";
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import React from "react";
 import {
   OpenFeedback, OpenMealDetails,
@@ -114,17 +115,17 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
             <ListItemText primary={"Settings"} />
           </ListItem>
           <Divider />
-          <ListItem button key={"feedback"} onClick={() => handleFeedback()}>
+          <ListItem button key={"Feedback"} onClick={() => handleFeedback()}>
             <ListItemIcon>
               <FeedbackIcon />
             </ListItemIcon>
-            <ListItemText primary={"feedback"} />
+            <ListItemText primary={"Feedback"} />
           </ListItem>
-          <ListItem button key={"survey"} onClick={() => handleSurvey()}>
+          <ListItem button key={"Survey"} onClick={() => handleSurvey()}>
             <ListItemIcon>
-              <FeedbackIcon />
+              <QuestionAnswerIcon />
             </ListItemIcon>
-            <ListItemText primary={"survey"} />
+            <ListItemText primary={"Survey"} />
           </ListItem>
         </List>
       </div>

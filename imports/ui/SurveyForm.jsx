@@ -51,7 +51,7 @@ export const SurveyForm = () => {
 
         pages.forEach(page => {
             // per Page
-            let description = "";
+            let description = page.Subtitle ? page.Subtitle : "";
             let questions = [];
 
             if (page.Questions) {
@@ -71,7 +71,6 @@ export const SurveyForm = () => {
                         questions.push(parseQuestion(question));
                     });
                 });
-                description = page.Subtitle;
             }
             json.pages.push({ title: page.Title, description: description, name: page.ID, questions: questions })
 
@@ -128,14 +127,13 @@ export const SurveyForm = () => {
     //Define a callback methods on survey complete
     const onComplete = (survey, options) => {
         //Write survey results into database
-        console.log("Survey results: " + JSON.stringify(survey.data));
+        // console.log("Survey results: " + JSON.stringify(survey.data));
 
         let parsedOutput = { ...survey.data }; //clone
         _.each(survey.data, (value, key) => {
             parsedOutput[key] = value.quisperValue !== undefined ? value.quisperValue : value; // >= confusion 0 and undefined
         });
 
-        console.log(parsedOutput);
         Meteor.call('users.saveSurvey', parsedOutput);
     }
 
