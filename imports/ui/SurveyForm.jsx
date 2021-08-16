@@ -132,7 +132,7 @@ export const SurveyForm = () => {
 
         let parsedOutput = { ...survey.data }; //clone
         _.each(survey.data, (value, key) => {
-            parsedOutput[key] = value.quisperValue >= 0 ? value.quisperValue : value; // >= confusion 0 and undefined
+            parsedOutput[key] = value.quisperValue !== undefined ? value.quisperValue : value; // >= confusion 0 and undefined
         });
 
         console.log(parsedOutput);
@@ -152,9 +152,38 @@ export const SurveyForm = () => {
         .StylesManager
         .applyTheme();
 
-    var model = new Survey.Model(json);
+    let model = new Survey.Model(json);
 
     model.showQuestionNumbers = "off";
+
+
+    // code needed to store answers in local storage
+    model.sendResultOnPageNext = true;
+
+    let storageName = "persfo-survey-cache";
+
+    function saveSurveyData(model) {
+        let data = model.data;
+        data.pageNo = model.currentPageNo;
+        window.localStorage.setItem(storageName, JSON.stringify(data));
+    }
+
+    model.onPartialSend.add(function (model) {
+        saveSurveyData(model);
+    });
+
+    model.onComplete.add(function (model, options) {
+        saveSurveyData(model);
+    });
+
+    let prevData = window.localStorage.getItem(storageName) || null;
+    if (prevData) {
+        let data = JSON.parse(prevData);
+        model.data = data;
+        if (data.pageNo) {
+            model.currentPageNo = data.pageNo;
+        }
+    }
 
     return (
         <Container>
