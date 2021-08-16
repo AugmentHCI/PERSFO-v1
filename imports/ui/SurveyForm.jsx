@@ -4,6 +4,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
+import "survey-react/"
 import { FFQCollection } from "../db/surveys/FFQCollection";
 import { HexadCollection } from "../db/surveys/HexadCollection";
 
@@ -103,7 +104,7 @@ export const SurveyForm = () => {
                 return {
                     type: "radiogroup",
                     choices: answers,
-                    isRequired: false,
+                    isRequired: true,
                     name: QuestionID,
                     title: QuestionTitle,
                     visibleIf: visible
@@ -115,7 +116,7 @@ export const SurveyForm = () => {
                     name: QuestionID,
                     title: QuestionTitle,
                     placeHolder: "",
-                    isRequired: false,
+                    isRequired: true,
                     autoComplete: "name",
                     visibleIf: visible
                 }
@@ -151,6 +152,7 @@ export const SurveyForm = () => {
         .applyTheme();
 
     let model = new Survey.Model(json);
+
 
     model.showQuestionNumbers = "off";
 
