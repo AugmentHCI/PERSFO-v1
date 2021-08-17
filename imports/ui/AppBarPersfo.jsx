@@ -1,13 +1,14 @@
 import { AppBar, IconButton } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import MenuIcon from "@material-ui/icons/Menu";
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useEffect, useState } from "react";
 import { AdherenceTimeline } from "./AdherenceTimeline";
 import { PersfoDrawer } from "./PersfoDrawer";
 import { getImage } from "/imports/api/apiPersfo";
+import Badge from '@material-ui/core/Badge';
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
@@ -15,6 +16,7 @@ import {
   OpenSurvey
 } from "/imports/api/methods.js";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 
 const logout = () => Meteor.logout();
 
@@ -27,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginLeft: "8px",
   },
+  shoppingButton: {
+    marginLeft: "auto",
+    marginRight: "12px"
+  },
   title: {
     fontSize: "13px",
     fontFamily: "sans-serif",
@@ -34,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     fontWeight: 400,
     opacity: 0.8,
+    alignSelf: "left",
   },
   adherenceTitle: {
     flexGrow: 1,
@@ -59,22 +66,35 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
     }
   );
 
+  const { nbOrders } = useTracker(() => {
+    const noDataAvailable = { orders: 0 };
+    const handler = Meteor.subscribe("orders");
+    if (!handler.ready()) {
+      return { ...noDataAvailable };
+    }
+
+    const nbOrders = OrdersCollection.find({
+      userid: Meteor.userId()
+    }).fetch().length;
+    return { nbOrders };
+  });
+
   document.addEventListener("backbutton", onBackKeyDown, false);
 
   function onBackKeyDown() {
-      handleDetailsClick();
+    handleDetailsClick();
   }
 
   const handleDetailsClick = () => {
     OpenMealDetails.set(null);
     setBackground("none");
-    Meteor.call("log",componentName, "handleDetailsClick");
+    Meteor.call("log", componentName, "handleDetailsClick");
   };
 
   useEffect(() => {
     if (GetOpenMealDetails !== null) {
       let url = getImage(RecipesCollection.findOne({ id: GetOpenMealDetails }));
-      if(url === "/images/Image-not-found.png") {
+      if (url === "/images/Image-not-found.png") {
         url = undefined;
       }
       setBackground("url('" + url + "')");
@@ -105,25 +125,23 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
+              // justifyContent: "space-between",
               marginTop: "8px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <IconButton
-                className={classes.menuButton}
-                color="secondary"
-                onClick={toggleDrawer(true)}
-              >
-                <MenuIcon />
-              </IconButton>
-              <h1 className={classes.title}>{switchHeader()}</h1>
+            <IconButton
+              className={classes.menuButton}
+              color="secondary"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <h1 className={classes.title}>{switchHeader()}</h1>
+            <div className={classes.shoppingButton}>
+              <Badge badgeContent={nbOrders} color="secondary" onClick={logout}>
+                <ShoppingCartIcon color="secondary" />
+              </Badge>
             </div>
-            {Meteor.user() ? (
-              <IconButton color="inherit" onClick={logout}>
-                <ExitToAppIcon color="secondary" />
-              </IconButton>
-            ) : null}
           </div>
           <div style={{ height: "48px" }}>
             <AdherenceTimeline />
