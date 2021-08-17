@@ -64,6 +64,19 @@ export const MealScreen = ({ recipe }) => {
       color: "#717171",
       fontFamily: "sans-serif",
     },
+    menuTitleLong: {
+      fontSize: "12px",
+      fontWeight: 600,
+      width: "184px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      textTransform: "uppercase",
+      letterSpacing: "0px",
+      lineHeight: 1.5,
+      color: "#717171",
+      fontFamily: "sans-serif",
+    },
     nutriscore: {
       height: "32px",
     },
@@ -577,10 +590,10 @@ export const MealScreen = ({ recipe }) => {
               alignItems: "center",
             }}
           >
-            <h1 className={classes.menuTitle}>
-              {String(recipe.name).length > 40
-                ? recipe.name.slice(0, 40) + "..."
-                : recipe.name}
+            <h1 className={String(recipe.name).length < 40
+                ? classes.menuTitle
+                : classes.menuTitleLong}>
+              {recipe.name}
             </h1>
             <img
               className={classes.nutriscore}
