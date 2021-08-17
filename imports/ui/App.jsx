@@ -208,7 +208,7 @@ export const App = () => {
       }
 
       // TODO
-      renderScreen = <Onboarding />;
+      // renderScreen = <Onboarding />;
 
     } else {
       renderScreen = <AuthenticationScreen />;

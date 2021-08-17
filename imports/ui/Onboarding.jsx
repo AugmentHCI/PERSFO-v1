@@ -30,7 +30,8 @@ export const Onboarding = () => {
             </Typography>
             <Typography variant="body1" align="justify" color="textSecondary" paragraph>
                 Tijdens deze EIT-FOOD PERSFO studie willen we onderzoeken hoe we u kunnen ondersteunen bij het kiezen van gezondere maaltijden.
-                Het doel van deze studie is om u steeds een advies op maat te geven. De eerste vragenlijst zal daarom polsen naar uw voedingsgewoontes zodat we u gepersonliseerd advies kunnen geven op basis van nutrienten. 
+                Het doel van deze studie is om u steeds een advies op maat te geven, daarom zullen we u eerst enkele vragenlijsten voorstellen. 
+                De eerste vragenlijst zal daarom polsen naar uw voedingsgewoontes zodat we u gepersonliseerd advies kunnen geven op basis van nutrienten. 
                 Ten tweede willen we ook onderzoeken in welke rol motivatie een rol speelt bij het volgen van gepersonliseerd advies. Daarom polt de tweede vragenlijst naar uw motivatie om gezonder te willen eten.
                 Ten slotte voeren we een korte profieltest uit, om zo de resultaten van het onderzoek te kunnen kaderen.
             </Typography>
