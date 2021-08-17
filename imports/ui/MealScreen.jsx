@@ -73,7 +73,7 @@ export const MealScreen = ({ recipe }) => {
       alignItems: "center",
       textTransform: "uppercase",
       letterSpacing: "0px",
-      lineHeight: 1.5,
+      lineHeight: 1.2,
       color: "#717171",
       fontFamily: "sans-serif",
     },
