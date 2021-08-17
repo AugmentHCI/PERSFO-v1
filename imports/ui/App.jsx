@@ -8,6 +8,7 @@ import { AppBarPersfo } from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { Feedback } from "./Feedback";
 import { MealScreen } from "./MealScreen";
+import { Onboarding } from "./Onboarding";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
 import { SurveyForm } from "./SurveyForm";
@@ -205,9 +206,14 @@ export const App = () => {
       if (GetOpenSurvey) {
         renderScreen = <SurveyForm />;
       }
+
+      // TODO
+      renderScreen = <Onboarding />;
+
     } else {
       renderScreen = <AuthenticationScreen />;
     }
+
     return renderScreen;
   };
 
