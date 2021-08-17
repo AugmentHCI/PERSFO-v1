@@ -185,7 +185,7 @@ export const MealScreen = ({ recipe }) => {
     let userAllergens = [];
     try {
       userAllergens = userPreferences.allergens;
-    } catch (error) {}
+    } catch (error) { }
     let nutrientGoals = {};
     try {
       const userNutrientGoals = userPreferences.nutrientGoals;
@@ -195,7 +195,7 @@ export const MealScreen = ({ recipe }) => {
           nutrientGoals[key] = userNutrientGoals[key] + 0.0000001; // otherwise considered false
         }
       });
-    } catch (error) {}
+    } catch (error) { }
     return { liked, nbLikes, userAllergens, nutrientGoals };
   });
 
@@ -251,13 +251,13 @@ export const MealScreen = ({ recipe }) => {
   const getKcalInfo = () => {
     try {
       return recipe.kcal.toFixed(0) + " " + recipe.nutrition_info.kcal.unit;
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const getMPricing = () => {
     try {
       return "€" + recipe.current_sell_price.pricing.toFixed(2);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const NutrientsBar = (props) => {
@@ -304,31 +304,31 @@ export const MealScreen = ({ recipe }) => {
     let ukcal = "";
     try {
       ukcal = r.kcal.unit;
-    } catch (e) {}
+    } catch (e) { }
     let ufat = "";
     try {
       ufat = r.fat.unit;
-    } catch (e) {}
+    } catch (e) { }
     let usat = "";
     try {
       usat = r.saturated_fat.unit;
-    } catch (e) {}
+    } catch (e) { }
     let usug = "";
     try {
       usug = r.sugar.unit;
-    } catch (e) {}
+    } catch (e) { }
     let uprot = "";
     try {
       uprot = r.protein.unit;
-    } catch (e) {}
+    } catch (e) { }
     let ufibr = "";
     try {
       ufibr = r.fibre.unit;
-    } catch (e) {}
+    } catch (e) { }
     let upotss = "";
     try {
       upotss = r.potassium.unit;
-    } catch (e) {}
+    } catch (e) { }
 
     let noData = null;
     if (_.sum([kcal, fat, sat, sug, prot, fibr, potss]) == 0)
@@ -437,7 +437,7 @@ export const MealScreen = ({ recipe }) => {
             tempClassName = classes.activeAllergenBox;
           }
         });
-      } catch (error) {}
+      } catch (error) { }
       return (
         <div className={tempClassName} key={i}>
           {a}
@@ -454,7 +454,9 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Allergens</h1>
-        <div style={{ overflowY: "scroll", height: "150px" }}>
+        <div style={{
+          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+        }}>
           <div
             style={{
               display: "flex",
@@ -502,7 +504,10 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Ingredients</h1>
-        <div style={{ overflowY: "scroll", height: "150px" }}>
+        <div style={{
+          overflowY: "scroll",
+          height: componentHeight - 325 - 125 - 30 - 60 + "px"
+        }}>
           <div
             style={{
               display: "flex",
@@ -522,7 +527,9 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Sustainability</h1>
-        <div style={{ overflowY: "scroll", height: "150px" }}>
+        <div style={{
+          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+        }}>
           <h1 className={classes.subtitle}>Food product labels</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
             {" "}
@@ -542,7 +549,9 @@ export const MealScreen = ({ recipe }) => {
     return (
       <div>
         <h1 className={classes.subtitle}>Reviews</h1>
-        <div style={{ overflowY: "scroll", height: "150px" }}>
+        <div style={{
+          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+        }}>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
             {" "}
             Review functionality is disabled in this online-only study.{" "}
@@ -591,8 +600,8 @@ export const MealScreen = ({ recipe }) => {
             }}
           >
             <h1 className={String(recipe.name).length < 40
-                ? classes.menuTitle
-                : classes.menuTitleLong}>
+              ? classes.menuTitle
+              : classes.menuTitleLong}>
               {recipe.name}
             </h1>
             <img
@@ -678,10 +687,10 @@ export const MealScreen = ({ recipe }) => {
           style={
             ordered
               ? {
-                  backgroundColor: red[100],
-                  borderRadius: "14px",
-                  color: "#F57D20",
-                }
+                backgroundColor: red[100],
+                borderRadius: "14px",
+                color: "#F57D20",
+              }
               : { color: "white" }
           }
         >
