@@ -11,13 +11,15 @@ import { MealScreen } from "./MealScreen";
 import { Onboarding } from "./Onboarding";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
+import { ShoppingBasket } from "./ShoppingBasket";
 import { SurveyForm } from "./SurveyForm";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
   OpenSettings,
-  OpenSurvey
+  OpenSurvey,
+  OpenShoppingBasket
 } from "/imports/api/methods.js";
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
@@ -101,6 +103,7 @@ export const App = () => {
     GetOpenSettings,
     GetOpenFeedback,
     GetOpenSurvey,
+    GetOpenShoppingBasket,
     menu,
     isLoading,
   } = useTracker(() => {
@@ -114,6 +117,8 @@ export const App = () => {
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
     const GetOpenSurvey = OpenSurvey.get();
+    const GetOpenShoppingBasket = OpenShoppingBasket.get();
+
 
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -140,7 +145,7 @@ export const App = () => {
     // });
     // pick random menu when no menu available today
     if (!menu) menu = MenusCollection.findOne();
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, GetOpenShoppingBasket, menu };
   });
 
   const getCoursesTabs = () => {
@@ -207,8 +212,12 @@ export const App = () => {
         renderScreen = <SurveyForm />;
       }
 
+      if (GetOpenShoppingBasket) {
+        renderScreen = <ShoppingBasket />;
+      }
+
       // TODO
-      // renderScreen = <Onboarding />;
+      // renderScreen = <ShoppingBasket />;
 
     } else {
       renderScreen = <AuthenticationScreen />;

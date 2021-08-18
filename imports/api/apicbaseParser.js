@@ -46,11 +46,3 @@ export function getNutriscoreImage(recipe) {
     return "/images/nutrinull.jpg";
   }
 }
-
-export function getImage(recipe) {
-  if (recipe && recipe.main_image) {
-    return recipe.main_image.full_image_url;
-  } else {
-    return "/images/orange.jpg";
-  }
-}

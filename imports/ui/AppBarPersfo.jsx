@@ -17,8 +17,9 @@ import {
 } from "/imports/api/methods.js";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { OpenShoppingBasket } from "../api/methods";
 
-const logout = () => Meteor.logout();
+// const logout = () => Meteor.logout();
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -67,7 +68,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
   );
 
   const { nbOrders } = useTracker(() => {
-    const noDataAvailable = { orders: 0 };
+    const noDataAvailable = 0;
     const handler = Meteor.subscribe("orders");
     if (!handler.ready()) {
       return { ...noDataAvailable };
@@ -90,6 +91,11 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
     setBackground("none");
     Meteor.call("log", componentName, "handleDetailsClick");
   };
+
+  const handleShoppingBasket = () => {
+    OpenShoppingBasket.set(true);
+    Meteor.call("log", componentName, "handleShoppingBasket");
+  }
 
   useEffect(() => {
     if (GetOpenMealDetails !== null) {
@@ -138,7 +144,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
             </IconButton>
             <h1 className={classes.title}>{switchHeader()}</h1>
             <div className={classes.shoppingButton}>
-              <Badge badgeContent={nbOrders} color="secondary" onClick={logout}>
+              <Badge badgeContent={nbOrders} color="secondary" onClick={handleShoppingBasket}>
                 <ShoppingCartIcon color="secondary" />
               </Badge>
             </div>
