@@ -90,6 +90,20 @@ export const App = () => {
     Meteor.call("log", componentName, "toggleDrawer");
   };
 
+  // Shopping basket drawer logic
+  const [shoppingBasketdrawerOpen, setStateShoppingBasket] = useState(false);
+  const toggleShoppingBasketDrawer = (open) => (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setStateShoppingBasket(open);
+    Meteor.call("log", componentName, "toggleShoppingBasketDrawer");
+  };
+
   // tab logic
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
@@ -212,9 +226,9 @@ export const App = () => {
         renderScreen = <SurveyForm />;
       }
 
-      if (GetOpenShoppingBasket) {
-        renderScreen = <ShoppingBasket />;
-      }
+      // if (GetOpenShoppingBasket) {
+      //   renderScreen = <ShoppingBasket drawerOpen={shoppingBasketdrawerOpen} toggleDrawer={toggleShoppingBasketDrawer} />;
+      // }
 
       // TODO
       // renderScreen = <ShoppingBasket />;
@@ -228,7 +242,11 @@ export const App = () => {
 
   return (
     <ThemeProvider theme={persfoTheme}>
-      <AppBarPersfo drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+      <AppBarPersfo
+        drawerOpen={drawerOpen}
+        toggleDrawer={toggleDrawer}
+        shoppingBasketdrawerOpen={shoppingBasketdrawerOpen}
+        toggleShoppingBasketDrawer={toggleShoppingBasketDrawer} />
       <div className="main">{switchRenderScreen()}</div>
     </ThemeProvider>
   );

@@ -18,7 +18,7 @@ import {
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { OpenShoppingBasket } from "../api/methods";
-
+import { ShoppingBasket } from "./ShoppingBasket";
 // const logout = () => Meteor.logout();
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   shoppingButton: {
     marginLeft: "auto",
-    marginRight: "12px"
+    marginRight: "30px"
   },
   title: {
     fontSize: "13px",
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const componentName = "AppBarPersfo";
-export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
+export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer}) => {
   const classes = useStyles();
 
   const [background, setBackground] = useState("none");
@@ -144,7 +144,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
             </IconButton>
             <h1 className={classes.title}>{switchHeader()}</h1>
             <div className={classes.shoppingButton}>
-              <Badge badgeContent={nbOrders} color="secondary" onClick={handleShoppingBasket}>
+              <Badge badgeContent={nbOrders} color="secondary" onClick={toggleShoppingBasketDrawer(true)}>
                 <ShoppingCartIcon color="secondary" />
               </Badge>
             </div>
@@ -167,6 +167,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer }) => {
         </div>
       )}
       <PersfoDrawer drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+      <ShoppingBasket drawerOpen={shoppingBasketdrawerOpen} toggleDrawer={toggleShoppingBasketDrawer} />
     </AppBar>
   );
 };

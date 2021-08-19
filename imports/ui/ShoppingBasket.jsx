@@ -1,23 +1,24 @@
+import { Button } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { Button } from '@material-ui/core';
-import Container from "@material-ui/core/Container";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from "@material-ui/core/styles";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
 import { getImage } from '../api/apiPersfo';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { SwipeableDrawer } from '@material-ui/core';
 
 
 const useStyles = makeStyles((persfoTheme) => ({
+    list: {
+        width: 250,
+    },
     title: {
         fontSize: "13px",
         fontWeight: 600,
@@ -54,7 +55,7 @@ class GroupedButtons extends React.Component {
 }
 
 const componentName = "ShoppingBasket";
-export const ShoppingBasket = () => {
+export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     const classes = useStyles();
 
     const { orders } = useTracker(() => {
@@ -67,7 +68,6 @@ export const ShoppingBasket = () => {
         const orders = OrdersCollection.find({
             userid: Meteor.userId()
         }).fetch();
-        console.log(orders);
         return { orders };
     });
 
@@ -77,8 +77,13 @@ export const ShoppingBasket = () => {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <List dense className={classes.root}>
+        <SwipeableDrawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+        >
+            <List className={classes.list}>
                 {orders.map((value) => {
                     const labelId = `checkbox-list-secondary-label-${value.recipeId}`;
                     return (
@@ -100,6 +105,6 @@ export const ShoppingBasket = () => {
                     );
                 })}
             </List>
-        </Container>
+        </SwipeableDrawer>
     );
 };
