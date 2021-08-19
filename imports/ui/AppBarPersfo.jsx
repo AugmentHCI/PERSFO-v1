@@ -74,8 +74,11 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
       return { ...noDataAvailable };
     }
 
+    // find only orders made today
+    const now = new Date();
     const nbOrders = OrdersCollection.find({
-      userid: Meteor.userId()
+      userid: Meteor.userId(),
+      orderday: now.toISOString().substring(0, 10),
     }).fetch().length;
     return { nbOrders };
   });

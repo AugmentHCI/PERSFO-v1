@@ -84,8 +84,11 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             return { ...noDataAvailable };
         }
 
+        // find only orders made today
+        const now = new Date();
         const orders = OrdersCollection.find({
-            userid: Meteor.userId()
+            userid: Meteor.userId(),
+            orderday: now.toISOString().substring(0, 10),
         }).fetch();
         return { orders };
     });
@@ -140,7 +143,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             </div>
             <Button
                 type="submit"
-                
+
                 variant="contained"
                 color="primary"
                 className={classes.complete}
