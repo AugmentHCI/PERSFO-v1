@@ -3,6 +3,7 @@ import { green, red } from "@material-ui/core/colors";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import CheckIcon from "@material-ui/icons/Check";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
@@ -702,8 +703,8 @@ export const MealScreen = ({ recipe }) => {
         autoHideDuration={6000}
         onClose={() => setToast(false)}
       >
-        <Alert onClose={() => setToast(false)} severity="success">
-          Thank you for participating today!
+        <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
+          Added to your shopping cart!
         </Alert>
       </Snackbar>
     </div>

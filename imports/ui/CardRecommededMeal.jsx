@@ -17,6 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import CheckIcon from "@material-ui/icons/Check";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
@@ -134,21 +135,21 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
     if (!recommendedRecipeId) recommendedRecipeId = backupRecipeId;
 
     // in case no backup was provided, suggest a sandwhich
-    if(!recommendedRecipeId) recommendedRecipeId = "549111135960007";
+    if (!recommendedRecipeId) recommendedRecipeId = "549111135960007";
 
     const recipe = RecipesCollection.findOne({
       id: recommendedRecipeId,
     });
 
     let tempIngredients = recipe.remarks
-        .replace(/<[^>]*>?/gm, "")
-        .replace(/ *\([^)]*\) */g, "")
-        .split(",");
-      // remove trailing spaces, unneeded quotes and stars
-      tempIngredients = _.map(tempIngredients, (ingredient) =>
-        ingredient.trim().replace(/['"*]+/g, "")
-      );
-      tempIngredients = tempIngredients.sort();
+      .replace(/<[^>]*>?/gm, "")
+      .replace(/ *\([^)]*\) */g, "")
+      .split(",");
+    // remove trailing spaces, unneeded quotes and stars
+    tempIngredients = _.map(tempIngredients, (ingredient) =>
+      ingredient.trim().replace(/['"*]+/g, "")
+    );
+    tempIngredients = tempIngredients.sort();
 
     const ingredients = tempIngredients;
 
@@ -456,8 +457,8 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
         autoHideDuration={6000}
         onClose={() => setToast(false)}
       >
-        <Alert onClose={() => setToast(false)} severity="success">
-          Thank you for participating today!
+        <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
+          Added to your shopping cart!
         </Alert>
       </Snackbar>
     </>

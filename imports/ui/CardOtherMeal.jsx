@@ -11,6 +11,7 @@ import { red } from "@material-ui/core/colors";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import CheckIcon from "@material-ui/icons/Check";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
@@ -103,7 +104,7 @@ export const CardOtherMeal = ({ recipeId }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
-      Meteor.call("log",componentName, "handleIncreaseLike");
+      Meteor.call("log", componentName, "handleIncreaseLike");
     }
   };
 
@@ -128,7 +129,7 @@ export const CardOtherMeal = ({ recipeId }) => {
     if (recipe) {
       if (!ordered) setToast(true);
       Meteor.call("orders.handleOrder", recipe.id);
-      Meteor.call("log",componentName, "handleOrder");
+      Meteor.call("log", componentName, "handleOrder");
     }
   };
 
@@ -154,7 +155,7 @@ export const CardOtherMeal = ({ recipeId }) => {
   // Detail logic
   const handleDetailsClick = () => {
     OpenMealDetails.set(recipeId);
-    Meteor.call("log",componentName, "handleDetailsClick");
+    Meteor.call("log", componentName, "handleDetailsClick");
   };
 
   // Thank you message
@@ -219,8 +220,8 @@ export const CardOtherMeal = ({ recipeId }) => {
         autoHideDuration={6000}
         onClose={() => setToast(false)}
       >
-        <Alert onClose={() => setToast(false)} severity="success">
-          Thank you for participating today!
+        <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
+          Added to your shopping cart!
         </Alert>
       </Snackbar>
     </>
