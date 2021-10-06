@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const componentName = "AppBarPersfo";
-export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer}) => {
+export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer }) => {
   const classes = useStyles();
 
   const [background, setBackground] = useState("none");
@@ -67,7 +67,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     }
   );
 
-  const { nbOrders } = useTracker(() => {
+  const { nbOrders, doneForToday } = useTracker(() => {
     const noDataAvailable = 0;
     const handler = Meteor.subscribe("orders");
     if (!handler.ready()) {
@@ -76,11 +76,17 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
     // find only orders made today
     const now = new Date();
+    const nowString = now.toISOString().substring(0, 10);
+
     const nbOrders = OrdersCollection.find({
       userid: Meteor.userId(),
-      orderday: now.toISOString().substring(0, 10),
+      orderday: nowString,
     }).fetch().length;
-    return { nbOrders };
+
+    let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
+    const doneForToday = randomConfirmedOrder !== undefined;
+
+    return { nbOrders, doneForToday };
   });
 
   document.addEventListener("backbutton", onBackKeyDown, false);
@@ -147,9 +153,12 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
             </IconButton>
             <h1 className={classes.title}>{switchHeader()}</h1>
             <div className={classes.shoppingButton}>
-              <Badge badgeContent={nbOrders} color="secondary" onClick={toggleShoppingBasketDrawer(true)}>
-                <ShoppingCartIcon color="secondary" />
-              </Badge>
+              {!doneForToday ?
+                <Badge badgeContent={nbOrders} color="secondary" onClick={toggleShoppingBasketDrawer(true)}>
+                  <ShoppingCartIcon color="secondary" />
+                </Badge>
+                :
+                <></>}
             </div>
           </div>
           <div style={{ height: "48px" }}>

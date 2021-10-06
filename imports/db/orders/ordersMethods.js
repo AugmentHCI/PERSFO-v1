@@ -162,10 +162,18 @@ Meteor.methods({
         // only filter today's orders
         const now = new Date();
         const nowString = now.toISOString().substring(0, 10);
-        const orders = OrdersCollection.upsert({
+        OrdersCollection.upsert({
             userid: this.userId,
             orderday: nowString,
         }, {$set: {confirmed: true}});
-        const ordered = orders.length > 0;
+    },
+    "orders.undoConfirmation"(){
+        // only filter today's orders
+        const now = new Date();
+        const nowString = now.toISOString().substring(0, 10);
+        OrdersCollection.upsert({
+            userid: this.userId,
+            orderday: nowString,
+        }, {$set: {confirmed: false}});
     }
 });

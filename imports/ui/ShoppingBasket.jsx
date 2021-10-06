@@ -15,6 +15,7 @@ import React, { Fragment, useState } from "react";
 import { getImage } from '../api/apiPersfo';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { OpenShoppingBasket } from "/imports/api/methods.js";
 
 
 
@@ -146,6 +147,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
 
     const submit = () => {
         Meteor.call('orders.confirmOrders');
+        toggleDrawer(false).call(); // not sure why call is needed here, but does not work without.
     }
 
     const action = (
@@ -211,7 +213,6 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             }
             <Button
                 type="submit"
-
                 variant="contained"
                 color="primary"
                 className={classes.complete}
@@ -219,7 +220,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 onClick={submit}
                 style={{ color: "white" }}
             >
-                Submit your choices ({orders.reduce((s,f) => s + f.amount, 0)})
+                Submit your choices ({orders.reduce((s, f) => s + f.amount, 0)})
             </Button>
             <Snackbar
                 open={openConfirmation}
