@@ -41,7 +41,7 @@ const useStyles = makeStyles((persfoTheme) => ({
         alignSelf: "center"
     },
     complete: {
-        margin: "10px"
+        margin: "10px",
     },
     undoToast: {
         marginBottom: "40px"
@@ -144,6 +144,10 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
         setOpenConfirmation(false);
     };
 
+    const submit = () => {
+        Meteor.call('orders.confirmOrders');
+    }
+
     const action = (
         <Fragment>
             <Button color="secondary" size="small" onClick={() => handleUndoDelete(deletedRecipe, deletedOrderAmount)}>
@@ -171,44 +175,51 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             <Typography className={classes.header} variant="h4" color="primary">
                 Shopping drawer
             </Typography>
-            <div
-                style={{
-                    overflowY: "scroll",
-                    height: componentHeight - 100 + "px",
-                }}
-            >
-                <List className={classes.list}>
-                    {orders.map((value) => {
-                        const labelId = `checkbox-list-secondary-label-${value.recipeId}`;
-                        return (
-                            <>
-                                <ListItem key={value.recipeId} button>
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            alt={`Avatar n°${value.recipeId}`}
-                                            src={getImage(RecipesCollection.findOne({ id: value.recipeId }))}
-                                        />
-                                    </ListItemAvatar>
-                                    <ListItemText id={labelId} primary={RecipesCollection.findOne({ id: value.recipeId }).name} />
-                                    <DeleteIcon className={classes.deleteButtons} onClick={handleRemove(value)} style={{ color: grey[500] }} />
-                                    <GroupedButtons recipeId={value.recipeId} className={classes.counterButtons}></GroupedButtons>
-                                </ListItem>
-                                <Divider variant="inset" component="li" />
-                            </>
-                        );
-                    })}
-                </List>
-            </div>
+            {orders.length > 0 ?
+                <div
+                    style={{
+                        overflowY: "scroll",
+                        height: componentHeight - 120 + "px",
+                    }}
+                >
+                    <List className={classes.list}>
+                        {orders.map((value) => {
+                            const labelId = `checkbox-list-secondary-label-${value.recipeId}`;
+                            return (
+                                <Fragment key={value.recipeId}>
+                                    <ListItem button>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                alt={`Avatar n°${value.recipeId}`}
+                                                src={getImage(RecipesCollection.findOne({ id: value.recipeId }))}
+                                            />
+                                        </ListItemAvatar>
+                                        <ListItemText id={labelId} primary={RecipesCollection.findOne({ id: value.recipeId }).name} />
+                                        <DeleteIcon className={classes.deleteButtons} onClick={handleRemove(value)} style={{ color: grey[500] }} />
+                                        <GroupedButtons recipeId={value.recipeId} className={classes.counterButtons}></GroupedButtons>
+                                    </ListItem>
+                                    <Divider variant="inset" component="li" />
+                                </Fragment>
+                            );
+                        })}
+                    </List>
+                </div>
+                :
+                <Typography className={classes.header} variant="body1" style={{ height: componentHeight - 120 + "px" }} >
+                    You have not ordered any meals yet.
+                </Typography>
+            }
             <Button
                 type="submit"
 
                 variant="contained"
                 color="primary"
                 className={classes.complete}
-                // onClick={submit}
+                disabled={orders.length > 0 ? false : true}
+                onClick={submit}
                 style={{ color: "white" }}
             >
-                Complete your order
+                Submit your choices ({orders.reduce((s,f) => s + f.amount, 0)})
             </Button>
             <Snackbar
                 open={openConfirmation}
@@ -218,7 +229,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 action={action}
                 className={classes.undoToast}
             />
-        </SwipeableDrawer>
+        </SwipeableDrawer >
 
     );
 };
