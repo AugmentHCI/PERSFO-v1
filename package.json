@@ -8,7 +8,7 @@
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.8",
+    "@babel/runtime": "^7.15.4",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
@@ -22,7 +22,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "showdown": "^1.9.1",
-    "survey-react": "^1.8.60",
+    "survey-react": "^1.8.73",
     "surveyjs": "^3.0.2"
   },
   "meteor": {
