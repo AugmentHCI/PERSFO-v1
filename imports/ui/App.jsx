@@ -257,6 +257,8 @@ export const App = () => {
       renderScreen = <AuthenticationScreen />;
     }
 
+    // renderScreen = <Onboarding />;
+
     return renderScreen;
   };
 
