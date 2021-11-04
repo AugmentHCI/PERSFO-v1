@@ -7,16 +7,15 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import AssessmentIcon from "@material-ui/icons/Assessment";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import HomeIcon from "@material-ui/icons/Home";
 import SettingsIcon from "@material-ui/icons/Settings";
-import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import React from "react";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenSurvey
+  OpenSettings
 } from "/imports/api/methods.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +37,6 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(false);
-    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleHomeButton");
   };
 
@@ -47,7 +45,6 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(true);
     OpenSettings.set(false);
     OpenFeedback.set(false);
-    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleProgress");
   };
 
@@ -56,7 +53,6 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(true);
     OpenFeedback.set(false);
-    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleSettings");
   };
 
@@ -65,18 +61,12 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(true);
-    OpenSurvey.set(false);
     Meteor.call("log", componentName, "handleFeedback");
   };
 
-  const handleSurvey = () => {
-    OpenMealDetails.set(null);
-    OpenProgress.set(false);
-    OpenSettings.set(false);
-    OpenFeedback.set(false);
-    OpenSurvey.set(true);
-    Meteor.call("log", componentName, "handleFeedback");
-  };
+  const logOut = () => {
+    Meteor.logout();
+  }
 
   return (
     <SwipeableDrawer
@@ -114,18 +104,18 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
             </ListItemIcon>
             <ListItemText primary={"Settings"} />
           </ListItem>
-          <Divider />
           <ListItem button key={"Feedback"} onClick={() => handleFeedback()}>
             <ListItemIcon>
               <FeedbackIcon />
             </ListItemIcon>
             <ListItemText primary={"Feedback"} />
           </ListItem>
-          <ListItem button key={"Survey"} onClick={() => handleSurvey()}>
+          <Divider />
+          <ListItem button key={"Logout"} onClick={() => logOut()}>
             <ListItemIcon>
-              <QuestionAnswerIcon />
+              <ExitToAppIcon />
             </ListItemIcon>
-            <ListItemText primary={"Survey"} />
+            <ListItemText primary={"Logout"} />
           </ListItem>
         </List>
       </div>

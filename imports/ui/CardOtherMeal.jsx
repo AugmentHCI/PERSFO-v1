@@ -10,8 +10,8 @@ import {
 import { red } from "@material-ui/core/colors";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import CheckIcon from "@material-ui/icons/Check";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";

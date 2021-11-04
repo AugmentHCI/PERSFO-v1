@@ -3,21 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
 import * as Survey from "survey-react";
+import "survey-react/";
 import "survey-react/survey.css";
-import "survey-react/"
 import { FFQCollection } from "../db/surveys/FFQCollection";
 import { HexadCollection } from "../db/surveys/HexadCollection";
 
 
 const useStyles = makeStyles((persfoTheme) => ({
-    // title: {
-    //     fontSize: "13px",
-    //     fontWeight: 600,
-    //     fontFamily: "Roboto",
-    //     margin: "4px",
-    //     // marginTop: "20px",
-    //     color: "#726f6c",
-    // },
 }));
 
 const componentName = "SurveyForm";

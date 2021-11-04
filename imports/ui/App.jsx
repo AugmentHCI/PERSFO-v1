@@ -6,25 +6,22 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { AppBarPersfo } from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
+import { Done } from "./Done";
 import { Feedback } from "./Feedback";
 import { MealScreen } from "./MealScreen";
 import { Onboarding } from "./Onboarding";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
-import { Done } from "./Done";
-import { ShoppingBasket } from "./ShoppingBasket";
 import { SurveyForm } from "./SurveyForm";
 import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenSurvey,
-  OpenShoppingBasket
+  OpenSettings
 } from "/imports/api/methods.js";
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
-import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const persfoTheme = createTheme({
@@ -119,7 +116,6 @@ export const App = () => {
     GetOpenProgress,
     GetOpenSettings,
     GetOpenFeedback,
-    GetOpenSurvey,
     menu,
     isLoading,
     doneForToday,
@@ -136,7 +132,6 @@ export const App = () => {
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
-    const GetOpenSurvey = OpenSurvey.get();
 
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -178,7 +173,7 @@ export const App = () => {
     const icfFinished = userPreferences?.icfFinished;
     const surveyFinished = userPreferences?.survey;
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, icfFinished, surveyFinished };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished };
   });
 
   const getCoursesTabs = () => {
@@ -252,10 +247,6 @@ export const App = () => {
 
           if (GetOpenFeedback) {
             renderScreen = <Feedback />;
-          }
-
-          if (GetOpenSurvey) {
-            renderScreen = <SurveyForm />;
           }
         }
       }

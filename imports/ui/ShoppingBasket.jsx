@@ -15,7 +15,6 @@ import React, { Fragment, useState } from "react";
 import { getImage } from '../api/apiPersfo';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
-import { OpenShoppingBasket } from "/imports/api/methods.js";
 
 
 

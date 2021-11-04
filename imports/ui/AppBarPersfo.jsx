@@ -1,4 +1,5 @@
 import { AppBar, IconButton } from "@material-ui/core/";
+import Badge from '@material-ui/core/Badge';
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -7,19 +8,15 @@ import { useTracker } from "meteor/react-meteor-data";
 import React, { useEffect, useState } from "react";
 import { AdherenceTimeline } from "./AdherenceTimeline";
 import { PersfoDrawer } from "./PersfoDrawer";
+import { ShoppingBasket } from "./ShoppingBasket";
 import { getImage } from "/imports/api/apiPersfo";
-import Badge from '@material-ui/core/Badge';
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings,
-  OpenSurvey
+  OpenSettings
 } from "/imports/api/methods.js";
-import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
-import { OpenShoppingBasket } from "../api/methods";
-import { ShoppingBasket } from "./ShoppingBasket";
-// const logout = () => Meteor.logout();
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -56,13 +53,12 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   const [background, setBackground] = useState("none");
 
-  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey } = useTracker(
+  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback } = useTracker(
     () => {
       const GetOpenMealDetails = OpenMealDetails.get();
       const GetOpenProgress = OpenProgress.get();
       const GetOpenSettings = OpenSettings.get();
       const GetOpenFeedback = OpenFeedback.get();
-      const GetOpenSurvey = OpenSurvey.get();
       return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback };
     }
   );
@@ -101,11 +97,6 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     Meteor.call("log", componentName, "handleDetailsClick");
   };
 
-  const handleShoppingBasket = () => {
-    OpenShoppingBasket.set(true);
-    Meteor.call("log", componentName, "handleShoppingBasket");
-  }
-
   useEffect(() => {
     if (GetOpenMealDetails !== null) {
       let url = getImage(RecipesCollection.findOne({ id: GetOpenMealDetails }));
@@ -122,7 +113,6 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     if (GetOpenProgress) title = "Progress";
     if (GetOpenSettings) title = "Settings";
     if (GetOpenFeedback) title = "Feedback";
-    if (GetOpenSurvey) title = "Survey";
 
     return title;
   };
