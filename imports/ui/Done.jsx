@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { Container, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import React from "react";
@@ -7,8 +7,11 @@ import React from "react";
 const useStyles = makeStyles((persfoTheme) => ({
     header: {
         margin: "20px",
-        alignSelf: "center"
     },
+    complete: {
+        display: "flex",
+        justifyContent: "center"
+    }
 }));
 
 const componentName = "Done";
@@ -21,20 +24,20 @@ export const Done = () => {
     }
 
     return (
-        <>
-            <Typography className={classes.header} variant="body1" color="primary">
-                Thank you for participating in the PERSFO study today. Your orders are already confirmed.
+        <Container>
+            <Typography className={classes.header} variant="body1">
+                Thank you for participating in the PERSFO study today. Your orders are confirmed.
             </Typography>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.complete}
-                onClick={undo}
-                style={{ color: "white" }}
-            >
-               Undo
-            </Button>
-        </>
+            <div className={classes.complete}>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    onClick={undo}
+                    style={{ color: "white" }} >
+                    Undo your orders of today
+                </Button>
+            </div>
+        </Container>
     );
 }
