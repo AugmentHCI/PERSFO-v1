@@ -106,4 +106,15 @@ Meteor.methods({
             }
         }
     },
+    "users.finishedOnboarding"() {
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $set: { onboardingFineshed: true } }
+        );
+    },
 });

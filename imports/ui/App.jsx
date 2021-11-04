@@ -25,6 +25,7 @@ import {
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const persfoTheme = createTheme({
   palette: {
@@ -119,13 +120,13 @@ export const App = () => {
     GetOpenSettings,
     GetOpenFeedback,
     GetOpenSurvey,
-    GetOpenShoppingBasket,
     menu,
     isLoading,
-    doneForToday
+    doneForToday,
+    onboardingFinished
   } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
-    const noDataAvailable = { menu: { courses: [] }, doneForToday: false };
+    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, onboardingFinished: true };
     const handler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
     const preferencesHandler = Meteor.subscribe("userpreferences");
@@ -135,8 +136,6 @@ export const App = () => {
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
     const GetOpenSurvey = OpenSurvey.get();
-    const GetOpenShoppingBasket = OpenShoppingBasket.get();
-
 
     if (!Meteor.user()) {
       return noDataAvailable;
@@ -173,8 +172,10 @@ export const App = () => {
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;
 
-    console.log(randomConfirmedOrder);
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, GetOpenShoppingBasket, menu, doneForToday };
+
+    const onboardingFinished = UserPreferences.findOne({ userid: Meteor.userId() }).onboardingFineshed;
+
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, onboardingFinished };
   });
 
   const getCoursesTabs = () => {
@@ -192,72 +193,68 @@ export const App = () => {
   const switchRenderScreen = () => {
     let renderScreen;
     if (user) {
-      if (GetOpenMealDetails == null) {
-        if (doneForToday) {
-          renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
-        } else {
+
+      if (!onboardingFinished) {
+        renderScreen = <Onboarding />;
+      } else {
+
+        if (GetOpenMealDetails == null) {
+          if (doneForToday) {
+            renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
+          } else {
+            renderScreen = (
+              <>
+                <div>{isLoading && <CircularProgress />}</div>
+                <Tabs
+                  className={classes.tabs}
+                  value={value}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="scrollable"
+                  scrollButtons="on"
+                >
+                  {" "}
+                  {getCoursesTabs()}{" "}
+                </Tabs>
+                {_.map(menu.courses, function (n, i) {
+                  return (
+                    <TabPanel key={i} value={value} index={i}>
+                      <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
+                    </TabPanel>
+                  );
+                })}
+              </>
+            );
+          }
+        } else if (GetOpenMealDetails !== null) {
           renderScreen = (
-            <>
-              <div>{isLoading && <CircularProgress />}</div>
-              <Tabs
-                className={classes.tabs}
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="on"
-              >
-                {" "}
-                {getCoursesTabs()}{" "}
-              </Tabs>
-              {_.map(menu.courses, function (n, i) {
-                return (
-                  <TabPanel key={i} value={value} index={i}>
-                    <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
-                  </TabPanel>
-                );
-              })}
-            </>
+            <MealScreen
+              recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
+            />
           );
         }
-      } else if (GetOpenMealDetails !== null) {
-        renderScreen = (
-          <MealScreen
-            recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
-          />
-        );
+
+        if (GetOpenProgress) {
+          renderScreen = <Progress />;
+        }
+
+        if (GetOpenSettings) {
+          renderScreen = <Preferences />;
+        }
+
+        if (GetOpenFeedback) {
+          renderScreen = <Feedback />;
+        }
+
+        if (GetOpenSurvey) {
+          renderScreen = <SurveyForm />;
+        }
       }
-
-      if (GetOpenProgress) {
-        renderScreen = <Progress />;
-      }
-
-      if (GetOpenSettings) {
-        renderScreen = <Preferences />;
-      }
-
-      if (GetOpenFeedback) {
-        renderScreen = <Feedback />;
-      }
-
-      if (GetOpenSurvey) {
-        renderScreen = <SurveyForm />;
-      }
-
-
-      // if (GetOpenShoppingBasket) {
-      //   renderScreen = <ShoppingBasket drawerOpen={shoppingBasketdrawerOpen} toggleDrawer={toggleShoppingBasketDrawer} />;
-      // }
-
-      // TODO
-      // renderScreen = <ShoppingBasket />;
 
     } else {
       renderScreen = <AuthenticationScreen />;
     }
-
-    // renderScreen = <Onboarding />;
 
     return renderScreen;
   };

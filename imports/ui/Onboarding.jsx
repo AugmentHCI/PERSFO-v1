@@ -111,7 +111,7 @@ export const Onboarding = () => {
 
     const handleComplete = () => {
         if (activeStep == steps.length - 1) {
-            console.log("ready!");
+            Meteor.call("users.finishedOnboarding");
         }
         const newCompleted = completed;
         newCompleted[activeStep] = true;
