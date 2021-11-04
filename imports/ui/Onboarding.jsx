@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import { StepButton } from '@material-ui/core';
+import { Box, StepButton } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import Step from '@material-ui/core/Step';
+import StepContent from '@material-ui/core/StepContent';
+import Stepper from '@material-ui/core/Stepper';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
+import React, { useState } from "react";
 
 const useStyles = makeStyles((persfoTheme) => ({
     title: {
@@ -156,14 +153,6 @@ export const Onboarding = () => {
                     </Step>
                 ))}
             </Stepper>
-            {/* {activeStep === steps.length && (
-                <Paper square elevation={0} sx={{ p: 3 }}>
-                    <Typography>All steps completed - you&apos;re finished</Typography>
-                    <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                        Reset
-                    </Button>
-                </Paper>
-            )} */}
         </Box>
     );
 };
