@@ -175,8 +175,8 @@ export const App = () => {
 
 
     const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
-    const icfFinished = userPreferences.icfFinished;
-    const surveyFinished = userPreferences.surveyFinished;
+    const icfFinished = userPreferences?.icfFinished;
+    const surveyFinished = userPreferences?.survey;
 
     return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, icfFinished, surveyFinished };
   });

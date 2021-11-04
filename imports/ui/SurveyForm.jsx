@@ -10,14 +10,14 @@ import { HexadCollection } from "../db/surveys/HexadCollection";
 
 
 const useStyles = makeStyles((persfoTheme) => ({
-    title: {
-        fontSize: "13px",
-        fontWeight: 600,
-        fontFamily: "Roboto",
-        margin: "4px",
-        marginTop: "20px",
-        color: "#726f6c",
-    },
+    // title: {
+    //     fontSize: "13px",
+    //     fontWeight: 600,
+    //     fontFamily: "Roboto",
+    //     margin: "4px",
+    //     // marginTop: "20px",
+    //     color: "#726f6c",
+    // },
 }));
 
 const componentName = "SurveyForm";
@@ -136,6 +136,8 @@ export const SurveyForm = () => {
         });
 
         Meteor.call('users.saveSurvey', parsedOutput);
+        // Meteor.call("users.finishedSurvey", parsedOutput);
+
     }
 
     var defaultThemeColors = Survey
@@ -152,7 +154,6 @@ export const SurveyForm = () => {
         .applyTheme();
 
     let model = new Survey.Model(json);
-
 
     model.showQuestionNumbers = "off";
 

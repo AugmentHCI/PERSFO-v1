@@ -33,7 +33,7 @@ Meteor.methods({
 
         UserPreferences.upsert(
             { userid: this.userId },
-            { $addToSet: { ffq: SurveyAnswers } }
+            { $addToSet: { survey: SurveyAnswers } }
         );
 
         food4me(SurveyAnswers);
@@ -117,7 +117,7 @@ Meteor.methods({
             { $set: { icfFinished: true } }
         );
     },
-    "users.finishedSurvey"() {
+    "users.finishedSurvey"(results) {
 
         if (!this.userId) {
             throw new Meteor.Error("Not authorized.");
@@ -125,7 +125,7 @@ Meteor.methods({
 
         UserPreferences.upsert(
             { userid: this.userId },
-            { $set: { surveyFinished: true } }
+            { $set: { surveyFinished: true, surveyResults: results } }
         );
     },
 });

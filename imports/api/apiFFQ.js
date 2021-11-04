@@ -1,4 +1,5 @@
 import { FFQCollection } from "../db/surveys/FFQCollection";
+import { UserPreferences } from "../db/userPreferences/UserPreferences";
 
 const token = "";
 const language = "nl-NL"
@@ -38,7 +39,10 @@ export function food4me(FFQ) {
 
     if (call.data) {
         console.log(call.data);
-        FFQCollection.insert({ food4me: call.data });
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $addToSet: { food4me: call.data } }
+        );
     }
 }
 
