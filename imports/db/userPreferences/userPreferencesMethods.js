@@ -106,7 +106,7 @@ Meteor.methods({
             }
         }
     },
-    "users.finishedOnboarding"() {
+    "users.finishedICF"() {
 
         if (!this.userId) {
             throw new Meteor.Error("Not authorized.");
@@ -114,7 +114,7 @@ Meteor.methods({
 
         UserPreferences.upsert(
             { userid: this.userId },
-            { $set: { onboardingFineshed: true } }
+            { $set: { icfFinished: true } }
         );
     },
 });

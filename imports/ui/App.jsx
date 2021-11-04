@@ -123,7 +123,7 @@ export const App = () => {
     menu,
     isLoading,
     doneForToday,
-    onboardingFinished
+    icfFinished
   } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
     const noDataAvailable = { menu: { courses: [] }, doneForToday: false, onboardingFinished: true };
@@ -173,9 +173,9 @@ export const App = () => {
     const doneForToday = randomConfirmedOrder !== undefined;
 
 
-    const onboardingFinished = UserPreferences.findOne({ userid: Meteor.userId() }).onboardingFineshed;
+    const icfFinished = UserPreferences.findOne({ userid: Meteor.userId() }).icfFinished;
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, onboardingFinished };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, icfFinished };
   });
 
   const getCoursesTabs = () => {
@@ -194,7 +194,7 @@ export const App = () => {
     let renderScreen;
     if (user) {
 
-      if (!onboardingFinished) {
+      if (!icfFinished) {
         renderScreen = <Onboarding />;
       } else {
 

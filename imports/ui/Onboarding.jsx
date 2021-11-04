@@ -68,7 +68,7 @@ export const Onboarding = () => {
         },
         {
             label: 'Start met de studie',
-            description: "Alvast bedankt voor uw interesse in onze studie. Indien u akkoord gaat met bovenstaande informatie, kan u deelnemen door hieronder op akkoord te klikken. <br /> U zal vervolgens naar de vragenlijsten overgaan.",
+            description: "Alvast bedankt voor uw interesse in onze studie. Indien u akkoord gaat met bovenstaande informatie, kan u deelnemen door hieronder op akkoord te klikken. U zal vervolgens naar de vragenlijsten overgaan.",
         }
     ];
 
@@ -111,7 +111,7 @@ export const Onboarding = () => {
 
     const handleComplete = () => {
         if (activeStep == steps.length - 1) {
-            Meteor.call("users.finishedOnboarding");
+            Meteor.call("users.finishedICF");
         }
         const newCompleted = completed;
         newCompleted[activeStep] = true;
@@ -141,14 +141,14 @@ export const Onboarding = () => {
                                         onClick={handleComplete}
                                         sx={{ mt: 1, mr: 1 }}
                                     >
-                                        {index === steps.length - 1 ? 'Akkoord' : 'Continue'}
+                                        {index === steps.length - 1 ? 'Ik ga akkoord' : 'Verder'}
                                     </Button>
                                     <Button
                                         disabled={index === 0}
                                         onClick={handleBack}
                                         sx={{ mt: 1, mr: 1 }}
                                     >
-                                        Back
+                                        Terug
                                     </Button>
                                 </div>
                             </Box>
@@ -156,14 +156,14 @@ export const Onboarding = () => {
                     </Step>
                 ))}
             </Stepper>
-            {activeStep === steps.length && (
+            {/* {activeStep === steps.length && (
                 <Paper square elevation={0} sx={{ p: 3 }}>
                     <Typography>All steps completed - you&apos;re finished</Typography>
                     <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
                         Reset
                     </Button>
                 </Paper>
-            )}
+            )} */}
         </Box>
     );
 };
