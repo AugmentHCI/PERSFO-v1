@@ -123,10 +123,11 @@ export const App = () => {
     menu,
     isLoading,
     doneForToday,
-    icfFinished
+    icfFinished,
+    surveyFinished
   } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
-    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, onboardingFinished: true };
+    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, onboardingFinished: true, surveyFinished: true };
     const handler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
     const preferencesHandler = Meteor.subscribe("userpreferences");
@@ -173,9 +174,11 @@ export const App = () => {
     const doneForToday = randomConfirmedOrder !== undefined;
 
 
-    const icfFinished = UserPreferences.findOne({ userid: Meteor.userId() }).icfFinished;
+    const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
+    const icfFinished = userPreferences.icfFinished;
+    const surveyFinished = userPreferences.surveyFinished;
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, icfFinished };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenSurvey, menu, doneForToday, icfFinished, surveyFinished };
   });
 
   const getCoursesTabs = () => {
@@ -198,57 +201,62 @@ export const App = () => {
         renderScreen = <Onboarding />;
       } else {
 
-        if (GetOpenMealDetails == null) {
-          if (doneForToday) {
-            renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
-          } else {
+        if (!surveyFinished) {
+          renderScreen = <SurveyForm />;
+        } else {
+
+          if (GetOpenMealDetails == null) {
+            if (doneForToday) {
+              renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
+            } else {
+              renderScreen = (
+                <>
+                  <div>{isLoading && <CircularProgress />}</div>
+                  <Tabs
+                    className={classes.tabs}
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="scrollable"
+                    scrollButtons="on"
+                  >
+                    {" "}
+                    {getCoursesTabs()}{" "}
+                  </Tabs>
+                  {_.map(menu.courses, function (n, i) {
+                    return (
+                      <TabPanel key={i} value={value} index={i}>
+                        <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
+                      </TabPanel>
+                    );
+                  })}
+                </>
+              );
+            }
+          } else if (GetOpenMealDetails !== null) {
             renderScreen = (
-              <>
-                <div>{isLoading && <CircularProgress />}</div>
-                <Tabs
-                  className={classes.tabs}
-                  value={value}
-                  onChange={handleChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  variant="scrollable"
-                  scrollButtons="on"
-                >
-                  {" "}
-                  {getCoursesTabs()}{" "}
-                </Tabs>
-                {_.map(menu.courses, function (n, i) {
-                  return (
-                    <TabPanel key={i} value={value} index={i}>
-                      <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
-                    </TabPanel>
-                  );
-                })}
-              </>
+              <MealScreen
+                recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
+              />
             );
           }
-        } else if (GetOpenMealDetails !== null) {
-          renderScreen = (
-            <MealScreen
-              recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
-            />
-          );
-        }
 
-        if (GetOpenProgress) {
-          renderScreen = <Progress />;
-        }
+          if (GetOpenProgress) {
+            renderScreen = <Progress />;
+          }
 
-        if (GetOpenSettings) {
-          renderScreen = <Preferences />;
-        }
+          if (GetOpenSettings) {
+            renderScreen = <Preferences />;
+          }
 
-        if (GetOpenFeedback) {
-          renderScreen = <Feedback />;
-        }
+          if (GetOpenFeedback) {
+            renderScreen = <Feedback />;
+          }
 
-        if (GetOpenSurvey) {
-          renderScreen = <SurveyForm />;
+          if (GetOpenSurvey) {
+            renderScreen = <SurveyForm />;
+          }
         }
       }
 

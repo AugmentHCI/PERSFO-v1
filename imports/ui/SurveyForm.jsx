@@ -187,7 +187,7 @@ export const SurveyForm = () => {
 
     return (
         <Container>
-            <h1 className={classes.title}>Onboarding questionnaires</h1>
+            {/* <h1 className={classes.title}>Onboarding questionnaires</h1> */}
             <Survey.Survey model={model} onComplete={onComplete} />
         </Container>
     );

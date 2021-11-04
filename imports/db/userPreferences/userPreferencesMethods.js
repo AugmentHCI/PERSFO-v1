@@ -117,4 +117,15 @@ Meteor.methods({
             { $set: { icfFinished: true } }
         );
     },
+    "users.finishedSurvey"() {
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $set: { surveyFinished: true } }
+        );
+    },
 });
