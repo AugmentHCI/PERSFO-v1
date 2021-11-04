@@ -17,6 +17,7 @@ import {
 } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { UserPreferences} from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -45,11 +46,22 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: "flex-end",
     color: "white",
   },
+  initTitle: {
+    fontSize: "15px",
+    fontFamily: "sans-serif",
+    color: "white",
+    margin: 10,
+    fontWeight: 400,
+    opacity: 0.8,
+    // alignSelf: "left",
+  },
 }));
 
 const componentName = "AppBarPersfo";
 export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer }) => {
   const classes = useStyles();
+
+  const user = useTracker(() => Meteor.user());
 
   const [background, setBackground] = useState("none");
 
@@ -63,11 +75,22 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     }
   );
 
-  const { nbOrders, doneForToday } = useTracker(() => {
-    const noDataAvailable = 0;
+  const { nbOrders, doneForToday, icfFinished, surveyFinished } = useTracker(() => {
+    const noDataAvailable = { nbOrders: 0, doneForToday: false, onboardingFinished: true, surveyFinished: true };
     const handler = Meteor.subscribe("orders");
+    const preferencesHandler = Meteor.subscribe("userpreferences");
+    const orderHandler = Meteor.subscribe("orders");
+
     if (!handler.ready()) {
       return { ...noDataAvailable };
+    }
+
+    if (!preferencesHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
+    }
+
+    if (!orderHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
     }
 
     // find only orders made today
@@ -82,7 +105,11 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;
 
-    return { nbOrders, doneForToday };
+    const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
+    const icfFinished = userPreferences?.icfFinished;
+    const surveyFinished = userPreferences?.survey;
+
+    return { nbOrders, doneForToday, icfFinished, surveyFinished };
   });
 
   document.addEventListener("backbutton", onBackKeyDown, false);
@@ -113,6 +140,10 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     if (GetOpenProgress) title = "Progress";
     if (GetOpenSettings) title = "Settings";
     if (GetOpenFeedback) title = "Feedback";
+    if (doneForToday) title = "Thank you!";
+    if (!icfFinished) title = "Informed consent information";
+    if (!surveyFinished) title = "Study questionnaires";
+    if (!user) title = "Welcome to the PERSFO app!";
 
     return title;
   };
@@ -122,53 +153,78 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
       position="static"
       style={{ backgroundImage: background, backgroundSize: "120% 150%" }}
     >
-      {GetOpenMealDetails == null ? (
-        <div
-          style={{ display: "flex", flexDirection: "column", height: "100px" }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // justifyContent: "space-between",
-              marginTop: "8px",
-            }}
-          >
-            <IconButton
-              className={classes.menuButton}
-              color="secondary"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <h1 className={classes.title}>{switchHeader()}</h1>
-            <div className={classes.shoppingButton}>
-              {!doneForToday ?
-                <Badge badgeContent={nbOrders} color="secondary" onClick={toggleShoppingBasketDrawer(true)}>
-                  <ShoppingCartIcon color="secondary" />
-                </Badge>
-                :
-                <></>}
-            </div>
-          </div>
-          <div style={{ height: "48px" }}>
-            <AdherenceTimeline />
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{ display: "flex", height: "100px", alignItems: "flex-start" }}
-        >
-          <IconButton
-            className={classes.backButton}
-            color="secondary"
-            onClick={() => handleDetailsClick()}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-        </div>
-      )}
-      <PersfoDrawer drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+      {
+        (() => {
+          if (user && GetOpenMealDetails == null && icfFinished && surveyFinished) {
+            return (
+              <div
+                style={{ display: "flex", flexDirection: "column", height: "100px" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // justifyContent: "space-between",
+                    marginTop: "8px",
+                  }}
+                >
+                  <IconButton
+                    className={classes.menuButton}
+                    color="secondary"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <h1 className={classes.title}>{switchHeader()}</h1>
+                  <div className={classes.shoppingButton}>
+                    {!doneForToday ?
+                      <Badge badgeContent={nbOrders} color="secondary" onClick={toggleShoppingBasketDrawer(true)}>
+                        <ShoppingCartIcon color="secondary" />
+                      </Badge>
+                      :
+                      <></>}
+                  </div>
+                </div>
+                <div style={{ height: "48px" }}>
+                  <AdherenceTimeline />
+                </div>
+              </div>
+            )
+          } else if (user && icfFinished && surveyFinished) {
+            return (
+              <div
+                style={{ display: "flex", height: "100px", alignItems: "flex-start" }}
+              >
+                <IconButton
+                  className={classes.backButton}
+                  color="secondary"
+                  onClick={() => handleDetailsClick()}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+              </div>
+            )
+          } else {
+            return (
+              <div
+                style={{ display: "flex", height: "50px", alignItems: "flex-start" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // justifyContent: "space-between",
+                    marginTop: "8px",
+                  }}
+                >
+                  <h1 className={classes.initTitle}>{switchHeader()}</h1>
+                </div>
+              </div>
+            )
+          }
+        })()
+      }
+      < PersfoDrawer drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
       <ShoppingBasket drawerOpen={shoppingBasketdrawerOpen} toggleDrawer={toggleShoppingBasketDrawer} />
     </AppBar>
   );
