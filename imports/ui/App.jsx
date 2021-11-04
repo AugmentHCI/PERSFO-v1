@@ -200,10 +200,11 @@ export const App = () => {
           renderScreen = <SurveyForm />;
         } else {
 
-          if (GetOpenMealDetails == null) {
-            if (doneForToday) {
-              renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
-            } else {
+          if (doneForToday) {
+            renderScreen = <Done toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}></Done>
+          } else {
+
+            if (GetOpenMealDetails == null) {
               renderScreen = (
                 <>
                   <div>{isLoading && <CircularProgress />}</div>
@@ -228,13 +229,14 @@ export const App = () => {
                   })}
                 </>
               );
+
+            } else if (GetOpenMealDetails !== null) {
+              renderScreen = (
+                <MealScreen
+                  recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
+                />
+              );
             }
-          } else if (GetOpenMealDetails !== null) {
-            renderScreen = (
-              <MealScreen
-                recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
-              />
-            );
           }
 
           if (GetOpenProgress) {
