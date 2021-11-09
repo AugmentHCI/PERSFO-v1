@@ -4,6 +4,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import CheckIcon from "@material-ui/icons/Check";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
@@ -13,6 +14,7 @@ import {
 } from "/imports/api/apiPersfo";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+
 
 
 const BorderLinearProgress = withStyles((theme) => ({
@@ -161,12 +163,14 @@ export const MealScreen = ({ recipe }) => {
   const classes = useStyles();
 
   // Like logic
-  const { liked, nbLikes, userAllergens, nutrientGoals } = useTracker(() => {
+  const { liked, nbLikes, userAllergens, nutrientGoals, recipeAllergens, allergensPresent } = useTracker(() => {
     const noDataAvailable = {
       liked: false,
       nbLikes: 0,
       userAllergens: [],
       nutrientGoals: {},
+      recipeAllergens: [],
+      allergensPresent: false,
     };
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
@@ -183,10 +187,25 @@ export const MealScreen = ({ recipe }) => {
     const userPreferences = UserPreferences.findOne({
       userid: Meteor.userId(),
     });
-    let userAllergens = [];
-    try {
-      userAllergens = userPreferences.allergens;
-    } catch (error) { }
+
+
+    const userAllergens = userPreferences?.allergens ? _.map(userPreferences?.allergens, a => a.allergen) : [];
+
+    const recipeAllergens = _.without(
+      _.map(_.toPairs(recipe.allergens), (n) => {
+        if (n[1] == 1) return n[0];
+      }),
+      undefined
+    );
+
+    let allergensPresentTmp = false;
+    userAllergens.forEach(userAllergy => {
+      if (recipeAllergens.includes(userAllergy)) {
+        allergensPresentTmp = true;
+      }
+    });
+    const allergensPresent = allergensPresentTmp;
+
     let nutrientGoals = {};
     try {
       const userNutrientGoals = userPreferences.nutrientGoals;
@@ -197,7 +216,7 @@ export const MealScreen = ({ recipe }) => {
         }
       });
     } catch (error) { }
-    return { liked, nbLikes, userAllergens, nutrientGoals };
+    return { liked, nbLikes, userAllergens, nutrientGoals, recipeAllergens, allergensPresent };
   });
 
   const handleIncreaseLike = () => {
@@ -430,34 +449,23 @@ export const MealScreen = ({ recipe }) => {
   };
 
   const AllergiesContent = (props) => {
-    const allergens = _.without(
-      _.map(_.toPairs(props.recipe.allergens), function (n) {
-        if (n[1] == 1) return n[0];
-      }),
-      undefined
-    );
-    let render = _.map(allergens, function (a, i) {
-      let tempClassName = classes.allergenBox;
-      try {
-        userAllergens.forEach((element) => {
-          if (element.allergen == a) {
-            tempClassName = classes.activeAllergenBox;
-          }
-        });
-      } catch (error) { }
+    let render = _.map(recipeAllergens, (allergy, i) => {
+      let className = userAllergens.includes(allergy) ? classes.activeAllergenBox : classes.allergenBox;
       return (
-        <div className={tempClassName} key={i}>
-          {a}
+        <div className={className} key={i}>
+          {allergy}
         </div>
       );
     });
-    if (_.isEmpty(allergens))
+
+    if (_.isEmpty(recipeAllergens))
       render = (
         <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
           {" "}
           No data{" "}
         </p>
       );
+
     return (
       <div>
         <h1 className={classes.subtitle}>Allergens</h1>
@@ -609,9 +617,12 @@ export const MealScreen = ({ recipe }) => {
           >
             <h1 className={String(recipe.name).length < 40
               ? classes.menuTitle
-              : classes.menuTitleLong}>
+              : classes.menuTitleLong}
+              style={allergensPresent ? { color: red[300] } : {} }
+              >
               {recipe.name}
             </h1>
+            {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }}/> : <></> }
             <img
               className={classes.nutriscore}
               src={getNutriscoreImage(recipe)}
@@ -663,7 +674,7 @@ export const MealScreen = ({ recipe }) => {
             />
             <Tab
               key={"key3"}
-              label={<span className={classes.tabFont}>Allergens</span>}
+              label={<span className={classes.tabFont} style={allergensPresent ? {color: red[300]} : { }}>Allergens</span>}
             />
             <Tab
               key={"key4"}
