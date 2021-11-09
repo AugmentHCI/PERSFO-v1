@@ -236,7 +236,7 @@ export const MealScreen = ({ recipe }) => {
     const ordered = orders.length > 0;
 
     let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
-    const confirmed =  randomConfirmedOrderToday !== undefined;
+    const confirmed = randomConfirmedOrderToday !== undefined;
 
     return { ordered, confirmed };
   });
@@ -484,6 +484,7 @@ export const MealScreen = ({ recipe }) => {
     if (props.recipe.remarks) {
       // remove all html tags --> remove all info between brackets
       tempIngredients = props.recipe.remarks
+        .replace("</p><p>", ",")
         .replace(/<[^>]*>?/gm, "")
         .replace(/ *\([^)]*\) */g, "")
         .split(",");
