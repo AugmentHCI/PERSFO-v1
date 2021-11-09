@@ -16,7 +16,6 @@ import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 
-
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
     height: 4,

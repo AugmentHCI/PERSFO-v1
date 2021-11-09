@@ -9,8 +9,7 @@ import { FFQCollection } from "../db/surveys/FFQCollection";
 import { HexadCollection } from "../db/surveys/HexadCollection";
 
 
-const useStyles = makeStyles((persfoTheme) => ({
-}));
+const useStyles = makeStyles((persfoTheme) => ({}));
 
 const componentName = "SurveyForm";
 export const SurveyForm = () => {
@@ -140,7 +139,6 @@ export const SurveyForm = () => {
     defaultThemeColors["$body-background-color"] = "#F9F1EC";
     defaultThemeColors["$body-container-background-color"] = "#fff";
 
-
     Survey
         .StylesManager
         .applyTheme();
@@ -181,7 +179,7 @@ export const SurveyForm = () => {
     return (
         <Container>
             {/* <h1 className={classes.title}>Onboarding questionnaires</h1> */}
-            <Survey.Survey model={model} onComplete={onComplete} />
+            <Survey.Survey model={model} onComplete={onComplete} style={{ borderColor: "transparent" }}/>
         </Container>
     );
 };

@@ -22,3 +22,9 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* needed to style the survey.js body */
+.sv_main.sv_default_css .sv_body {
+  border-color: transparent;
+  margin-top: 10px;
+}

@@ -8,6 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import React, { useState } from "react";
 
 const useStyles = makeStyles((persfoTheme) => ({
+    main: {
+        maxWidth: 800, 
+        margin:"auto", 
+    },
     title: {
         fontSize: "13px",
         fontWeight: 600,
@@ -122,8 +126,8 @@ export const Onboarding = () => {
     };
 
     return (
-        <Box sx={{ maxWidth: 400 }}>
-            <Stepper nonLinear activeStep={activeStep} orientation="vertical">
+        <Box className={classes.main}>
+            <Stepper nonLinear activeStep={activeStep} orientation="vertical" style={{ backgroundColor: "transparent" }}>
                 {steps.map((step, index) => (
                     <Step key={step.label} completed={completed[index]}>
                         <StepButton color="inherit" onClick={handleStep(index)}>
