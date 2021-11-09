@@ -155,7 +155,16 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   return (
     <AppBar
       position="static"
-      style={{ backgroundImage: background, backgroundSize: "120% 150%" }}
+      style={{ backgroundImage: background, backgroundSize: "cover", backgroundPosition: 'center center',
+      '&:before': {
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          content: '""',
+          display: 'block',
+          background: '#000',
+          opacity: '0.6'
+      }}}
     >
       {
         (() => {
