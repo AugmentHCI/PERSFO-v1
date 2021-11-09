@@ -133,7 +133,7 @@ export const CardOtherMeal = ({ recipeId }) => {
     }
   };
 
-  const { ordered } = useTracker(() => {
+  const { ordered, confirmed } = useTracker(() => {
     const noDataAvailable = { ordered: false };
     const handler = Meteor.subscribe("orders");
     if (!handler.ready()) {
@@ -143,13 +143,19 @@ export const CardOtherMeal = ({ recipeId }) => {
 
     // find only orders made today
     const now = new Date();
+    const nowString = now.toISOString().substring(0, 10);
+
     const orders = OrdersCollection.find({
       userid: Meteor.userId(),
       recipeId: recipe.id,
-      orderday: now.toISOString().substring(0, 10),
+      orderday: nowString,
     }).fetch();
     const ordered = orders.length > 0;
-    return { ordered };
+
+    let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
+    const confirmed =  randomConfirmedOrderToday !== undefined;
+
+    return { ordered, confirmed };
   });
 
   // Detail logic
@@ -204,6 +210,7 @@ export const CardOtherMeal = ({ recipeId }) => {
               size="large"
               onClick={() => handleOrder()}
               color="primary"
+              disabled={confirmed}
               style={
                 ordered
                   ? { backgroundColor: red[100], borderRadius: "14px" }

@@ -17,7 +17,7 @@ import {
 } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
-import { UserPreferences} from '/imports/db/userPreferences/UserPreferences';
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -135,14 +135,19 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   });
 
   const switchHeader = () => {
-    if (GetOpenMealDetails !== null) return "";
+    if (!user) return "Welcome to the PERSFO app!"; // user is logged in
+    if (GetOpenMealDetails !== null) return ""; // no title, meal image is displayed
+
+    if (!icfFinished) return "Informed consent information";
+    if (!surveyFinished) return "Study questionnaires";
+
+    // menu item header titles
     if (GetOpenProgress) return "Progress";
-    if (GetOpenSettings) return  "Settings";
-    if (GetOpenFeedback)return "Feedback";
-    if (doneForToday) return  "Thank you!";
-    if (!icfFinished) return  "Informed consent information";
-    if (!surveyFinished) return  "Study questionnaires";
-    if (!user) return  "Welcome to the PERSFO app!";
+    if (GetOpenSettings) return "Settings";
+    if (GetOpenFeedback) return "Feedback";
+
+    // last step, user could be finished
+    if (doneForToday) return "Thank you!";
 
     return "Your meals from the last five days";
   };
@@ -172,7 +177,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
                     color="secondary"
                     onClick={toggleDrawer(true)}
                   >
-                    <MenuIcon />
+                      <MenuIcon />
                   </IconButton>
                   <h1 className={classes.title}>{switchHeader()}</h1>
                   <div className={classes.shoppingButton}>

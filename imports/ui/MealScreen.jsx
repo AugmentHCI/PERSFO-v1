@@ -216,7 +216,7 @@ export const MealScreen = ({ recipe }) => {
     }
   };
 
-  const { ordered } = useTracker(() => {
+  const { ordered, confirmed } = useTracker(() => {
     const noDataAvailable = { ordered: false };
     const handler = Meteor.subscribe("orders");
     if (!handler.ready()) {
@@ -226,13 +226,19 @@ export const MealScreen = ({ recipe }) => {
 
     // find only orders made today
     const now = new Date();
+    const nowString = now.toISOString().substring(0, 10);
+
     const orders = OrdersCollection.find({
       userid: Meteor.userId(),
       recipeId: recipe.id,
-      orderday: now.toISOString().substring(0, 10),
+      orderday: nowString,
     }).fetch();
     const ordered = orders.length > 0;
-    return { ordered };
+
+    let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
+    const confirmed =  randomConfirmedOrderToday !== undefined;
+
+    return { ordered, confirmed };
   });
 
   // Thank you message
@@ -684,6 +690,7 @@ export const MealScreen = ({ recipe }) => {
           color="primary"
           aria-label="add"
           onClick={() => handleOrder()}
+          disabled={confirmed}
           className={classes.margin}
           style={
             ordered
