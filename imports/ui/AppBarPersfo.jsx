@@ -135,17 +135,16 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   });
 
   const switchHeader = () => {
-    let title = "Your meals from the last five days";
-    if (GetOpenMealDetails !== null) title = "";
-    if (GetOpenProgress) title = "Progress";
-    if (GetOpenSettings) title = "Settings";
-    if (GetOpenFeedback) title = "Feedback";
-    if (doneForToday) title = "Thank you!";
-    if (!icfFinished) title = "Informed consent information";
-    if (!surveyFinished) title = "Study questionnaires";
-    if (!user) title = "Welcome to the PERSFO app!";
+    if (GetOpenMealDetails !== null) return "";
+    if (GetOpenProgress) return "Progress";
+    if (GetOpenSettings) return  "Settings";
+    if (GetOpenFeedback)return "Feedback";
+    if (doneForToday) return  "Thank you!";
+    if (!icfFinished) return  "Informed consent information";
+    if (!surveyFinished) return  "Study questionnaires";
+    if (!user) return  "Welcome to the PERSFO app!";
 
-    return title;
+    return "Your meals from the last five days";
   };
 
   return (
