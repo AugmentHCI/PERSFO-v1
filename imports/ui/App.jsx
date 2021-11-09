@@ -123,8 +123,9 @@ export const App = () => {
     surveyFinished
   } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
-    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, onboardingFinished: true, surveyFinished: true };
-    const handler = Meteor.subscribe("menus");
+    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, icfFinished: true, surveyFinished: true };
+    
+    const menuHandler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
     const preferencesHandler = Meteor.subscribe("userpreferences");
     const orderHandler = Meteor.subscribe("orders");
@@ -136,17 +137,7 @@ export const App = () => {
     if (!Meteor.user()) {
       return noDataAvailable;
     }
-    if (!handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-    if (!recipesHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-    if (!preferencesHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
-    if (!orderHandler.ready()) {
+    if (!menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
 
@@ -154,20 +145,21 @@ export const App = () => {
     // recalculate new recommendation on every app startup
     Meteor.call("recommender.updateRecommendations");
 
+    const now = new Date();
+    const nowString = now.toISOString().substring(0, 10);
+
     // pick specific date for demo
     let menu = MenusCollection.findOne({ starting_date: "2020-12-17" });
-    // console.log(menu);
+    // pick menu of today TODO
     // let menu = MenusCollection.findOne({
-    //   starting_date: new Date().toISOString().substring(0, 10),
+    //   starting_date: nowString,
     // });
+
     // pick random menu when no menu available today
     if (!menu) menu = MenusCollection.findOne();
 
-    const now = new Date();
-    const nowString = now.toISOString().substring(0, 10);
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;
-
 
     const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
     const icfFinished = userPreferences?.icfFinished;
