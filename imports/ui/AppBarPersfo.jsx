@@ -18,6 +18,7 @@ import {
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import i18n from 'meteor/universe:i18n';
 
 const useStyles = makeStyles((theme) => ({
   backButton: {
@@ -135,28 +136,29 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   });
 
   const switchHeader = () => {
-    if (!user) return "Welcome to the PERSFO app!"; // user is logged in
+    if (!user) return i18n.__("AppBarPersfo.welcome");
     if (GetOpenMealDetails !== null) return ""; // no title, meal image is displayed
 
-    if (!icfFinished) return "Informed consent information";
-    if (!surveyFinished) return "Study questionnaires";
+    if (!icfFinished) return i18n.__("AppBarPersfo.icf");
+    if (!surveyFinished) return i18n.__("AppBarPersfo.survey");
 
     // menu item header titles
-    if (GetOpenProgress) return "Progress";
-    if (GetOpenSettings) return "Settings";
-    if (GetOpenFeedback) return "Feedback";
+    if (GetOpenProgress) return i18n.__("AppBarPersfo.progress");
+    if (GetOpenSettings) return i18n.__("AppBarPersfo.settings");
+    if (GetOpenFeedback) return i18n.__("AppBarPersfo.feedback");
 
     // last step, user could be finished
-    if (doneForToday) return "Thank you!";
+    if (doneForToday) return i18n.__("AppBarPersfo.thanks");
 
-    return "Your meals from the last five days";
+    return i18n.__("AppBarPersfo.title");
   };
 
   return (
     <AppBar
       position="static"
-      style={{ backgroundImage: background, backgroundSize: "cover", backgroundPosition: 'center center',
-      '&:before': {
+      style={{
+        backgroundImage: background, backgroundSize: "cover", backgroundPosition: 'center center',
+        '&:before': {
           position: 'absolute',
           width: '100%',
           height: '100%',
@@ -164,7 +166,8 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
           display: 'block',
           background: '#000',
           opacity: '0.6'
-      }}}
+        }
+      }}
     >
       {
         (() => {
@@ -186,7 +189,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
                     color="secondary"
                     onClick={toggleDrawer(true)}
                   >
-                      <MenuIcon />
+                    <MenuIcon />
                   </IconButton>
                   <h1 className={classes.title}>{switchHeader()}</h1>
                   <div className={classes.shoppingButton}>

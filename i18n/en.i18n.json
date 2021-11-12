@@ -1,0 +1,13 @@
+{
+    "_locale": "en",
+    "AppBarPersfo": {
+        "welcome": "Welcome to the PERSFO app!",
+        "icf": "Informed consent information",
+        "survey": "Study questionnaires",
+        "progress": "Progress",
+        "settings": "Settings",
+        "feedback": "Feedback",
+        "thanks": "Thank you",
+        "title": "Your meals from the last five days"
+    }
+}

@@ -21,3 +21,4 @@ react-meteor-data       # React higher-order component for reactively tracking M
 accounts-password@2.2.0
 http@2.0.0
 erasaur:meteor-lodash
+universe:i18n

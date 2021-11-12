@@ -271,7 +271,7 @@ export const Progress = ({ recipeURLs }) => {
             }}
           >
             <div className={classes.stat}>
-              Feature expected on in a future study. Please continue logging
+              Feature expected in the larger user study. Please continue logging
               to help us optimize this feature.
             </div>
             {/* <GoalsBar

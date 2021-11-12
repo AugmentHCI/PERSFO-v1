@@ -1,0 +1,13 @@
+{
+    "_locale": "nl",
+    "AppBarPersfo": {
+        "welcome": "Welkom bij de PERSFO app!",
+        "icf": "Geinformeerde toestemming informatie",
+        "survey": "Studie vragenlijsten",
+        "progress": "Voortgang",
+        "settings": "Instellingen",
+        "feedback": "Feedback",
+        "thanks": "Bedankt",
+        "title": "Maaltijden van de laatste vijf dagen"
+    }
+}
