@@ -217,7 +217,7 @@ export const CardOtherMeal = ({ recipeId }) => {
                   : undefined
               }
             >
-              {ordered ? "Ordered" : "Order"}
+              {ordered ? i18n.__("orderLogic.ordered") : i18n.__("orderLogic.order")}
             </Button>
           </CardActions>
         </Card>

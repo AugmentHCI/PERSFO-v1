@@ -9,5 +9,10 @@
         "feedback": "Feedback",
         "thanks": "Thank you",
         "title": "Your meals from the last five days"
+    },
+    "orderLogic": {
+        "order": "order",
+        "ordered": "ordered",
+        "orderLogic.addedToShoppingCart": "Added to your shopping cart!"
     }
 }

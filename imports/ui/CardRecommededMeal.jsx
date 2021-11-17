@@ -396,7 +396,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
                   : undefined
               }
             >
-              {ordered ? "Ordered" : "Order"}
+              {ordered ? i18n.__("orderLogic.ordered") : i18n.__("orderLogic.order")}
             </Button>
           </CardActions>
 
@@ -465,7 +465,7 @@ export const CardRecommendedMeal = ({ backupRecipeId }) => {
         onClose={() => setToast(false)}
       >
         <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
-          Added to your shopping cart!
+        <p>{i18n.__("orderLogic.addedToShoppingCart")}</p>
         </Alert>
       </Snackbar>
     </>

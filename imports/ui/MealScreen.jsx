@@ -710,7 +710,7 @@ export const MealScreen = ({ recipe }) => {
                 borderRadius: "14px",
                 color: "#F57D20",
               }
-              : { color: "white" }
+              : (allergensPresent ? { backgroundColor: red[300],color: "#white" } : { color: "white" })
           }
         >
           {ordered ? "Ordered" : "Order"}
