@@ -22,7 +22,9 @@ import {
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+
 
 const persfoTheme = createTheme({
   palette: {
@@ -45,14 +47,14 @@ const persfoTheme = createTheme({
         borderRadius: "0px 0px 40px 0px",
       },
     },
-    MuiButton: {
-      outlined: {
-        borderRadius: "75px 75px 75px 75px",
-        borderColor: "#F6EBE4",
-        color: "#222222",
-        boxShadow: "10px",
-      },
-    },
+    // MuiButton: {
+    //   outlined: {
+    //     borderRadius: "75px 75px 75px 75px",
+    //     borderColor: "#F6EBE4",
+    //     color: "#222222",
+    //     boxShadow: "10px",
+    //   },
+    // },
   },
 });
 
@@ -120,15 +122,23 @@ export const App = () => {
     isLoading,
     doneForToday,
     icfFinished,
-    surveyFinished
+    surveyFinished,
+    recommendedRecipe
   } = useTracker(() => {
     const GetOpenMealDetails = OpenMealDetails.get();
-    const noDataAvailable = { menu: { courses: [] }, doneForToday: false, icfFinished: true, surveyFinished: true };
-    
+    const noDataAvailable = {
+      menu: { courses: [] },
+      doneForToday: false,
+      icfFinished: true,
+      surveyFinished: true,
+      recommendedRecipe: "549111135960007" // in case no meal is recommended, suggest a sandwhich
+    };
+
     const menuHandler = Meteor.subscribe("menus");
     const recipesHandler = Meteor.subscribe("recipes");
     const preferencesHandler = Meteor.subscribe("userpreferences");
     const orderHandler = Meteor.subscribe("orders");
+    const recommendationHandler = Meteor.subscribe("recommendedrecipes");
 
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
@@ -137,13 +147,13 @@ export const App = () => {
     if (!Meteor.user()) {
       return noDataAvailable;
     }
-    if (!menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready()) {
+    if (!menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
 
-    // wait for menus, recipes, AND userpreferences to load before initializing recommendations
-    // recalculate new recommendation on every app startup
-    Meteor.call("recommender.updateRecommendations");
+    // // wait for menus, recipes, AND userpreferences to load before initializing recommendations
+    // // recalculate new recommendation on every app startup
+    // Meteor.call("recommender.updateRecommendations");
 
     const now = new Date();
     const nowString = now.toISOString().substring(0, 10);
@@ -165,7 +175,26 @@ export const App = () => {
     const icfFinished = userPreferences?.icfFinished;
     const surveyFinished = userPreferences?.survey;
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished };
+
+    let recommendedRecipeId = "549111135960007";
+    try {
+      const recommendedRecipes = RecommendedRecipes.findOne({
+        userid: Meteor.userId(),
+      }).recommendations;
+      recommendedRecipeId = _.filter(
+        recommendedRecipes,
+        (r) => r.ranking === 1
+      )[0].id;
+    } catch (error) {
+      console.log("catched error: " + error)
+      // no recommendations yet
+    }
+
+    const recommendedRecipe = RecipesCollection.findOne({
+      id: recommendedRecipeId,
+    });
+
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
   });
 
   const getCoursesTabs = () => {
@@ -215,7 +244,7 @@ export const App = () => {
                   {_.map(menu.courses, function (n, i) {
                     return (
                       <TabPanel key={i} value={value} index={i}>
-                        <TabHomeScreen recipeURLs={menu.courses[i].recipes} courseName={n.name} />
+                        <TabHomeScreen recommendedRecipe={recommendedRecipe} recipeURLs={menu.courses[i].recipes} courseName={n.name} />
                       </TabPanel>
                     );
                   })}
@@ -232,7 +261,7 @@ export const App = () => {
           }
 
           if (GetOpenProgress) {
-            renderScreen = <Progress />;
+            renderScreen = <Progress recommendedRecipe={recommendedRecipe}/>;
           }
 
           if (GetOpenSettings) {

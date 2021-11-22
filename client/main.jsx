@@ -15,18 +15,22 @@ i18n.setOptions({
 });
 
 Meteor.startup(() => {
-  Tracker.autorun(() => {
-    const user = Meteor.user();
+  // Tracker.autorun(() => {
+  //   const user = Meteor.user();
 
-    if (user) {
-      console.log(user);
-      const locale = user.profile.lang || deviceLocale;
+  //   if (user) {
+  //     console.log(user);
+  //     const locale = user.profile.lang || deviceLocale;
 
-      i18n.setLocale(locale);
-    } else {
-      i18n.setLocale(deviceLocale);
-    }
-  });
+  //     i18n.setLocale(locale);
+  //   } else {
+  //     i18n.setLocale(deviceLocale);
+  //   }
+  // });
+
+  // wait for menus, recipes, AND userpreferences to load before initializing recommendations
+  // recalculate new recommendation on every app startup
+  Meteor.call("recommender.updateRecommendations");
 
   render(<App />, document.getElementById('react-target'));
 });
@@ -42,7 +46,7 @@ function getLang() {
     navigator.userLanguage ||
     defaultLang;
 
-  result = result.substring(0,2)
+  result = result.substring(0, 2)
 
   if (!locales.includes(result)) {
     result = defaultLang;

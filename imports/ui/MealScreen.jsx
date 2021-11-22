@@ -1,18 +1,15 @@
-import { Button, Fab, LinearProgress, Tab, Tabs } from "@material-ui/core/";
+import { Button, LinearProgress, Tab, Tabs } from "@material-ui/core/";
 import { green, red } from "@material-ui/core/colors";
-import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import CheckIcon from "@material-ui/icons/Check";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import { OrderButton } from "./components/OrderButton";
 import {
   calculateNutrientforRecipe,
   getNutriscoreImage
 } from "/imports/api/apiPersfo";
-import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 
@@ -225,45 +222,45 @@ export const MealScreen = ({ recipe }) => {
     }
   };
 
-  // order logic
-  const handleOrder = () => {
-    if (recipe) {
-      if (!ordered) setToast(true);
-      Meteor.call("orders.handleOrder", recipe.id);
-      Meteor.call("log", componentName, "handleOrder");
-    }
-  };
+  // // order logic
+  // const handleOrder = () => {
+  //   if (recipe) {
+  //     if (!ordered) setToast(true);
+  //     Meteor.call("orders.handleOrder", recipe.id);
+  //     Meteor.call("log", componentName, "handleOrder");
+  //   }
+  // };
 
-  const { ordered, confirmed } = useTracker(() => {
-    const noDataAvailable = { ordered: false };
-    const handler = Meteor.subscribe("orders");
-    if (!handler.ready()) {
-      return { ...noDataAvailable };
-    }
-    if (!recipe) return { ...noDataAvailable };
+  // const { ordered, confirmed } = useTracker(() => {
+  //   const noDataAvailable = { ordered: false };
+  //   const handler = Meteor.subscribe("orders");
+  //   if (!handler.ready()) {
+  //     return { ...noDataAvailable };
+  //   }
+  //   if (!recipe) return { ...noDataAvailable };
 
-    // find only orders made today
-    const now = new Date();
-    const nowString = now.toISOString().substring(0, 10);
+  //   // find only orders made today
+  //   const now = new Date();
+  //   const nowString = now.toISOString().substring(0, 10);
 
-    const orders = OrdersCollection.find({
-      userid: Meteor.userId(),
-      recipeId: recipe.id,
-      orderday: nowString,
-    }).fetch();
-    const ordered = orders.length > 0;
+  //   const orders = OrdersCollection.find({
+  //     userid: Meteor.userId(),
+  //     recipeId: recipe.id,
+  //     orderday: nowString,
+  //   }).fetch();
+  //   const ordered = orders.length > 0;
 
-    let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
-    const confirmed = randomConfirmedOrderToday !== undefined;
+  //   let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
+  //   const confirmed = randomConfirmedOrderToday !== undefined;
 
-    return { ordered, confirmed };
-  });
+  //   return { ordered, confirmed };
+  // });
 
-  // Thank you message
-  function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
-  const [toastShown, setToast] = useState(false);
+  // // Thank you message
+  // function Alert(props) {
+  //   return <MuiAlert elevation={6} variant="filled" {...props} />;
+  // }
+  // const [toastShown, setToast] = useState(false);
 
   // tab logic
   const [tabValue, setTabValue] = useState(0);
@@ -617,11 +614,11 @@ export const MealScreen = ({ recipe }) => {
             <h1 className={String(recipe.name).length < 40
               ? classes.menuTitle
               : classes.menuTitleLong}
-              style={allergensPresent ? { color: red[300] } : {} }
-              >
+              style={allergensPresent ? { color: red[300] } : {}}
+            >
               {recipe.name}
             </h1>
-            {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }}/> : <></> }
+            {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }} /> : <></>}
             <img
               className={classes.nutriscore}
               src={getNutriscoreImage(recipe)}
@@ -673,7 +670,7 @@ export const MealScreen = ({ recipe }) => {
             />
             <Tab
               key={"key3"}
-              label={<span className={classes.tabFont} style={allergensPresent ? {color: red[300]} : { }}>Allergens</span>}
+              label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>Allergens</span>}
             />
             <Tab
               key={"key4"}
@@ -687,44 +684,7 @@ export const MealScreen = ({ recipe }) => {
         </div>
       </div>
       <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
-      <div className={classes.recipeDescription}>
-        <div style={{ alignSelf: "flex-start" }}>
-          <h1 className={classes.subtitle}>Description</h1>
-          <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}
-            {recipe.description}{" "}
-          </p>
-        </div>
-        <Fab
-          variant="extended"
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={() => handleOrder()}
-          disabled={confirmed}
-          className={classes.margin}
-          style={
-            ordered
-              ? {
-                backgroundColor: red[100],
-                borderRadius: "14px",
-                color: "#F57D20",
-              }
-              : (allergensPresent ? { backgroundColor: red[300],color: "#white" } : { color: "white" })
-          }
-        >
-          {ordered ? "Ordered" : "Order"}
-        </Fab>
-      </div>{" "}
-      <Snackbar
-        open={toastShown}
-        autoHideDuration={6000}
-        onClose={() => setToast(false)}
-      >
-        <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
-          Added to your shopping cart!
-        </Alert>
-      </Snackbar>
+      <OrderButton recipe={recipe} allergensPresent={allergensPresent} floating={true}></OrderButton>
     </div>
   );
 };

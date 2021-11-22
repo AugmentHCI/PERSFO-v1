@@ -2,7 +2,7 @@ import { LinearProgress, Tab, Tabs } from "@material-ui/core/";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
-import { CardRecommendedMeal } from "./CardRecommededMeal";
+import { RecipeComponent } from "./RecipeComponent";
 import { MealScreen } from "./MealScreen";
 import { calculateNutrientforRecipe } from "/imports/api/apiPersfo";
 import { capitalizeFirstLetter } from "/imports/api/auxMethods";
@@ -28,7 +28,7 @@ const BorderLinearProgress = withStyles((theme) => ({
 
 // recipeURL come from menu --> courses
 const componentName = "Progress";
-export const Progress = ({ recipeURLs }) => {
+export const Progress = ({ recommendedRecipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
   window.addEventListener("resize", () => {
@@ -121,12 +121,12 @@ export const Progress = ({ recipeURLs }) => {
     let nbLikes = 0;
     try {
       nbLikes = userPreferences.likedRecipes.length;
-    } catch (error) {}
+    } catch (error) { }
 
     let nbDislikes = 0;
     try {
       nbDislikes = userPreferences.dislikedIngredients.length;
-    } catch (error) {}
+    } catch (error) { }
 
     let orders = OrdersCollection.find({ userid: Meteor.userId() }).fetch();
     orders = _.map(orders, (order) => {
@@ -234,8 +234,8 @@ export const Progress = ({ recipeURLs }) => {
               <span className={classes.statNum}>
                 {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
                   ? _.sumBy(orders, (o) =>
-                      calculateNutrientforRecipe(o, "kcal")
-                    )
+                    calculateNutrientforRecipe(o, "kcal")
+                  )
                   : 0}
               </span>{" "}
               kcal in total.
@@ -300,7 +300,10 @@ export const Progress = ({ recipeURLs }) => {
             <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
           </div>
           <div style={{ padding: "4px" }}>
-            <CardRecommendedMeal backupRecipeId={"549111254750004"} />
+            <RecipeComponent
+              recipeId={recommendedRecipe.id}
+              type="recommended"
+            ></RecipeComponent>
           </div>
         </div>
       </div>

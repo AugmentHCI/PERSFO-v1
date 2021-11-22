@@ -9,5 +9,10 @@
         "feedback": "Feedback",
         "thanks": "Bedankt",
         "title": "Maaltijden van de laatste vijf dagen"
+    },
+    "orderLogic": {
+        "order": "bestel",
+        "ordered": "besteld",
+        "orderLogic.addedToShoppingCart": "Toegevoegd aan uw winkelmandje!"
     }
 }

@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MuiAlert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
-import { CardOtherMeal } from "./CardOtherMeal";
-import { CardRecommendedMeal } from "./CardRecommededMeal";
+import { CardRecommendedMeal } from "./CardRecommendedMeal";
 import { getRecipeID } from "/imports/api/apiPersfo";
+import { RecipeComponent } from './RecipeComponent';
 
 const useStyles = makeStyles((persfoTheme) => ({
   titleContent: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 
 // recipeURL come from menu --> courses
 const componentName = "TabHomeScreen";
-export const TabHomeScreen = ({ recipeURLs, courseName }) => {
+export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => {
   const classes = useStyles();
 
   const handleInfo = () => {
@@ -66,10 +66,11 @@ export const TabHomeScreen = ({ recipeURLs, courseName }) => {
       <div className={classes.otherMeals}>
         {_.map(recipeURLs, function (recipe, i) {
           return (
-            <CardOtherMeal
+            <RecipeComponent
               recipeId={getRecipeID(recipeURLs[i])}
-              key={getRecipeID(recipeURLs[i])}
-            ></CardOtherMeal>
+              type="other"
+              key={getRecipeID(recipeURLs[i])} // key needed for list
+            ></RecipeComponent>
           );
         })}
       </div>
@@ -81,7 +82,10 @@ export const TabHomeScreen = ({ recipeURLs, courseName }) => {
         </IconButton>
       </div>
       <div style={{ padding: "4px" }}>
-        <CardRecommendedMeal backupRecipeId={getRecipeID(recipeURLs[0])} />
+        <RecipeComponent
+          recipeId={recommendedRecipe.id}
+          type="recommended"
+        ></RecipeComponent>
       </div>
 
       <Snackbar
