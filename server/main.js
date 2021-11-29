@@ -8,6 +8,8 @@ import "/imports/api/apiPersfo";
 
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { IngredientCollection } from '/imports/db/ingredients/IngredientCollection';
+
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { HexadCollection } from "/imports/db/surveys/HexadCollection";
@@ -19,6 +21,11 @@ RecipesCollection.insert({
   value: "hack to create collection in meteor",
 });
 RecipesCollection.remove({ _id: "1" });
+IngredientCollection.insert({
+  _id: "1",
+  value: "hack to create collection in meteor",
+});
+IngredientCollection.remove({ _id: "1" });
 MenusCollection.insert({
   _id: "1",
   value: "hack to create collection in meteor",

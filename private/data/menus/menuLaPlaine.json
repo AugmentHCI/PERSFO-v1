@@ -1,0 +1,43 @@
+{
+    "count": 10,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "url": "https://www.apicbase.com/api/v1/menus/690800556140004/",
+            "id": "690800556140004",
+            "name": "Vrijdag 04/12/2021",
+            "uid": "",
+            "description": "",
+            "created_date": "2021-11-26T01:00:07.193187+01:00",
+            "created_by": "hans@alberts.be",
+            "modified_date": "2021-11-26T05:27:29.025289+01:00",
+            "courses": [
+                {
+                    "name": "Soep",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/749543530170001/",
+                        "https://www.apicbase.com/api/v1/recipes/949643673210000/"
+                    ]
+                },
+                {
+                    "name": "Salades",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/649543889010004/"
+                    ]
+                }
+            ],
+            "cycle_year": null,
+            "cycle_week": null,
+            "cycle_day": null,
+            "starting_date": "2021-12-04",
+            "ending_date": "2021-12-04",
+            "time_of_day": "11:00:00",
+            "vat": null,
+            "target_profit_margin": null,
+            "current_sell_price": null,
+            "sell_price_history": [],
+            "custom_fields": []
+        }
+    ]
+}

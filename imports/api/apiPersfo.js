@@ -1,8 +1,9 @@
 import { MenusCollection } from "/imports/db/menus/MenusCollection";
 import { RecipesCollection } from "/imports/db/recipes/RecipesCollection";
+import { IngredientCollection } from '/imports/db/ingredients/IngredientCollection';
 import { HexadCollection } from "../db/surveys/HexadCollection";
 
-const token = "";
+const token = "Erk4rkL2fJe8qKrhO91U7IGbDGQXyq";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
 var fs = require("fs");
@@ -11,7 +12,7 @@ export function initData() {
   // first load menus to only load relevant recipes!
 
   // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuArgenta.json")).results;
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuLaPlaine.json")).results;
   let allRecipeIds = [];
 
   allMenus.forEach((menu) => {
@@ -51,65 +52,113 @@ export function initData() {
     { $set: { reviews: [] } },
     { multi: true }
   );
-  console.log("recipes loaded");
-
+  console.log("old recipes loaded");
 
   // init hexad
   let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad.json"));
   HexadCollection.upsert({ version: "1" }, { $set: { survey: hexadQuestions } });
 
+  console.log("hexad loaded");
+
+
   // Meteor.setInterval(function () {
-  //   console.log("Hourly updated started: " + new Date());
+  console.log("Hourly updated started: " + new Date());
 
-  //   // fetch all recipes in database
-  //   const allRecipes = RecipesCollection.find({}).fetch();
+  // fetch all old recipes in database
+  const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
 
-  //   let index = 0;
+  allRecipeIds = allRecipeIds.concat(oldRecipeIds);
 
-  //   // function to fetch data in intervals
-  //   function updateRecipeDetails() {
-  //     Meteor.setTimeout(function () {
-  //       try {
-  //         const currentId = allRecipes[index].id;
-  //         if (currentId) {
-  //           let call = HTTP.call("GET", url + currentId, {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //           });
-  //           if (call.data) {
-  //             RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-  //             fs.writeFile(
-  //               process.env["PWD"] +
-  //               "/public/newRecipeDetails/" +
-  //               currentId +
-  //               ".json",
-  //               JSON.stringify(call.data),
-  //               (err) => {
-  //                 if (err) throw err;
-  //               }
-  //             );
-  //           }
-  //         } else {
-  //           console.log("error at index: " + index);
-  //         }
-  //       } catch (error) {
-  //         console.log("Call error for: " + currentId);
-  //       }
+  let index = 0;
+  let allIngredients = [];
 
-  //       index++;
-  //       if (index < allRecipes.length) {
-  //         updateRecipeDetails();
-  //       } else {
-  //         console.log("hourly update finished: " + new Date());
-  //       }
-  //     }, 1001);
-  //   }
+  // function to fetch data in intervals
+  function updateRecipeDetails() {
+    Meteor.setTimeout(function () {
+      try {
+        const currentId = allRecipeIds[index];
+        if (currentId) {
+          console.log("recipe: " + currentId);
+          let call = HTTP.call("GET", url + currentId, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (call.data) {
+            RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+            fs.writeFile(
+              process.env["PWD"] + "/public/newRecipeDetails/" + currentId + ".json",
+              JSON.stringify(call.data),
+              (err) => {
+                if (err) throw err;
+              }
+            );
+            if(call.data.ingredients) {
+              allIngredients = allIngredients.concat(call.data.ingredients);
+            }
+          }
+        } else {
+          console.log("error at index: " + index);
+          console.log("error at id: " + allRecipeIds);
 
-  //   // start the interval with the first recipe
-  //   updateRecipeDetails(allRecipes[0].id);
+        }
+      } catch (error) {
+        console.log("Call error for: " + currentId);
+      }
+
+      index++;
+
+      if (index < allRecipeIds.length) {
+        updateRecipeDetails();
+      } else {
+        console.log("update recipes finished: " + new Date());
+        // start downloading ingredientdata
+        updateIngredientDetails();
+      }
+    }, 1001);
+  }
+  // start the interval with the first recipe
+  updateRecipeDetails();
   // }, 60 * 60 * 1000);
 
+  let ingredientIndex = 0;
+  // function to fetch data in intervals
+  function updateIngredientDetails() {
+    Meteor.setTimeout(function () {
+      try {
+        let ingredientURL = allIngredients[ingredientIndex].ingredient;
+        if (ingredientURL) {
+          let call = HTTP.call("GET", ingredientURL, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (call.data) {
+            IngredientCollection.upsert({ id: call.data.id }, { $set: call.data });
+            fs.writeFile(
+              process.env["PWD"] + "/public/newIngredientDetails/" + call.data.id + ".json",
+              JSON.stringify(call.data),
+              (err) => {
+                if (err) throw err;
+              }
+            );
+          }
+        } else {
+          console.log("error at index: " + ingredientIndex);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      ingredientIndex++;
+
+      if (ingredientIndex < allIngredients.length) {
+        updateIngredientDetails();
+      } else {
+        console.log("update ingredients finished: " + new Date());
+      }
+    }, 1001);
+  }
 
 }
 
@@ -136,7 +185,7 @@ export function getImage(recipe) {
       if (demoIds.findIndex(element => element === recipe.id) > -1) {
         return "/images/demo/" + recipe.id + ".jpg";
       } else {
-        console.log(recipe.id);
+        console.log("no cached image for: " + recipe.id);
       }
     }
     if (recipe.main_image) {

@@ -159,7 +159,7 @@ export const App = () => {
     const nowString = now.toISOString().substring(0, 10);
 
     // pick specific date for demo
-    let menu = MenusCollection.findOne({ starting_date: "2020-12-17" });
+    let menu = MenusCollection.findOne({ starting_date: "2021-12-04" });
     // pick menu of today TODO
     // let menu = MenusCollection.findOne({
     //   starting_date: nowString,
@@ -176,7 +176,7 @@ export const App = () => {
     const surveyFinished = userPreferences?.survey;
 
 
-    let recommendedRecipeId = "549111135960007";
+    let recommendedRecipeId = "649443792980001";
     try {
       const recommendedRecipes = RecommendedRecipes.findOne({
         userid: Meteor.userId(),
