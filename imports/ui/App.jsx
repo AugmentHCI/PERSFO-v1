@@ -131,7 +131,7 @@ export const App = () => {
       doneForToday: false,
       icfFinished: true,
       surveyFinished: true,
-      recommendedRecipe: "549111135960007" // in case no meal is recommended, suggest a sandwhich
+      recommendedRecipe: "749543530170001" // in case no meal is recommended, suggest a sandwhich
     };
 
     const menuHandler = Meteor.subscribe("menus");
@@ -176,7 +176,7 @@ export const App = () => {
     const surveyFinished = userPreferences?.survey;
 
 
-    let recommendedRecipeId = "649443792980001";
+    let recommendedRecipeId = "749543530170001";
     try {
       const recommendedRecipes = RecommendedRecipes.findOne({
         userid: Meteor.userId(),

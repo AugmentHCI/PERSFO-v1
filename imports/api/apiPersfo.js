@@ -19,7 +19,7 @@ export function initData() {
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
     menu.courses.forEach((course) => {
       course.recipes.forEach((recipeURL) => {
-        allRecipeIds.push(getRecipeID(recipeURL));
+        allRecipeIds.push(getElementID(recipeURL));
       });
     });
   });
@@ -64,10 +64,10 @@ export function initData() {
   // Meteor.setInterval(function () {
   console.log("Hourly updated started: " + new Date());
 
-  // fetch all old recipes in database
-  const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
+  // fetch all old recipes in database TODO
+  // const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
 
-  allRecipeIds = allRecipeIds.concat(oldRecipeIds);
+  // allRecipeIds = allRecipeIds.concat(oldRecipeIds);
 
   let index = 0;
   let allIngredients = [];
@@ -93,7 +93,7 @@ export function initData() {
                 if (err) throw err;
               }
             );
-            if(call.data.ingredients) {
+            if (call.data.ingredients) {
               allIngredients = allIngredients.concat(call.data.ingredients);
             }
           }
@@ -156,10 +156,50 @@ export function initData() {
         updateIngredientDetails();
       } else {
         console.log("update ingredients finished: " + new Date());
+        configureIngredients();
       }
     }, 1001);
   }
+}
 
+function configureIngredients() {
+  console.log("ingredient cleaning started");
+  RecipesCollection.find({}).fetch().forEach(recipe => {
+
+    let cleanedIngredients = [];
+
+    if (recipe.remarks) {
+      // ingredients from remarks
+      let tempIngredients = recipe.remarks
+        .replace(/<[^>]*>?/gm, "")
+        .replace(/ *\([^)]*\) */g, "")
+        .split(",");
+      // remove trailing spaces, unneeded quotes and stars
+      tempIngredients = _.map(tempIngredients, (ingredient) =>
+        ingredient.trim().replace(/['"*]+/g, "")
+      );
+      cleanedIngredients = cleanedIngredients.concat(tempIngredients.sort());
+    }
+
+    if (recipe.ingredients) {
+      let listIngredients = recipe.ingredients.forEach(recipeIngredient => {
+        const ingredientID = getElementID(recipeIngredient.ingredient);
+        let ingredient = IngredientCollection.findOne({ id: ingredientID });
+        let composition = ingredient.composition;
+        if (composition && composition !== null) {
+
+        }
+        console.log(ingredient.composition);
+        cleanedIngredients = composition;
+      })
+    }
+
+    recipe.cleanedIngredients = cleanedIngredients;
+
+    RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
+
+
+  });
 }
 
 export function getNutriscore(recipe) {
@@ -206,7 +246,7 @@ export function getImage(recipe) {
   return "/images/Image-not-found.png";
 }
 
-export function getRecipeID(recipeURL) {
+export function getElementID(recipeURL) {
   if (recipeURL) {
     let splittedURL = recipeURL.split("/");
     return splittedURL[splittedURL.length - 2];

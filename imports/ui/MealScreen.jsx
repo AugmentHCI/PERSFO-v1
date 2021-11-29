@@ -485,18 +485,22 @@ export const MealScreen = ({ recipe }) => {
 
   const IngredientContent = (props) => {
     let tempIngredients = [];
-    if (props.recipe.remarks) {
-      // remove all html tags --> remove all info between brackets
-      tempIngredients = props.recipe.remarks
-        .replace("</p><p>", ",")
-        .replace(/<[^>]*>?/gm, "")
-        .replace(/ *\([^)]*\) */g, "")
-        .split(",");
-      // remove trailing spaces, unneeded quotes and stars
-      tempIngredients = _.map(tempIngredients, (ingredient) =>
-        ingredient.trim().replace(/['"*]+/g, "")
-      );
-      tempIngredients = tempIngredients.sort();
+    // if (props.recipe.remarks) {
+    //   // remove all html tags --> remove all info between brackets
+    //   tempIngredients = props.recipe.remarks
+    //     .replace("</p><p>", ",")
+    //     .replace(/<[^>]*>?/gm, "")
+    //     .replace(/ *\([^)]*\) */g, "")
+    //     .split(",");
+    //   // remove trailing spaces, unneeded quotes and stars
+    //   tempIngredients = _.map(tempIngredients, (ingredient) =>
+    //     ingredient.trim().replace(/['"*]+/g, "")
+    //   );
+    //   tempIngredients = tempIngredients.sort();
+    // }
+    if (props.recipe.cleanedIngredients) {
+      tempIngredients = props.recipe.cleanedIngredients;
+      console.log(tempIngredients);
     }
     const ingredients = tempIngredients;
     let render = _.map(ingredients, function (a, i) {

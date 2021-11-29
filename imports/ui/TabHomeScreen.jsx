@@ -5,7 +5,7 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MuiAlert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
 import { CardRecommendedMeal } from "./CardRecommendedMeal";
-import { getRecipeID } from "/imports/api/apiPersfo";
+import { getElementID } from "/imports/api/apiPersfo";
 import { RecipeComponent } from './RecipeComponent';
 
 const useStyles = makeStyles((persfoTheme) => ({
@@ -67,9 +67,9 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
         {_.map(recipeURLs, function (recipe, i) {
           return (
             <RecipeComponent
-              recipeId={getRecipeID(recipeURLs[i])}
+              recipeId={getElementID(recipeURLs[i])}
               type="other"
-              key={getRecipeID(recipeURLs[i])} // key needed for list
+              key={getElementID(recipeURLs[i])} // key needed for list
             ></RecipeComponent>
           );
         })}

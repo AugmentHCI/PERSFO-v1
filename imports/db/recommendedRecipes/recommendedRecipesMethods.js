@@ -4,7 +4,7 @@ import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
-import { getRecipeID } from "/imports/api/apiPersfo";
+import { getElementID } from "/imports/api/apiPersfo";
 
 Meteor.methods({
     "recommender.updateRecommendations"() {
@@ -25,7 +25,7 @@ Meteor.methods({
         todaysCourses.forEach((course) => {
             todaysRecipes = todaysRecipes.concat(course.recipes);
         });
-        todaysRecipes = _.map(todaysRecipes, getRecipeID);
+        todaysRecipes = _.map(todaysRecipes, getElementID);
 
         todaysRecipes = RecipesCollection.find({
             id: { $in: todaysRecipes },
