@@ -98,8 +98,6 @@ export const RecipeComponent = (({ recipeId, type }) => {
             }
         });
         const dietaryConflict = dietariesPresentTmp;
-        console.log(dietaryConflict)
-
         return { liked, nbLikes, allergensPresent, dietaryConflict };
     });
 

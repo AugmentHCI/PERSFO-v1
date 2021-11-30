@@ -19,12 +19,12 @@ export function initData() {
     menu.courses = _.filter(menu.courses, c => !_.isEmpty(c.recipes));
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
     menu.courses.forEach((course) => {
-        course.recipes.forEach((recipeURL) => {
-          allRecipeIds.push(getElementID(recipeURL));
-        });
+      course.recipes.forEach((recipeURL) => {
+        allRecipeIds.push(getElementID(recipeURL));
+      });
     });
   });
-  console.log("menus loaded");
+  console.log("initData: menus loaded");
 
   allRecipeIds.forEach((recipeId) => {
     try {
@@ -36,11 +36,9 @@ export function initData() {
       }
       RecipesCollection.upsert({ id: recipeId }, { $set: recipeDetails });
     } catch (error) {
-      console.log("data or datafield missing for recipe id:" + recipeId);
+      console.log("initData: data or datafield missing for recipe id:" + recipeId);
     }
   });
-
-  // kcal per gram * total gram
 
   // add custom fields if not exists (do not overwrite old data)
   RecipesCollection.update(
@@ -53,157 +51,159 @@ export function initData() {
     { $set: { reviews: [] } },
     { multi: true }
   );
-  console.log("old recipes loaded");
 
   // init hexad
   let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad.json"));
   HexadCollection.upsert({ version: "1" }, { $set: { survey: hexadQuestions } });
 
-  console.log("hexad loaded");
+  console.log("initData: hexad loaded");
 
-
-  // Meteor.setInterval(function () {
-  console.log("Hourly updated started: " + new Date());
-
-  // fetch all old recipes in database TODO
+  // TODO check if needed
   // const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
-
   // allRecipeIds = allRecipeIds.concat(oldRecipeIds);
 
-  let index = 0;
-  let allIngredients = [];
+  Meteor.setInterval(function () {
+    console.log("initData: regular updated started: " + new Date());
 
-  // function to fetch data in intervals
-  function updateRecipeDetails() {
-    Meteor.setTimeout(function () {
-      try {
-        const currentId = allRecipeIds[index];
-        if (currentId) {
-          console.log("recipe: " + currentId);
-          let call = HTTP.call("GET", url + currentId, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (call.data) {
-            RecipesCollection.upsert({ id: currentId }, { $set: call.data });
-            fs.writeFile(
-              process.env["PWD"] + "/public/newRecipeDetails/" + currentId + ".json",
-              JSON.stringify(call.data),
-              (err) => {
-                if (err) throw err;
+    let index = 0;
+    let allIngredients = [];
+
+    // function to fetch data in intervals
+    function updateRecipeDetails() {
+      Meteor.setTimeout(function () {
+        try {
+          const currentId = allRecipeIds[index];
+          if (currentId) {
+            console.log("initData: recipe: " + currentId);
+            let call = HTTP.call("GET", url + currentId, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (call.data) {
+              RecipesCollection.upsert({ id: currentId }, { $set: call.data });
+              // fs.writeFile(
+              //   process.env["PWD"] + "/public/newRecipeDetails/" + currentId + ".json",
+              //   JSON.stringify(call.data),
+              //   (err) => {
+              //     if (err) throw err;
+              //   }
+              // );
+              if (call.data.ingredients) {
+                allIngredients = allIngredients.concat(call.data.ingredients);
               }
-            );
-            if (call.data.ingredients) {
-              allIngredients = allIngredients.concat(call.data.ingredients);
             }
+          } else {
+            console.log("initData: error at index: " + index);
+            console.log("initData: error at id: " + allRecipeIds);
+
           }
-        } else {
-          console.log("error at index: " + index);
-          console.log("error at id: " + allRecipeIds);
-
+        } catch (error) {
+          console.log("initData: Call error for: " + currentId);
         }
-      } catch (error) {
-        console.log("Call error for: " + currentId);
-      }
 
-      index++;
+        index++;
 
-      if (index < allRecipeIds.length) {
-        updateRecipeDetails();
-      } else {
-        console.log("update recipes finished: " + new Date());
-        // start downloading ingredientdata
-        updateIngredientDetails();
-      }
-    }, 1001);
-  }
-  // start the interval with the first recipe
-  // updateRecipeDetails();
-  // }, 60 * 60 * 1000);
+        if (index < allRecipeIds.length) {
+          updateRecipeDetails();
+        } else {
+          console.log("initData: update recipes finished: " + new Date());
+          // start downloading ingredientdata
+          updateIngredientDetails();
+        }
+      }, 1001);
+    }
+    // start the interval with the first recipe
+    updateRecipeDetails();
 
-  let ingredientIndex = 0;
-  // function to fetch data in intervals
-  function updateIngredientDetails() {
-    Meteor.setTimeout(function () {
-      try {
-        let ingredientURL = allIngredients[ingredientIndex].ingredient;
-        if (ingredientURL) {
-          let call = HTTP.call("GET", ingredientURL, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (call.data) {
-            IngredientCollection.upsert({ id: call.data.id }, { $set: call.data });
-            fs.writeFile(
-              process.env["PWD"] + "/public/newIngredientDetails/" + call.data.id + ".json",
-              JSON.stringify(call.data),
-              (err) => {
-                if (err) throw err;
-              }
-            );
+
+    let ingredientIndex = 0;
+    // function to fetch data in intervals
+    function updateIngredientDetails() {
+      Meteor.setTimeout(function () {
+        try {
+          let ingredientURL = allIngredients[ingredientIndex].ingredient;
+          if (ingredientURL) {
+            let call = HTTP.call("GET", ingredientURL, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (call.data) {
+              IngredientCollection.upsert({ id: call.data.id }, { $set: call.data });
+              // fs.writeFile(
+              //   process.env["PWD"] + "/public/newIngredientDetails/" + call.data.id + ".json",
+              //   JSON.stringify(call.data),
+              //   (err) => {
+              //     if (err) throw err;
+              // }
+              // );
+            }
+          } else {
+            console.log("error at index: " + ingredientIndex);
           }
-        } else {
-          console.log("error at index: " + ingredientIndex);
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
 
-      ingredientIndex++;
+        ingredientIndex++;
 
-      if (ingredientIndex < allIngredients.length) {
-        updateIngredientDetails();
-      } else {
-        console.log("update ingredients finished: " + new Date());
-        configureIngredients();
-      }
-    }, 1001);
-  }
-}
-
-function configureIngredients() {
-  console.log("ingredient cleaning started");
-  RecipesCollection.find({}).fetch().forEach(recipe => {
-
-    let cleanedIngredients = [];
-
-    if (recipe.remarks) {
-      // ingredients from remarks
-      let remarkIngredients = recipe.remarks
-        .replace(/<[^>]*>?/gm, "")
-        .replace(/ *\([^)]*\) */g, "")
-        .split(",");
-      // remove trailing spaces, unneeded quotes and stars
-      remarkIngredients = _.map(remarkIngredients, (ingredient) =>
-        ingredient.trim().replace(/['"*]+/g, "")
-      );
-      cleanedIngredients.push(remarkIngredients.sort());
+        if (ingredientIndex < allIngredients.length) {
+          updateIngredientDetails();
+        } else {
+          console.log("update ingredients finished: " + new Date());
+          configureIngredients();
+        }
+      }, 1001);
     }
 
-    if (recipe.ingredients) {
-      recipe.ingredients.forEach(recipeIngredient => {
-        const ingredientID = getElementID(recipeIngredient.ingredient);
-        let ingredient = IngredientCollection.findOne({ id: ingredientID });
-        let composition = ingredient.composition;
-        if (composition && composition !== null) {
-          cleanedIngredients.push(composition.split(','));
+    function configureIngredients() {
+      console.log("ingredient cleaning started");
+      RecipesCollection.find({}).fetch().forEach(recipe => {
+
+        let cleanedIngredients = [];
+
+        if (recipe.remarks) {
+          // ingredients from remarks
+          let remarkIngredients = recipe.remarks
+            .replace(/<[^>]*>?/gm, "")
+            .replace(/ *\([^)]*\) */g, "")
+            .split(",");
+          // remove trailing spaces, unneeded quotes and stars
+          remarkIngredients = _.map(remarkIngredients, (ingredient) =>
+            ingredient.trim().replace(/['"*]+/g, "")
+          );
+          cleanedIngredients.push(remarkIngredients.sort());
         }
+
+        if (recipe.ingredients) {
+          recipe.ingredients.forEach(recipeIngredient => {
+            const ingredientID = getElementID(recipeIngredient.ingredient);
+            try {
+              let ingredient = IngredientCollection.findOne({ id: ingredientID });
+              let composition = ingredient.composition;
+              if (composition && composition !== null) {
+                cleanedIngredients.push(composition.split(','));
+              }
+            } catch (error) {
+              console.log("composition error for: " + ingredientID);
+            }
+          });
+        }
+
+        // combine ingredient arrays
+        cleanedIngredients = _.flatten(cleanedIngredients);
+
+        // remove empty values
+        cleanedIngredients = _.without(cleanedIngredients, "")
+
+        recipe.cleanedIngredients = cleanedIngredients;
+
+        RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
+
       });
     }
-
-    // combine ingredient arrays
-    cleanedIngredients = _.flatten(cleanedIngredients);
-
-    // remove empty values
-    cleanedIngredients = _.without(cleanedIngredients, "")
-
-    recipe.cleanedIngredients = cleanedIngredients;
-
-    RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
-
-  });
+  }, 5 * 60 * 1000);
 }
 
 export function getNutriscore(recipe) {

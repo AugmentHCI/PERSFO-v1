@@ -186,7 +186,7 @@ export const App = () => {
         (r) => r.ranking === 1
       )[0].id;
     } catch (error) {
-      console.log("catched error: " + error)
+      console.log("no recommendations yet: " + error)
       // no recommendations yet
     }
 

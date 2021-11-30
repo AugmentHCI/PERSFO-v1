@@ -384,8 +384,6 @@ export const Preferences = () => {
 
     // const allDietaries = _.map(recipe.dietary_info, (value, key) => key); // TODO
     const allDietaries = ["kosher","vegetarian","halal","vegan"].sort();
-    console.log(allDietaries);
-    console.log(userDietaries);
     let tempDietaries = allDietaries.map(dietary => {
       let userPresent = _.find(userDietaries, (ud) => ud.dietary === dietary);
       userPresent = userPresent ? userPresent.present : 0;

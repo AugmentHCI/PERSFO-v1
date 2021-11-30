@@ -135,7 +135,6 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     const [deletedOrderAmount, setDeletedOrderAmount] = useState(0);
 
     const handleRemove = (order) => () => {
-        console.log("removed order");
         setOpenConfirmation(true);
         setDeletedOrderAmount(order.amount);
         setDeletedRecipe(RecipesCollection.findOne({ id: order.recipeId }));
@@ -150,7 +149,6 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     };
 
     const handleUndoDelete = (deletedRecipe, deletedOrderAmount) => {
-        console.log("undo order");
         Meteor.call('orders.undoRemoveOrder', deletedRecipe.id, deletedOrderAmount);
         setOpenConfirmation(false);
     };
