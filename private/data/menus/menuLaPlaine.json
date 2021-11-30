@@ -25,6 +25,48 @@
                     "recipes": [
                         "https://www.apicbase.com/api/v1/recipes/649543889010004/"
                     ]
+                },
+                {
+                    "name": "Ready Meals",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/249543410110002/",
+                        "https://www.apicbase.com/api/v1/recipes/449643224260006/",
+                        "https://www.apicbase.com/api/v1/recipes/949643983220008/",
+                        "https://www.apicbase.com/api/v1/recipes/649643993200007/",
+                        "https://www.apicbase.com/api/v1/recipes/549643414270001/",
+                        "https://www.apicbase.com/api/v1/recipes/749643404200008/"
+                    ]
+                },
+                {
+                    "name": "Sandwiches",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/649443792980001/",
+                        "https://www.apicbase.com/api/v1/recipes/249643774250006/"
+                    ]
+                },
+                {
+                    "name": "Warme Schotel",
+                    "recipes": []
+                },
+                {
+                    "name": "Dessert",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/949543860180004/",
+                        "https://www.apicbase.com/api/v1/recipes/549643734220004/"
+                    ]
+                },
+                {
+                    "name": "Fruit (+granola)",
+                    "recipes": []
+                },
+                {
+                    "name": "Dranken",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/149643344280005/",
+                        "https://www.apicbase.com/api/v1/recipes/649643464200008/",
+                        "https://www.apicbase.com/api/v1/recipes/249643054260001/",
+                        "https://www.apicbase.com/api/v1/recipes/849643584260002/"
+                    ]
                 }
             ],
             "cycle_year": null,

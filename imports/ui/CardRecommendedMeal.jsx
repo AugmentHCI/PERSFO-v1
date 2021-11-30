@@ -119,17 +119,13 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     //   // no recommendations yet
     // }
 
-    let tempIngredients = recipe.remarks
-      .replace(/<[^>]*>?/gm, "")
-      .replace(/ *\([^)]*\) */g, "")
-      .split(",");
-    // remove trailing spaces, unneeded quotes and stars
-    tempIngredients = _.map(tempIngredients, (ingredient) =>
-      ingredient.trim().replace(/['"*]+/g, "")
-    );
-    tempIngredients = tempIngredients.sort();
-
-    const ingredients = tempIngredients;
+    let tempIngredients = [];
+    if (recipe.cleanedIngredients) {
+      tempIngredients = recipe.cleanedIngredients;
+    } else {
+      console.error("no cleaned ingredients for: " + recipe.id);
+    }
+    const ingredients = tempIngredients.slice(0,7);
 
     return { ingredients, thumbsDown };
   });

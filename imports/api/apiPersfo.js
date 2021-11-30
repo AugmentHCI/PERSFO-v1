@@ -170,34 +170,37 @@ function configureIngredients() {
 
     if (recipe.remarks) {
       // ingredients from remarks
-      let tempIngredients = recipe.remarks
+      let remarkIngredients = recipe.remarks
         .replace(/<[^>]*>?/gm, "")
         .replace(/ *\([^)]*\) */g, "")
         .split(",");
       // remove trailing spaces, unneeded quotes and stars
-      tempIngredients = _.map(tempIngredients, (ingredient) =>
+      remarkIngredients = _.map(remarkIngredients, (ingredient) =>
         ingredient.trim().replace(/['"*]+/g, "")
       );
-      cleanedIngredients = cleanedIngredients.concat(tempIngredients.sort());
+      cleanedIngredients.push(remarkIngredients.sort());
     }
 
     if (recipe.ingredients) {
-      let listIngredients = recipe.ingredients.forEach(recipeIngredient => {
+      recipe.ingredients.forEach(recipeIngredient => {
         const ingredientID = getElementID(recipeIngredient.ingredient);
         let ingredient = IngredientCollection.findOne({ id: ingredientID });
         let composition = ingredient.composition;
         if (composition && composition !== null) {
-
+          cleanedIngredients.push(composition.split(','));
         }
-        console.log(ingredient.composition);
-        cleanedIngredients = composition;
-      })
+      });
     }
+
+    // combine ingredient arrays
+    cleanedIngredients = _.flatten(cleanedIngredients);
+
+    // remove empty values
+    cleanedIngredients = _.without(cleanedIngredients, "")
 
     recipe.cleanedIngredients = cleanedIngredients;
 
     RecipesCollection.upsert({ id: recipe.id }, { $set: recipe });
-
 
   });
 }
