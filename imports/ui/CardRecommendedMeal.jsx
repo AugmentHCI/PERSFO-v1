@@ -95,7 +95,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const componentName = "CardRecommendedMeal";
-export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent }) => {
+export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent, dietaryConflict }) => {
   const classes = useStyles();
 
   const { ingredients, thumbsDown } = useTracker(() => {
@@ -280,7 +280,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
         >
           More info
         </Button>
-        <OrderButton recipe={recipe} allergensPresent={allergensPresent}></OrderButton>
+        <OrderButton recipe={recipe} allergensPresent={allergensPresent} dietaryConflict={dietaryConflict}></OrderButton>
       </CardActions>
 
       <Modal open={open} onClose={handleModalClose}>

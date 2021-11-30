@@ -70,7 +70,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 }));
 
 const componentName = "CardOtherMeal";
-export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent }) => {
+export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent, dietaryConflict }) => {
   const classes = useStyles();
 
   return (
@@ -107,7 +107,7 @@ export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, 
           <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
           <span>{nbLikes}</span>
         </Button>
-        <OrderButton recipe={recipe} allergensPresent={allergensPresent}></OrderButton>
+        <OrderButton recipe={recipe} allergensPresent={allergensPresent} dietaryConflict={dietaryConflict}></OrderButton>
       </CardActions>
     </Card>
   );

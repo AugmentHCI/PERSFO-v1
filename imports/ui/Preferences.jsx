@@ -337,7 +337,7 @@ export const Preferences = () => {
     Meteor.call("log", componentName, "fiberSwitchChange");
   };
 
-  const { allergens, allergenCheckboxes } = useTracker(() => {
+  const { allergens, allergenCheckboxes, dietaries, dietariesCheckboxes } = useTracker(() => {
     const noDataAvailable = {
       allergens: [],
       allergenCheckboxes: makeArrayOf(false, 34),
@@ -374,7 +374,33 @@ export const Preferences = () => {
       (allergen) => !!allergen.present
     );
 
-    return { allergens, allergenCheckboxes };
+
+    let userDietaries = [];
+    try {
+      userDietaries = preferences.dietaries;
+    } catch (error) {
+      // no allergens set yet
+    }
+
+    // const allDietaries = _.map(recipe.dietary_info, (value, key) => key); // TODO
+    const allDietaries = ["kosher","vegetarian","halal","vegan"].sort();
+    console.log(allDietaries);
+    console.log(userDietaries);
+    let tempDietaries = allDietaries.map(dietary => {
+      let userPresent = _.find(userDietaries, (ud) => ud.dietary === dietary);
+      userPresent = userPresent ? userPresent.present : 0;
+      return {
+        dietary: dietary,
+        present: userPresent,
+      };
+    });
+    const dietaries = _.sortBy(tempDietaries, "dietary");
+    const dietariesCheckboxes = _.map(
+      dietaries,
+      (dietary) => !!dietary.present
+    );
+
+    return { allergens, allergenCheckboxes, dietaries, dietariesCheckboxes };
   });
 
   const handleAllergenCheckboxChange = (event, i) => {
@@ -394,6 +420,23 @@ export const Preferences = () => {
     Meteor.call("log", componentName, "handleAllergenCheckboxChange");
   };
 
+  const handleDietaryCheckboxChange = (event, i) => {
+    let newArr = [...dietariesCheckboxes];
+    newArr[i] = event.target.checked;
+    let listDietaries = [];
+    for (let i = 0; i < newArr.length; i++) {
+      let check = newArr[i];
+      if (check) {
+        listDietaries.push({
+          dietary: dietaries[i].dietary,
+          present: 1,
+        });
+      }
+    }
+    Meteor.call("users.updateDietaries", listDietaries);
+    Meteor.call("log", componentName, "handleDietaryCheckboxChange");
+  };
+
   const getAllergenBar = (allergen, i) => {
     return (
       <FormControlLabel
@@ -407,6 +450,25 @@ export const Preferences = () => {
           />
         }
         label={capitalizeFirstLetter(allergen.allergen.split("_").join(" "))}
+        labelPlacement="start"
+      />
+    );
+  };
+
+
+  const getDietaryBar = (dietary, i) => {
+    return (
+      <FormControlLabel
+        className={classes.checkbox}
+        key={"bar-" + dietary.dietary}
+        control={
+          <Switch
+            color="primary"
+            checked={dietariesCheckboxes[i]}
+            onChange={(e) => handleDietaryCheckboxChange(e, i)} // TODO
+          />
+        }
+        label={capitalizeFirstLetter(dietary.dietary.split("_").join(" "))}
         labelPlacement="start"
       />
     );
@@ -564,6 +626,17 @@ export const Preferences = () => {
         <h1 className={classes.subtitle}>Allergies</h1>
         <div className={classes.form}>
           {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
+        </div>
+      </div>
+
+      <h1 className={classes.title}>Save your dietary preferences</h1>
+      <div
+        className={classes.formContainer}
+        style={{ marginTop: "16px", marginBottom: "200px" }}
+      >
+        <h1 className={classes.subtitle}>Gelieve uw voedselvoorkeuren hier in te stellen.</h1>
+        <div className={classes.form}>
+          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
         </div>
       </div>
     </div>

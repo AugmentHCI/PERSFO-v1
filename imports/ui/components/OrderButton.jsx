@@ -34,7 +34,7 @@ const useStyles = makeStyles((newTheme) => ({
 }));
 
 const componentName = "OrderButton";
-export const OrderButton = ({ recipe, allergensPresent, floating }) => {
+export const OrderButton = ({ recipe, allergensPresent, dietaryConflict, floating }) => {
     const classes = useStyles();
 
     // order logic
@@ -86,14 +86,14 @@ export const OrderButton = ({ recipe, allergensPresent, floating }) => {
                         :
                         floating ?
                             (
-                                allergensPresent ?
+                                (allergensPresent || dietaryConflict) ?
                                     classes.OrderAllergyPresentFloatingButton
                                     :
                                     classes.OrderFloatingButton
                             )
                             :
                             (
-                                allergensPresent ?
+                                (allergensPresent || dietaryConflict) ?
                                     classes.OrderAllergyPresentButton
                                     :
                                     classes.OrderButton

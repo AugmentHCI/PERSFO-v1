@@ -568,6 +568,7 @@ export const MealScreen = ({ recipe }) => {
             >
               {recipe.name}
             </h1>
+            {/* <h2>{recipe.id}</h2> */}
             {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }} /> : <></>}
             <img
               className={classes.nutriscore}

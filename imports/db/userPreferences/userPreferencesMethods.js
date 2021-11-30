@@ -50,6 +50,18 @@ Meteor.methods({
             { $set: { allergens: allergens } }
         );
     },
+    "users.updateDietaries"(dietaries) {
+        check(dietaries, Array);
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $set: { dietaries: dietaries } }
+        );
+    },
     "users.updateNutrientGoals"(nutrientGoals) {
         check(nutrientGoals, Object);
 

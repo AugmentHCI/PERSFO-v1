@@ -40,11 +40,12 @@ export const RecipeComponent = (({ recipeId, type }) => {
     };
 
     // Like logic
-    const { liked, nbLikes, allergensPresent } = useTracker(() => {
+    const { liked, nbLikes, allergensPresent, dietaryConflict } = useTracker(() => {
         const noDataAvailable = {
             liked: false,
             nbLikes: 0,
             allergensPresent: false,
+            dietaryConflict: false,
         };
         if (!recipe) return noDataAvailable;
         const handler = Meteor.subscribe("userpreferences");
@@ -79,7 +80,27 @@ export const RecipeComponent = (({ recipeId, type }) => {
         });
         const allergensPresent = allergensPresentTmp;
 
-        return { liked, nbLikes, allergensPresent };
+
+
+        const userDietaries = userPreferences?.dietaries ? _.map(userPreferences?.dietaries, a => a.dietary) : [];
+
+        const recipeDietaryInfo = _.without(
+            _.map(_.toPairs(recipe.dietary_info), (n) => {
+                if (n[1] == true) return n[0];
+            }),
+            undefined
+        );
+
+        let dietariesPresentTmp = false;
+        userDietaries.forEach(userDietary => {
+            if (recipeDietaryInfo.includes(userDietary)) {
+                dietariesPresentTmp = true;
+            }
+        });
+        const dietaryConflict = dietariesPresentTmp;
+        console.log(dietaryConflict)
+
+        return { liked, nbLikes, allergensPresent, dietaryConflict };
     });
 
     // Detail logic
@@ -98,6 +119,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
                     liked={liked}
                     nbLikes={nbLikes}
                     allergensPresent={allergensPresent}
+                    dietaryConflict={dietaryConflict}
                 ></CardOtherMeal>
             case "recommended":
                 return <CardRecommendedMeal
@@ -107,6 +129,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
                     liked={liked}
                     nbLikes={nbLikes}
                     allergensPresent={allergensPresent}
+                    dietaryConflict={dietaryConflict}
                 ></CardRecommendedMeal>
             default:
                 break;
