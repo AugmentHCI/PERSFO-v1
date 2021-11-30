@@ -67,7 +67,7 @@ export function initData() {
     // start the interval with the first recipe
     updateRecipeDetails();
 
-  }, 5 * 60 * 1000);
+  }, 60 * 60 * 1000);
 
   updateRecipeDetails();
 
