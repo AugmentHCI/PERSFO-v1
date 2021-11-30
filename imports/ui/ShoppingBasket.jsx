@@ -37,7 +37,7 @@ const useStyles = makeStyles((persfoTheme) => ({
         marginRight: "10px"
     },
     header: {
-        margin: "20px",
+        marginTop: "20px",
         alignSelf: "center"
     },
     complete: {
@@ -102,10 +102,12 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     });
     const classes = useStyles();
 
-    const { orders } = useTracker(() => {
-        const noDataAvailable = { orders: [] };
+    const { orders, totalPrice } = useTracker(() => {
+        const noDataAvailable = { orders: [], totalPrice: 0 };
         const handler = Meteor.subscribe("orders");
-        if (!handler.ready()) {
+        const recipeHandler = Meteor.subscribe("recipes");
+
+        if (!handler.ready() || !recipeHandler.ready()) {
             return { ...noDataAvailable };
         }
 
@@ -115,7 +117,16 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             userid: Meteor.userId(),
             orderday: now.toISOString().substring(0, 10),
         }).fetch();
-        return { orders };
+
+        let totalPriceTemp = 0;
+        orders.forEach(order => {
+            const recipe = RecipesCollection.findOne({ id: order.recipeId });
+            totalPriceTemp += (recipe.current_sell_price.pricing * order.amount);
+        });
+
+        const totalPrice = totalPriceTemp;
+
+        return { orders, totalPrice };
     });
 
     const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -176,6 +187,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             <Typography className={classes.header} variant="h4" color="primary">
                 Shopping drawer
             </Typography>
+            <Divider/>
             {orders.length > 0 ?
                 <div
                     style={{
@@ -186,16 +198,17 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                     <List className={classes.list}>
                         {orders.map((value) => {
                             const labelId = `checkbox-list-secondary-label-${value.recipeId}`;
+                            const recipe = RecipesCollection.findOne({ id: value.recipeId });
                             return (
                                 <Fragment key={value.recipeId}>
                                     <ListItem button>
                                         <ListItemAvatar>
                                             <Avatar
                                                 alt={`Avatar n°${value.recipeId}`}
-                                                src={getImage(RecipesCollection.findOne({ id: value.recipeId }))}
+                                                src={getImage(recipe)}
                                             />
                                         </ListItemAvatar>
-                                        <ListItemText id={labelId} primary={RecipesCollection.findOne({ id: value.recipeId }).name} />
+                                        <ListItemText id={labelId} primary={recipe.name} secondary={"prijs: € " + recipe.current_sell_price.pricing.toFixed(2) }/>
                                         <DeleteIcon className={classes.deleteButtons} onClick={handleRemove(value)} style={{ color: grey[500] }} />
                                         <GroupedButtons recipeId={value.recipeId} className={classes.counterButtons}></GroupedButtons>
                                     </ListItem>
@@ -210,6 +223,9 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                     You have not ordered any meals yet.
                 </Typography>
             }
+                        <Typography className={classes.header} variant="subtitle1" color="primary">
+                {"Totale prijs: € " + totalPrice.toFixed(2)}
+            </Typography>
             <Button
                 type="submit"
                 variant="contained"
@@ -219,7 +235,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 onClick={submit}
                 style={{ color: "white" }}
             >
-                Submit your choices ({orders.reduce((s, f) => s + f.amount, 0)})
+                Bevestig uw keuzes ({orders.reduce((s, f) => s + f.amount, 0)})
             </Button>
             <Snackbar
                 open={openConfirmation}
