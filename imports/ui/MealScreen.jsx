@@ -105,22 +105,9 @@ export const MealScreen = ({ recipe }) => {
       fontSize: "14px",
     },
     tabContent: {
-      height: componentHeight - 325 - 125 - heightBuffer + "px",
+      height: componentHeight - 325 - 65 - heightBuffer + "px",
       background: "white",
       padding: "8px",
-      fontSize: "14px",
-      fontFamily: "sans-serif",
-    },
-    recipeDescription: {
-      height: "80px",
-      width: "96%", // no idea why ¯\_(ツ)_/¯
-      background: "white",
-      padding: "8px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      position: "absolute",
-      bottom: heightBuffer + 8 + "px", // room for Snackbar
       fontSize: "14px",
       fontFamily: "sans-serif",
     },
@@ -327,7 +314,7 @@ export const MealScreen = ({ recipe }) => {
         <div
           style={{
             overflowY: "scroll",
-            height: componentHeight - 325 - 125 - 30 - 60 + "px",
+            height: componentHeight - 325 - 65 - 30 - 60 + "px",
           }}
         >
           {noData}
@@ -426,7 +413,7 @@ export const MealScreen = ({ recipe }) => {
       <div>
         <h1 className={classes.subtitle}>Allergens</h1>
         <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
         }}>
           <div
             style={{
@@ -468,7 +455,7 @@ export const MealScreen = ({ recipe }) => {
         <h1 className={classes.subtitle}>Ingredients</h1>
         <div style={{
           overflowY: "scroll",
-          height: componentHeight - 325 - 125 - 30 - 60 + "px"
+          height: componentHeight - 325 - 65 - 30 - 60 + "px"
         }}>
           <div
             style={{
@@ -490,7 +477,7 @@ export const MealScreen = ({ recipe }) => {
       <div>
         <h1 className={classes.subtitle}>Sustainability</h1>
         <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
         }}>
           <h1 className={classes.subtitle}>Food product labels</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
@@ -512,7 +499,7 @@ export const MealScreen = ({ recipe }) => {
       <div>
         <h1 className={classes.subtitle}>Reviews</h1>
         <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 125 - 30 - 60 + "px",
+          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
         }}>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
             {" "}
