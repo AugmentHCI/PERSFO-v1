@@ -16,11 +16,12 @@ export function initData() {
   let allRecipeIds = [];
 
   allMenus.forEach((menu) => {
+    menu.courses = _.filter(menu.courses, c => !_.isEmpty(c.recipes));
     MenusCollection.upsert({ id: menu.id }, { $set: menu });
     menu.courses.forEach((course) => {
-      course.recipes.forEach((recipeURL) => {
-        allRecipeIds.push(getElementID(recipeURL));
-      });
+        course.recipes.forEach((recipeURL) => {
+          allRecipeIds.push(getElementID(recipeURL));
+        });
     });
   });
   console.log("menus loaded");
