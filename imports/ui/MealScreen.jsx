@@ -192,7 +192,7 @@ export const MealScreen = ({ recipe }) => {
         if (n[1] == 1) return n[0];
       }),
       undefined
-    );
+    ).sort();
 
     let allergensPresentTmp = false;
     userAllergens.forEach(userAllergy => {
@@ -221,46 +221,6 @@ export const MealScreen = ({ recipe }) => {
       Meteor.call("log", componentName, "handleIncreaseLike");
     }
   };
-
-  // // order logic
-  // const handleOrder = () => {
-  //   if (recipe) {
-  //     if (!ordered) setToast(true);
-  //     Meteor.call("orders.handleOrder", recipe.id);
-  //     Meteor.call("log", componentName, "handleOrder");
-  //   }
-  // };
-
-  // const { ordered, confirmed } = useTracker(() => {
-  //   const noDataAvailable = { ordered: false };
-  //   const handler = Meteor.subscribe("orders");
-  //   if (!handler.ready()) {
-  //     return { ...noDataAvailable };
-  //   }
-  //   if (!recipe) return { ...noDataAvailable };
-
-  //   // find only orders made today
-  //   const now = new Date();
-  //   const nowString = now.toISOString().substring(0, 10);
-
-  //   const orders = OrdersCollection.find({
-  //     userid: Meteor.userId(),
-  //     recipeId: recipe.id,
-  //     orderday: nowString,
-  //   }).fetch();
-  //   const ordered = orders.length > 0;
-
-  //   let randomConfirmedOrderToday = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
-  //   const confirmed = randomConfirmedOrderToday !== undefined;
-
-  //   return { ordered, confirmed };
-  // });
-
-  // // Thank you message
-  // function Alert(props) {
-  //   return <MuiAlert elevation={6} variant="filled" {...props} />;
-  // }
-  // const [toastShown, setToast] = useState(false);
 
   // tab logic
   const [tabValue, setTabValue] = useState(0);

@@ -119,7 +119,7 @@ export function initData() {
     }, 1001);
   }
   // start the interval with the first recipe
-  updateRecipeDetails();
+  // updateRecipeDetails();
   // }, 60 * 60 * 1000);
 
   let ingredientIndex = 0;
