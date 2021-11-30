@@ -8,7 +8,7 @@ import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles((persfoTheme) => ({
   mainWindow: {
-    height: "100vh",
+    // height: "100vh",
     overflowY: "scroll",
   },
   title: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((persfoTheme) => ({
     marginBottom: "16px",
     fontSize: "13px",
     fontFamily: "Roboto",
-    fontWeight: 600,
+    fontWeight: 200,
   },
   formContainer: {
     background: "white",
@@ -618,25 +618,25 @@ export const Preferences = () => {
         </div>
       </div>
 
-      <h1 className={classes.title}>Save your allergies</h1>
+      <h1 className={classes.title}>Voedselvoorkeuren</h1>
       <div
         className={classes.formContainer}
-        style={{ marginTop: "16px", marginBottom: "200px" }}
+        style={{ marginTop: "16px"}}
       >
-        <h1 className={classes.subtitle}>Allergies</h1>
+        <p className={classes.subtitle}>Gelieve uw voedselvoorkeuren hier in te stellen.</p>
         <div className={classes.form}>
-          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
+          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
         </div>
       </div>
 
-      <h1 className={classes.title}>Save your dietary preferences</h1>
+      <h1 className={classes.title}>Allergiën</h1>
       <div
         className={classes.formContainer}
-        style={{ marginTop: "16px", marginBottom: "200px" }}
+        style={{ marginTop: "16px", marginBottom: "10px" }}
       >
-        <h1 className={classes.subtitle}>Gelieve uw voedselvoorkeuren hier in te stellen.</h1>
+        <p className={classes.subtitle}>Gelieve hier aan te duiden indien u allergisch bent aan bepaalde producten.</p>
         <div className={classes.form}>
-          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
+          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
         </div>
       </div>
     </div>
