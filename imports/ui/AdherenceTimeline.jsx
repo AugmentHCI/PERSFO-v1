@@ -266,12 +266,12 @@ export const AdherenceTimeline = () => {
           {getLetter(day5)}
         </text>
 
-        <text x="230" y="39" className="auxLetter">
-          {"today"}
+        <text x="225" y="39" className="auxLetter">
+          {i18n.__("general.today")}
         </text>
 
-        <text x="20" y="39" className="auxLetter">
-          {"five days ago"}
+        <text x="15" y="39" className="auxLetter">
+          {i18n.__("general.five_days_ago")}
         </text>
 
         <defs>

@@ -106,19 +106,6 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
 
     const thumbsDown = false; // TODO
 
-    // try {
-    //   const recommendedRecipes = RecommendedRecipes.findOne({
-    //     userid: Meteor.userId(),
-    //   }).recommendations;
-    //   recommendedRecipeId = _.filter(
-    //     recommendedRecipes,
-    //     (r) => r.ranking === 1
-    //   )[0].id;
-    // } catch (error) {
-    //   thumbsDown = true; //TODO check thumbs down
-    //   // no recommendations yet
-    // }
-
     let tempIngredients = [];
     if (recipe.cleanedIngredients) {
       tempIngredients = recipe.cleanedIngredients;
@@ -278,7 +265,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
           color="primary"
           onClick={() => handleDetailsClick()}
         >
-          More info
+          {i18n.__("general.more_info")}
         </Button>
         <OrderButton recipe={recipe} allergensPresent={allergensPresent} dietaryConflict={dietaryConflict}></OrderButton>
       </CardActions>
@@ -286,8 +273,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
       <Modal open={open} onClose={handleModalClose}>
         <div style={modalStyle} className={classes.paper}>
           <h3 className={classes.modalTitle}>
-            Please help us by telling us why you dislike this
-            recommendation?
+            {i18n.__("recommendations.explanation")}
           </h3>
           <div
             style={{
@@ -328,14 +314,14 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
               onClick={() => cancelModal()}
               color="primary"
             >
-              Cancel
+              {i18n.__("general.cancel")}
             </Button>
             <Button
               size="large"
               onClick={() => sendModal()}
               color="primary"
             >
-              Send
+              {i18n.__("general.send")}
             </Button>
           </div>
         </div>

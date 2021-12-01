@@ -48,7 +48,7 @@ export const Feedback = () => {
   return (
     <Container component="main" maxWidth="xs">
       <h1 className={classes.title}>
-        Thank you for providing feedback!
+        {i18n.__("feedback.thanks")}
       </h1>
 
       <form className={classes.form} noValidate>
@@ -75,12 +75,12 @@ export const Feedback = () => {
           onClick={submit}
           style={{ color: "white" }}
         >
-          Submit feedback
+          {i18n.__("feedback.submit")}
         </Button>
       </form>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
-          Thank you for your feedback!
+        {i18n.__("feedback.thanks_submitted")}
         </Alert>
       </Snackbar>
     </Container>

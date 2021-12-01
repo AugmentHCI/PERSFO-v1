@@ -59,7 +59,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
     <>
       {componentHeight >= 640 ? (
         <div className={classes.titleContent}>
-          <h1 className={classes.title}>Today's options in {courseName}</h1>
+          <h1 className={classes.title}>{i18n.__("app.today_options")}{" " + courseName}</h1>
           <IconButton></IconButton>
         </div>
       ) : null}
@@ -76,7 +76,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
       </div>
 
       <div className={classes.titleContent}>
-        <h1 className={classes.title}>TODAY'S RECOMMENDATION</h1>
+        <h1 className={classes.title}>{i18n.__("app.today_recommendation")}</h1>
         <IconButton onClick={handleInfo}>
           <HelpOutlineIcon fontSize="small" />
         </IconButton>
@@ -94,8 +94,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
         onClose={() => setToast(false)}
       >
         <Alert onClose={() => setToast(false)} severity="info">
-          In this pilot study, recommendations are based on the most popular
-          meals, while also considering your allergies and disliked ingredients.
+        {i18n.__("app.temp_explanation")}
         </Alert>
       </Snackbar>
     </>

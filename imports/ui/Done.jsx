@@ -25,7 +25,7 @@ export const Done = () => {
     return (
         <Container>
             <Typography className={classes.header} variant="body1">
-                Thank you for participating in the PERSFO study today. Your orders are confirmed.
+                {i18n.__("done.thanks")}
             </Typography>
             <div className={classes.complete}>
                 <Button
@@ -34,7 +34,7 @@ export const Done = () => {
                     color="primary"
                     onClick={undo}
                     style={{ color: "white" }} >
-                    Undo your orders of today
+                    {i18n.__("done.undo")}
                 </Button>
             </div>
         </Container>

@@ -2,7 +2,7 @@ import { FFQCollection } from "../db/surveys/FFQCollection";
 import { UserPreferences } from "../db/userPreferences/UserPreferences";
 
 const token = "";
-const language = "en-US"
+const language = "nl-NL"
 const url = "https://quisper.onsafecape.gr/FFQ/questionnaire?lang=";
 const food4meURL = "https://api.quisper.eu/nutrient-intake-values/beta/ffq/1";
 

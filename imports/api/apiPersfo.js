@@ -42,8 +42,8 @@ export function initData() {
   //   }
   // });
 
-  // // add custom fields if not exists (do not overwrite old data)
-  // RecipesCollection.update(
+  // // add custom fields if not exists (do not overwrite old data) TODO
+  // RecipesCollection.update( 
   //   { nbLikes: { $exists: false } },
   //   { $set: { nbLikes: 0 } },
   //   { multi: true }
@@ -103,7 +103,7 @@ export function initData() {
           }
         } else {
           console.log("initData: error at index: " + index);
-          console.log("initData: error at id: " + allRecipeIds);
+          console.log("initData: error at id: " + currentId);
 
         }
       } catch (error) {

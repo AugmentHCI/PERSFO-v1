@@ -16,19 +16,9 @@ import { getImage } from '../api/apiPersfo';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
-
-
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
     list: {
         width: 300,
-    },
-    title: {
-        fontSize: "13px",
-        fontWeight: 600,
-        fontFamily: "Roboto",
-        margin: "4px",
-        marginTop: "20px",
-        color: "#726f6c",
     },
     counterButtons: {
         maxHeight: "10px"
@@ -38,10 +28,11 @@ const useStyles = makeStyles((persfoTheme) => ({
     },
     header: {
         marginTop: "20px",
-        alignSelf: "center"
+        alignSelf: "center",
     },
     complete: {
         margin: "10px",
+        minWidth: "280px"
     },
     undoToast: {
         marginBottom: "40px"
@@ -49,8 +40,6 @@ const useStyles = makeStyles((persfoTheme) => ({
 }));
 
 const GroupedButtons = ({ recipeId }) => {
-    // state = { counter: 1 };
-
     const { counter } = useTracker(() => {
         const noDataAvailable = { counter: 1 };
         const handler = Meteor.subscribe("orders");
@@ -161,7 +150,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     const action = (
         <Fragment>
             <Button color="secondary" size="small" onClick={() => handleUndoDelete(deletedRecipe, deletedOrderAmount)}>
-                UNDO
+                {i18n.__("general.cancel")}
             </Button>
             <IconButton
                 size="small"
@@ -183,9 +172,8 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             onOpen={toggleDrawer(true)}
         >
             <Typography className={classes.header} variant="h4" color="primary">
-                Shopping drawer
+                {i18n.__("shopping.shopping_cart")}
             </Typography>
-            <Divider/>
             {orders.length > 0 ?
                 <div
                     style={{
@@ -218,11 +206,11 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 </div>
                 :
                 <Typography className={classes.header} variant="body1" style={{ height: componentHeight - 120 + "px" }} >
-                    You have not ordered any meals yet.
+                    {i18n.__("shopping.empty")}
                 </Typography>
             }
                         <Typography className={classes.header} variant="subtitle1" color="primary">
-                {"Totale prijs: € " + totalPrice.toFixed(2)}
+                        {i18n.__("shopping.total_price")}{": € " + totalPrice.toFixed(2)}
             </Typography>
             <Button
                 type="submit"
@@ -233,7 +221,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 onClick={submit}
                 style={{ color: "white" }}
             >
-                Bevestig uw keuzes ({orders.reduce((s, f) => s + f.amount, 0)})
+                {i18n.__("shopping.confirm")} ({orders.reduce((s, f) => s + f.amount, 0)})
             </Button>
             <Snackbar
                 open={openConfirmation}

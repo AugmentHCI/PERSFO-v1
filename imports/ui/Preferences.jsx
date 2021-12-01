@@ -6,7 +6,7 @@ import { capitalizeFirstLetter, makeArrayOf } from "/imports/api/auxMethods";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   mainWindow: {
     // height: "100vh",
     overflowY: "scroll",
@@ -383,7 +383,7 @@ export const Preferences = () => {
     }
 
     // const allDietaries = _.map(recipe.dietary_info, (value, key) => key); // TODO
-    const allDietaries = ["kosher","vegetarian","halal","vegan"].sort();
+    const allDietaries = ["kosher", "vegetarian", "halal", "vegan"].sort();
     let tempDietaries = allDietaries.map(dietary => {
       let userPresent = _.find(userDietaries, (ud) => ud.dietary === dietary);
       userPresent = userPresent ? userPresent.present : 0;
@@ -474,14 +474,14 @@ export const Preferences = () => {
 
   return (
     <div className={classes.mainWindow}>
-      <h1 className={classes.title}>Configure your goals</h1>
+      <h1 className={classes.title}>{i18n.__("preferences.configure_goals")}</h1>
 
       <div className={classes.formContainer}>
-        <h1 className={classes.subtitle}>Set your desired maximum nutrient value</h1>
+        <h1 className={classes.subtitle}>{i18n.__("preferences.maximum_nutrients")}</h1>
         <div className={classes.form}>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-              Energy ({EnergySlider} kcal)
+              {i18n.__("general.energy")} ({EnergySlider} kcal)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -501,7 +501,7 @@ export const Preferences = () => {
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-              Total Fat ({TotalFatSlider} g)
+              {i18n.__("general.total_fat")} ({TotalFatSlider} g)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -521,7 +521,7 @@ export const Preferences = () => {
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-              Saturated Fats ({SatfatSlider} g)
+            {i18n.__("general.saturated_fats")} ({SatfatSlider} g)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -540,7 +540,7 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Sugars ({SugarSlider} g)</div>
+            <div className={classes.sliderTitle}>{i18n.__("general.sugar")} ({SugarSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!SugarSwitch}
@@ -559,7 +559,7 @@ export const Preferences = () => {
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-              Proteins ({ProteinSlider} g)
+            {i18n.__("general.proteins")} ({ProteinSlider} g)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -578,7 +578,7 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Salt ({SaltSlider} g)</div>
+            <div className={classes.sliderTitle}>{i18n.__("general.salt")} ({SaltSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!SaltSwitch}
@@ -596,7 +596,7 @@ export const Preferences = () => {
             </div>
           </div>
           <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>Fiber ({FiberSlider} g)</div>
+            <div className={classes.sliderTitle}>{i18n.__("general.fibers")} ({FiberSlider} g)</div>
             <div className={classes.slider}>
               <Slider
                 disabled={!FiberSwitch}
@@ -616,23 +616,23 @@ export const Preferences = () => {
         </div>
       </div>
 
-      <h1 className={classes.title}>Voedselvoorkeuren</h1>
+      <h1 className={classes.title}>{i18n.__("preferences.dietary_info")}</h1>
       <div
         className={classes.formContainer}
-        style={{ marginTop: "16px"}}
+        style={{ marginTop: "16px" }}
       >
-        <p className={classes.subtitle}>Gelieve uw voedselvoorkeuren hier in te stellen.</p>
+        <p className={classes.subtitle}>{i18n.__("preferences.dietary_info_configuration")}</p>
         <div className={classes.form}>
           {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
         </div>
       </div>
 
-      <h1 className={classes.title}>Allergiën</h1>
+      <h1 className={classes.title}>{i18n.__("general.allergens")}</h1>
       <div
         className={classes.formContainer}
         style={{ marginTop: "16px", marginBottom: "10px" }}
       >
-        <p className={classes.subtitle}>Gelieve hier aan te duiden indien u allergisch bent aan bepaalde producten.</p>
+        <p className={classes.subtitle}>{i18n.__("preferences.allergens_configuration")}</p>
         <div className={classes.form}>
           {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
         </div>

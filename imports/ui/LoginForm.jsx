@@ -1,4 +1,5 @@
 import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +13,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -68,7 +70,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          {i18n.__("login.sign_in")}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -77,7 +79,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label={i18n.__("login.username")}
             name="username"
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
@@ -89,7 +91,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label={i18n.__("login.password")}
             type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
@@ -104,7 +106,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
             onClick={submit}
             style={{ color: "white" }}
           >
-            Sign In
+            {i18n.__("login.sign_in")}
           </Button>
           <Grid container>
             <Grid item xs>
@@ -113,7 +115,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
                 variant="body2"
                 onClick={() => setForgotPassword(true)}
               >
-                Forgot password?
+                {i18n.__("login.forgot_password")}
               </Link>
             </Grid>
             <Grid item>
@@ -122,12 +124,22 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
                 variant="body2"
                 onClick={() => setExistingUser(false)}
               >
-                {"Don't have an account? Sign Up"}
+                {i18n.__("login.not_already_an_account")}
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
+      <Box mt={8}>
+        <Typography variant="body2" color="textSecondary" align="center">
+          {"Copyright © "}
+          <Link color="inherit" href="https://augment.cs.kuleuven.be/">
+            Augment
+          </Link>{" "}
+          {new Date().getFullYear()}
+          {"."}
+        </Typography>
+      </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Incorrect username or password!

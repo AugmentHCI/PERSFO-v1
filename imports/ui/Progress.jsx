@@ -31,11 +31,7 @@ const componentName = "Progress";
 export const Progress = ({ recommendedRecipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
-  window.addEventListener("resize", () => {
-    setComponentHeight(window.innerHeight);
-  });
-
-  const useStyles = makeStyles((persfoTheme) => ({
+  const useStyles = makeStyles(() => ({
     menuTitle: {
       color: "#726f6c",
       margin: "4px",
@@ -207,8 +203,8 @@ export const Progress = ({ recommendedRecipe }) => {
           scrollButtons="auto"
           centered={true}
         >
-          <Tab key={0} label="Weekly overview" />
-          <Tab key={1} label="Goals" />
+          <Tab key={0} label={i18n.__("progress.weekly_overview")} />
+          <Tab key={1} label={i18n.__("progress.goals")} />
         </Tabs>
 
         {tabValue == 0 ? (
@@ -221,16 +217,15 @@ export const Progress = ({ recommendedRecipe }) => {
             }}
           >
             <div className={classes.stat}>
-              Hello, <span className={classes.statNum}>{userName}</span>
+              {i18n.__("progress.hello")}, <span className={classes.statNum}>{userName}</span>
             </div>
             <div className={classes.stat}>
-              You created your account{" "}
-              <span className={classes.statNum}>{"" + daysActive}</span> days
-              ago.
+              {i18n.__("progress.creation1")}
+              <span className={classes.statNum}>{" " + daysActive}</span> {i18n.__("progress.creation2")}
             </div>
             <div className={classes.stat}>
-              Since you started using this app, you ordered{" "}
-              <span className={classes.statNum}>{orders.length}</span> meals. Which add up to{" "}
+              {i18n.__("progress.using1")}{" "}
+              <span className={classes.statNum}>{orders.length}</span> {i18n.__("progress.using2")}{" "}
               <span className={classes.statNum}>
                 {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
                   ? _.sumBy(orders, (o) =>
@@ -238,12 +233,12 @@ export const Progress = ({ recommendedRecipe }) => {
                   )
                   : 0}
               </span>{" "}
-              kcal in total.
+              kcal.
             </div>
             <div className={classes.stat}>
-              You liked <span className={classes.statNum}>{nbLikes}</span>{" "}meals
-              and disliked <span className={classes.statNum}>{nbDislikes}</span>{" "}
-              ingredients.
+              {i18n.__("progress.liked1")}{" "}<span className={classes.statNum}>{nbLikes}</span>
+              {" "}{i18n.__("progress.liked2")}{" "}<span className={classes.statNum}>{nbDislikes}</span>{" "}
+              {i18n.__("progress.liked3")}
             </div>
             {/*<div className={classes.statTitle}>Doing so you:</div>
             <div className={classes.stat}>
@@ -271,8 +266,7 @@ export const Progress = ({ recommendedRecipe }) => {
             }}
           >
             <div className={classes.stat}>
-              Feature expected in the larger user study. Please continue logging
-              to help us optimize this feature.
+            {i18n.__("progress.wip")}
             </div>
             {/* <GoalsBar
               title="Eat less calories"

@@ -90,32 +90,32 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary={"Home"} />
+            <ListItemText primary={i18n.__("general.home")} />
           </ListItem>
           <ListItem button key={"progress"} onClick={() => handleProgress()}>
             <ListItemIcon>
               <AssessmentIcon />
             </ListItemIcon>
-            <ListItemText primary={"Progress"} />
+            <ListItemText primary={i18n.__("AppBarPersfo.progress")}/>
           </ListItem>
           <ListItem button key={"settings"} onClick={() => handleSettings()}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary={"Settings"} />
+            <ListItemText primary={i18n.__("AppBarPersfo.settings")} />
           </ListItem>
           <ListItem button key={"Feedback"} onClick={() => handleFeedback()}>
             <ListItemIcon>
               <FeedbackIcon />
             </ListItemIcon>
-            <ListItemText primary={"Feedback"} />
+            <ListItemText primary={i18n.__("AppBarPersfo.feedback")} />
           </ListItem>
           <Divider />
           <ListItem button key={"Logout"} onClick={() => logOut()}>
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>
-            <ListItemText primary={"Logout"} />
+            <ListItemText primary={i18n.__("AppBarPersfo.logout")}/>
           </ListItem>
         </List>
       </div>

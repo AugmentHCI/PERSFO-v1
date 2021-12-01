@@ -303,14 +303,15 @@ export const MealScreen = ({ recipe }) => {
     if (_.sum([kcal, fat, sat, sug, prot, fibr, potss]) == 0)
       noData = (
         <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}
-          No data{" "}
+          {" "}{i18n.__("general.no_data")}{" "}
         </p>
       );
 
     return (
       <div>
-        <h1 className={classes.subtitle}>Nutrients</h1>
+        <h1 className={classes.subtitle}>
+          {i18n.__("general.nutrients")}
+        </h1>
         <div
           style={{
             overflowY: "scroll",
@@ -320,7 +321,7 @@ export const MealScreen = ({ recipe }) => {
           {noData}
           {kcal == 0 ? null : (
             <NutrientsBar
-              title="Energy"
+              title={i18n.__("general.energy")}
               value={kcal}
               maxValue={
                 nutrientGoals["energy"] ? nutrientGoals["energy"] : 2500
@@ -331,7 +332,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {fat == 0 ? null : (
             <NutrientsBar
-              title="Total fat"
+              title={i18n.__("general.total_fat")}
               value={fat}
               maxValue={
                 nutrientGoals["totalFat"] ? nutrientGoals["totalFat"] : 77
@@ -342,7 +343,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {sat == 0 ? null : (
             <NutrientsBar
-              title="Saturated fats"
+              title={i18n.__("general.saturated_fats")}
               value={sat}
               maxValue={nutrientGoals["satFat"] ? nutrientGoals["satFat"] : 20}
               color={nutrientGoals["satFat"] ? "#F57D20" : undefined}
@@ -351,7 +352,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {sug == 0 ? null : (
             <NutrientsBar
-              title="Sugar"
+              title={i18n.__("general.sugar")}
               value={sug}
               maxValue={nutrientGoals["sugar"] ? nutrientGoals["sugar"] : 36}
               color={nutrientGoals["sugar"] ? "#F57D20" : undefined}
@@ -360,7 +361,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {prot == 0 ? null : (
             <NutrientsBar
-              title="Proteins"
+              title={i18n.__("general.proteins")}
               value={prot}
               maxValue={
                 nutrientGoals["protein"] ? nutrientGoals["protein"] : 56
@@ -371,7 +372,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {fibr == 0 ? null : (
             <NutrientsBar
-              title="Fiber"
+              title={i18n.__("general.fibers")}
               value={fibr}
               maxValue={nutrientGoals["fiber"] ? nutrientGoals["fiber"] : 30}
               color={nutrientGoals["fiber"] ? "#F57D20" : undefined}
@@ -380,7 +381,7 @@ export const MealScreen = ({ recipe }) => {
           )}
           {potss == 0 ? null : (
             <NutrientsBar
-              title="Potassium"
+              title={i18n.__("general.potasium")}
               value={potss}
               maxValue={6000}
               unit={upotss}
@@ -404,8 +405,7 @@ export const MealScreen = ({ recipe }) => {
     if (_.isEmpty(recipeAllergens))
       render = (
         <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}
-          No data{" "}
+          {" "}{i18n.__("general.no_data")}{" "}
         </p>
       );
 
@@ -446,13 +446,12 @@ export const MealScreen = ({ recipe }) => {
     if (_.isEmpty(ingredients) || ingredients[0] === "")
       render = (
         <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}
-          No ingredients known yet.{" "}
+          {" "}{i18n.__("error.no_ingredients")}{" "}
         </p>
       );
     return (
       <div>
-        <h1 className={classes.subtitle}>Ingredients</h1>
+        <h1 className={classes.subtitle}>{" "}{i18n.__("general.ingredients")}{" "}</h1>
         <div style={{
           overflowY: "scroll",
           height: componentHeight - 325 - 65 - 30 - 60 + "px"
@@ -475,35 +474,17 @@ export const MealScreen = ({ recipe }) => {
   const SustainabilityContent = (props) => {
     return (
       <div>
-        <h1 className={classes.subtitle}>Sustainability</h1>
+        <h1 className={classes.subtitle}>{i18n.__("sustainability.sustainability")}</h1>
         <div style={{
           overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
         }}>
-          <h1 className={classes.subtitle}>Food product labels</h1>
+          <h1 className={classes.subtitle}>{i18n.__("sustainability.labels")}</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}
-            No data{" "}
+          {" "}{i18n.__("general.no_data")}{" "}
           </p>
-          <h1 className={classes.subtitle}>CO2 footprint</h1>
+          <h1 className={classes.subtitle}>{i18n.__("sustainability.co2")}</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}
-            No data{" "}
-          </p>
-        </div>
-      </div>
-    );
-  };
-
-  const RewiewsContent = (props) => {
-    return (
-      <div>
-        <h1 className={classes.subtitle}>Reviews</h1>
-        <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
-        }}>
-          <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}
-            Review functionality is disabled in this online-only study.{" "}
+          {" "}{i18n.__("general.no_data")}{" "}
           </p>
         </div>
       </div>
@@ -514,19 +495,12 @@ export const MealScreen = ({ recipe }) => {
     switch (tabValue) {
       case 0:
         return <NutrientsContent recipe={recipe} />;
-        break;
       case 1:
         return <IngredientContent recipe={recipe} />;
-        break;
       case 2:
         return <AllergiesContent recipe={recipe} />;
-        break;
       case 3:
         return <SustainabilityContent recipe={recipe} />;
-        break;
-      // case 3:
-      //   return <RewiewsContent recipe={recipe} />;
-      //   break;
     }
   };
 
@@ -600,24 +574,20 @@ export const MealScreen = ({ recipe }) => {
           >
             <Tab
               key={"key1"}
-              label={<span className={classes.tabFont}>Nutrients</span>}
+              label={<span className={classes.tabFont}>{i18n.__("general.nutrients")}</span>}
             />
             <Tab
               key={"key2"}
-              label={<span className={classes.tabFont}>Ingredients</span>}
+              label={<span className={classes.tabFont}>{i18n.__("general.ingredients")}</span>}
             />
             <Tab
               key={"key3"}
-              label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>Allergens</span>}
+              label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>{i18n.__("general.allergens")}</span>}
             />
             <Tab
               key={"key4"}
-              label={<span className={classes.tabFont}>Sustainability</span>}
+              label={<span className={classes.tabFont}>{i18n.__("sustainability.sustainability")}</span>}
             />
-            {/* <Tab
-              key={"key4"}
-              label={<span className={classes.tabFont}>Reviews</span>}
-            /> */}
           </Tabs>
         </div>
       </div>

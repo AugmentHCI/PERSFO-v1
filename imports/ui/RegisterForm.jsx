@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  warning: {
+    textAlign: "center",
+    color: "#726f6c"
+  }
 }));
 
 function Alert(props) {
@@ -92,7 +96,10 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          {i18n.__("login.register_title")}
+        </Typography>
+        <Typography className={classes.warning} component="h1" variant="body2">
+        {i18n.__("login.warning")}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -101,7 +108,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label={i18n.__("login.username")}
             name="username"
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
@@ -113,7 +120,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label={i18n.__("login.password")}
             type="password"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
@@ -125,7 +132,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             required
             fullWidth
             name="password2"
-            label="re-type your password"
+            label={i18n.__("login.reenter_password")}
             type="password"
             id="password2"
             onChange={(e) => setPassword2(e.target.value)}
@@ -140,7 +147,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
             onClick={submit}
             style={{ color: "white" }}
           >
-            Register
+           {i18n.__("login.register")}
           </Button>
           <Grid container>
             <Grid item xs>
@@ -149,7 +156,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
                 variant="body2"
                 onClick={() => setForgotPassword(true)}
               >
-                Forgot password?
+                {i18n.__("login.forgot_password")}
               </Link>
             </Grid>
             <Grid item>
@@ -158,7 +165,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
                 variant="body2"
                 onClick={() => setExistingUser(true)}
               >
-                {"Already have an account? Sign In"}
+                {i18n.__("login.already_an_account")}
               </Link>
             </Grid>
           </Grid>

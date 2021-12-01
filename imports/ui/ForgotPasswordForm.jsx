@@ -41,7 +41,7 @@ function Alert(props) {
 
 const componentName = "ForgotPasswordForm";
 export const ForgotPasswordForm = ({ setForgotPassword }) => {
-  
+
   const classes = useStyles();
 
   const [username, setUsername] = useState("");
@@ -59,12 +59,12 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
 
   const submit = (e) => {
     e.preventDefault();
-      Meteor.call('users.setNewPassword', username, newPassword, token, (error, result) => {
-        if(error) {
-          setOpen(true);
-        }
-      });
-      Meteor.loginWithPassword(username, newPassword);
+    Meteor.call('users.setNewPassword', username, newPassword, token, (error, result) => {
+      if (error) {
+        setOpen(true);
+      }
+    });
+    Meteor.loginWithPassword(username, newPassword);
   };
 
   return (
@@ -84,7 +84,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
             required
             fullWidth
             id="username"
-            label="Username"
+            label={i18n.__("login.username")}
             name="username"
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
@@ -106,7 +106,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
             required
             fullWidth
             name="newPassword"
-            label="Enter your new password"
+            label={i18n.__("login.enter_new_password")}
             type="password"
             id="newPassword"
             onChange={(e) => setPassword(e.target.value)}
@@ -120,7 +120,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
             onClick={submit}
             style={{ color: "white" }}
           >
-            Reset password
+            {i18n.__("login.reset_password")}
           </Button>
           <Grid container>
             <Grid item xs>
@@ -129,7 +129,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
                 variant="body2"
                 onClick={() => setForgotPassword(false)}
               >
-                Cancel
+                {i18n.__("general.cancel")}
               </Link>
             </Grid>
             <Grid item>
@@ -138,7 +138,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
                 variant="body2"
                 onClick={() => setForgotPassword(false)}
               >
-                {"Already have an account? Sign In"}
+                {i18n.__("login.already_an_account")}
               </Link>
             </Grid>
           </Grid>
@@ -157,7 +157,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
       <Box mt={8}>
         <Typography variant="body2" color="textSecondary" align="center">
           {"Copyright © "}
-          <Link color="inherit" href="https://material-ui.com/">
+          <Link color="inherit" href="https://augment.cs.kuleuven.be/">
             Augment
           </Link>{" "}
           {new Date().getFullYear()}
@@ -166,7 +166,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
       </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          Incorrect username or token!
+          {i18n.__("login.incorrect_username_or_token")}
         </Alert>
       </Snackbar>
     </Container>
