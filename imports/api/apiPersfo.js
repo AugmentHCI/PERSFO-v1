@@ -26,8 +26,6 @@ export function initData() {
   });
   console.log("initData: menus loaded");
 
-  console.log(allRecipeIds);
-
   // allRecipeIds.forEach((recipeId) => {
   //   try {
   //     let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/" + recipeId + ".json"));
@@ -41,18 +39,6 @@ export function initData() {
   //     console.log("initData: data or datafield missing for recipe id:" + recipeId);
   //   }
   // });
-
-  // // add custom fields if not exists (do not overwrite old data) TODO
-  // RecipesCollection.update( 
-  //   { nbLikes: { $exists: false } },
-  //   { $set: { nbLikes: 0 } },
-  //   { multi: true }
-  // );
-  // RecipesCollection.update(
-  //   { reviews: { $exists: false } },
-  //   { $set: { reviews: [] } },
-  //   { multi: true }
-  // );
 
   // init hexad
   let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad.json"));
@@ -117,6 +103,19 @@ export function initData() {
       } else {
         console.log("initData: update recipes finished: " + new Date());
         // start downloading ingredientdata
+
+        // add custom fields if not exists (do not overwrite old data)
+        RecipesCollection.update(
+          { nbLikes: { $exists: false } },
+          { $set: { nbLikes: 0 } },
+          { multi: true }
+        );
+        RecipesCollection.update(
+          { reviews: { $exists: false } },
+          { $set: { reviews: [] } },
+          { multi: true }
+        );
+
         updateIngredientDetails();
       }
     }, 1001);
