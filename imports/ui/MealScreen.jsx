@@ -446,7 +446,7 @@ export const MealScreen = ({ recipe }) => {
     if (_.isEmpty(ingredients) || ingredients[0] === "")
       render = (
         <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("error.no_ingredients")}{" "}
+          {" "}{i18n.__("errors.no_ingredients")}{" "}
         </p>
       );
     return (
