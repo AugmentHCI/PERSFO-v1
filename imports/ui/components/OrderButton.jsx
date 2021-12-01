@@ -6,10 +6,10 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 
-const useStyles = makeStyles((newTheme) => ({
+const useStyles = makeStyles(() => ({
     OrderAllergyPresentFloatingButton: {
         color: "white",
         backgroundColor: red[300] + "!important", // important needed, if not only updates after random click...
