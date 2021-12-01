@@ -26,6 +26,8 @@ export function initData() {
   });
   console.log("initData: menus loaded");
 
+  console.log(allRecipeIds);
+
   // allRecipeIds.forEach((recipeId) => {
   //   try {
   //     let recipeDetails = JSON.parse(Assets.getText("data/recipeDetails/" + recipeId + ".json"));
@@ -127,6 +129,7 @@ export function initData() {
       try {
         let ingredientURL = allIngredients[ingredientIndex].ingredient;
         if (ingredientURL) {
+          console.log("initData: ingredient: " + ingredientURL);
           let call = HTTP.call("GET", ingredientURL, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -147,6 +150,7 @@ export function initData() {
         }
       } catch (error) {
         console.log(error);
+        console.log("initData: error at index: " + ingredientIndex);
       }
 
       ingredientIndex++;
