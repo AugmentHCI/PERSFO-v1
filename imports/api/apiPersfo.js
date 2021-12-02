@@ -50,17 +50,21 @@ export function initData() {
   // const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
   // allRecipeIds = allRecipeIds.concat(oldRecipeIds);
 
+  let index = 0;
+  let allIngredients = [];
+  let ingredientIndex = 0;
+
   Meteor.setInterval(function () {
     console.log("initData: regular updated started: " + new Date());
     // start the interval with the first recipe
+    index = 0;
+    allIngredients = [];
+    ingredientIndex = 0;
     updateRecipeDetails();
 
-  }, 60 * 60 * 1000);
+  }, 2 * 60 * 1000);
 
   updateRecipeDetails();
-
-  let index = 0;
-  let allIngredients = [];
 
   // function to fetch data in intervals
   function updateRecipeDetails() {
@@ -88,12 +92,13 @@ export function initData() {
             }
           }
         } else {
-          console.log("initData: error at index: " + index);
-          console.log("initData: error at id: " + currentId);
+          console.log("initData: recipe error at index: " + index);
+          console.log("initData: recipe error at id: " + currentId);
+          console.log(allRecipeIds)
 
         }
       } catch (error) {
-        console.log("initData: Call error for: " + currentId);
+        console.log("initData: recipe call error for: " + currentId);
       }
 
       index++;
@@ -121,7 +126,6 @@ export function initData() {
     }, 1001);
   }
 
-  let ingredientIndex = 0;
   // function to fetch data in intervals
   function updateIngredientDetails() {
     Meteor.setTimeout(function () {
@@ -145,11 +149,11 @@ export function initData() {
             // );
           }
         } else {
-          console.log("initData: error at index: " + ingredientIndex);
+          console.log("initData: ingredient error at index: " + ingredientIndex);
         }
       } catch (error) {
         console.log(error);
-        console.log("initData: error at index: " + ingredientIndex);
+        console.log("initData: ingredient error at index: " + ingredientIndex);
       }
 
       ingredientIndex++;

@@ -1,5 +1,6 @@
 import { check } from 'meteor/check';
 import { food4me } from '../../api/apiFFQ';
+import { food4me2 } from '../../api/apiFFQ';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 Meteor.methods({
@@ -37,6 +38,7 @@ Meteor.methods({
         );
 
         food4me(SurveyAnswers);
+        food4me2(SurveyAnswers);
     },
     "users.updateAllergens"(allergens) {
         check(allergens, Array);
