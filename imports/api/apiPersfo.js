@@ -62,7 +62,7 @@ export function initData() {
     ingredientIndex = 0;
     updateRecipeDetails();
 
-  }, 2 * 60 * 1000);
+  }, 60 * 60 * 1000);
 
   updateRecipeDetails();
 
