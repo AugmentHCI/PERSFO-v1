@@ -37,7 +37,7 @@ Meteor.methods({
             { $addToSet: { survey: SurveyAnswers } }
         );
 
-        food4me(SurveyAnswers);
+        // food4me(SurveyAnswers);
         food4me2(SurveyAnswers);
     },
     "users.updateAllergens"(allergens) {

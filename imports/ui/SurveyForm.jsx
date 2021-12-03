@@ -40,7 +40,6 @@ export const SurveyForm = () => {
             showProgressBar: "bottom",
         };
 
-
         pages.forEach(page => {
             // per Page
             let description = page.Subtitle ? page.Subtitle : "";
@@ -55,11 +54,13 @@ export const SurveyForm = () => {
 
                 // in case of combined questions
             } if (page.CombinedQuestions) {
+                console.log(page.CombinedQuestions)
 
                 page.CombinedQuestions.forEach(subQuestion => {
                     // per question per page
                     subQuestion.Questions.forEach(question => {
-                        question.Title = question.Title + " - " + subQuestion.Title;
+                        // question.Title = question.Title + " - " + subQuestion.Title;
+                        question.Title = subQuestion.Title;
                         questions.push(parseQuestion(question));
                     });
                 });
@@ -78,7 +79,10 @@ export const SurveyForm = () => {
 
         if (question.DependsOn) {
             // TODO: depend on certain answer, query 
+            console.log(question);
             visible = "{" + question.DependsOn + "} notempty";
+            console.log("{" + question.DependsOn + "} notempty");
+            // visible = "{false}";
         }
 
         if (question.DependsOn != null) {
@@ -89,13 +93,13 @@ export const SurveyForm = () => {
                 // parse answer in SurveyJS format
                 let answers = [];
                 question.Answers.forEach(answer => {
-                    answers.push({ quisperValue: +answer.Value, text: answer.Answer });
+                    answers.push({ quisperValue: answer.Value, text: answer.Answer });
                 })
 
                 return {
                     type: "radiogroup",
                     choices: answers,
-                    isRequired: true,
+                    isRequired: !question.optional,
                     name: QuestionID,
                     title: QuestionTitle,
                     visibleIf: visible
@@ -103,11 +107,11 @@ export const SurveyForm = () => {
             case 2:
                 return {
                     type: "text",
-                    inputType: "number",
+                    // inputType: "number",
                     name: QuestionID,
                     title: QuestionTitle,
                     placeHolder: "",
-                    isRequired: true,
+                    isRequired: !question.optional,
                     autoComplete: "name",
                     visibleIf: visible
                 }
@@ -179,7 +183,7 @@ export const SurveyForm = () => {
     return (
         <Container>
             {/* <h1 className={classes.title}>Onboarding questionnaires</h1> */}
-            <Survey.Survey model={model} onComplete={onComplete} style={{ borderColor: "transparent" }}/>
+            <Survey.Survey model={model} onComplete={onComplete}/>
         </Container>
     );
 };

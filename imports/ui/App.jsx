@@ -159,7 +159,7 @@ export const App = () => {
     const nowString = now.toISOString().substring(0, 10);
 
     // pick specific date for demo
-    let menu = MenusCollection.findOne({ starting_date: "2021-12-04" });
+    let menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
     // pick menu of today TODO
     // let menu = MenusCollection.findOne({
     //   starting_date: nowString,

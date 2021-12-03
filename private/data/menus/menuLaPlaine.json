@@ -4,14 +4,87 @@
     "previous": null,
     "results": [
         {
+            "url": "https://www.apicbase.com/api/v1/menus/390800099170004/",
+            "id": "390800099170004",
+            "name": "Maandag 06/12/2021",
+            "uid": "",
+            "description": "",
+            "created_date": "2021-12-01T17:58:59.050856+01:00",
+            "created_by": "hans@alberts.be",
+            "modified_date": "2021-12-01T18:01:34.518240+01:00",
+            "courses": [
+                {
+                    "name": "Soep",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/249543698070003/",
+                        "https://www.apicbase.com/api/v1/recipes/749543379040004/"
+                    ]
+                },
+                {
+                    "name": "Salades",
+                    "recipes": []
+                },
+                {
+                    "name": "Ready Meals",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/249543410110002/",
+                        "https://www.apicbase.com/api/v1/recipes/449643224260006/",
+                        "https://www.apicbase.com/api/v1/recipes/949643983220008/",
+                        "https://www.apicbase.com/api/v1/recipes/649643993200007/",
+                        "https://www.apicbase.com/api/v1/recipes/549643414270001/",
+                        "https://www.apicbase.com/api/v1/recipes/749643404200008/"
+                    ]
+                },
+                {
+                    "name": "Sandwiches",
+                    "recipes": []
+                },
+                {
+                    "name": "Warme Schotel",
+                    "recipes": []
+                },
+                {
+                    "name": "Dessert",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/849543220130008/",
+                        "https://www.apicbase.com/api/v1/recipes/349111562850005/"
+                    ]
+                },
+                {
+                    "name": "Fruit (+granola)",
+                    "recipes": []
+                },
+                {
+                    "name": "Dranken",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/149643344280005/",
+                        "https://www.apicbase.com/api/v1/recipes/649643464200008/",
+                        "https://www.apicbase.com/api/v1/recipes/249643054260001/",
+                        "https://www.apicbase.com/api/v1/recipes/849643584260002/"
+                    ]
+                }
+            ],
+            "cycle_year": null,
+            "cycle_week": null,
+            "cycle_day": null,
+            "starting_date": "2021-12-06",
+            "ending_date": "2021-12-06",
+            "time_of_day": "11:00:00",
+            "vat": null,
+            "target_profit_margin": null,
+            "current_sell_price": null,
+            "sell_price_history": [],
+            "custom_fields": []
+        },
+        {
             "url": "https://www.apicbase.com/api/v1/menus/690800556140004/",
             "id": "690800556140004",
-            "name": "Vrijdag 04/12/2021",
+            "name": "Vrijdag 03/12/2021",
             "uid": "",
             "description": "",
             "created_date": "2021-11-26T01:00:07.193187+01:00",
             "created_by": "hans@alberts.be",
-            "modified_date": "2021-11-26T05:27:29.025289+01:00",
+            "modified_date": "2021-12-01T18:02:20.206517+01:00",
             "courses": [
                 {
                     "name": "Soep",
@@ -72,8 +145,8 @@
             "cycle_year": null,
             "cycle_week": null,
             "cycle_day": null,
-            "starting_date": "2021-12-04",
-            "ending_date": "2021-12-04",
+            "starting_date": "2021-12-03",
+            "ending_date": "2021-12-03",
             "time_of_day": "11:00:00",
             "vat": null,
             "target_profit_margin": null,

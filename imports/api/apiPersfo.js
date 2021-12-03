@@ -3,7 +3,7 @@ import { RecipesCollection } from "/imports/db/recipes/RecipesCollection";
 import { IngredientCollection } from '/imports/db/ingredients/IngredientCollection';
 import { HexadCollection } from "../db/surveys/HexadCollection";
 
-const token = "Erk4rkL2fJe8qKrhO91U7IGbDGQXyq";
+const token = "pmvPgoauir3ZLHlWiynAUfSJw725yi";
 const url = "https://www.apicbase.com/api/v1/recipes/";
 
 var fs = require("fs");
@@ -13,6 +13,7 @@ export function initData() {
 
   // init menus
   let allMenus = JSON.parse(Assets.getText("data/menus/menuLaPlaine.json")).results;
+  // let allMenus = JSON.parse(Assets.getText("data/menus/menu2.json")).results;
   let allRecipeIds = [];
 
   allMenus.forEach((menu) => {
@@ -25,6 +26,7 @@ export function initData() {
     });
   });
   console.log("initData: menus loaded");
+  console.log(allRecipeIds)
 
   // allRecipeIds.forEach((recipeId) => {
   //   try {
@@ -193,7 +195,12 @@ export function initData() {
             let ingredient = IngredientCollection.findOne({ id: ingredientID });
             let composition = ingredient.composition;
             if (composition && composition !== null) {
-              cleanedIngredients.push(composition.split(','));
+              let tempIngredients = composition
+                .replace(/\*/g,"")
+                .replace(/NFM/g,"")
+                .replace(/(^\'|\'+$)/g,"")
+                .split(',');
+              cleanedIngredients.push(tempIngredients);
             }
           } catch (error) {
             console.log("composition error for: " + ingredientID);
