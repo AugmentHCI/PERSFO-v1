@@ -11,18 +11,23 @@
             "description": "",
             "created_date": "2021-12-01T17:58:59.050856+01:00",
             "created_by": "hans@alberts.be",
-            "modified_date": "2021-12-01T18:01:34.518240+01:00",
+            "modified_date": "2021-12-03T17:12:13.410661+01:00",
             "courses": [
                 {
                     "name": "Soep",
                     "recipes": [
-                        "https://www.apicbase.com/api/v1/recipes/249543698070003/",
-                        "https://www.apicbase.com/api/v1/recipes/749543379040004/"
+                        "https://www.apicbase.com/api/v1/recipes/449443812900007/",
+                        "https://www.apicbase.com/api/v1/recipes/449743243460009/"
                     ]
                 },
                 {
                     "name": "Salades",
-                    "recipes": []
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/649543889010004/",
+                        "https://www.apicbase.com/api/v1/recipes/349743880490000/",
+                        "https://www.apicbase.com/api/v1/recipes/749743711470008/",
+                        "https://www.apicbase.com/api/v1/recipes/949743821490001/"
+                    ]
                 },
                 {
                     "name": "Ready Meals",
@@ -36,23 +41,32 @@
                     ]
                 },
                 {
-                    "name": "Sandwiches",
-                    "recipes": []
+                    "name": "Suggestion sandwiches",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/449743781410003/",
+                        "https://www.apicbase.com/api/v1/recipes/649743691440006/",
+                        "https://www.apicbase.com/api/v1/recipes/949743502420008/",
+                        "https://www.apicbase.com/api/v1/recipes/149743432430005/",
+                        "https://www.apicbase.com/api/v1/recipes/449743852400006/",
+                        "https://www.apicbase.com/api/v1/recipes/549743572400004/",
+                        "https://www.apicbase.com/api/v1/recipes/749743382440003/",
+                        "https://www.apicbase.com/api/v1/recipes/949743392430004/",
+                        "https://www.apicbase.com/api/v1/recipes/149743403470001/",
+                        "https://www.apicbase.com/api/v1/recipes/649743513440009/"
+                    ]
                 },
                 {
                     "name": "Warme Schotel",
-                    "recipes": []
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/849443842950006/"
+                    ]
                 },
                 {
                     "name": "Dessert",
                     "recipes": [
                         "https://www.apicbase.com/api/v1/recipes/849543220130008/",
-                        "https://www.apicbase.com/api/v1/recipes/349111562850005/"
+                        "https://www.apicbase.com/api/v1/recipes/249443203900005/"
                     ]
-                },
-                {
-                    "name": "Fruit (+granola)",
-                    "recipes": []
                 },
                 {
                     "name": "Dranken",
@@ -61,6 +75,14 @@
                         "https://www.apicbase.com/api/v1/recipes/649643464200008/",
                         "https://www.apicbase.com/api/v1/recipes/249643054260001/",
                         "https://www.apicbase.com/api/v1/recipes/849643584260002/"
+                    ]
+                },
+                {
+                    "name": "Special sandiwches",
+                    "recipes": [
+                        "https://www.apicbase.com/api/v1/recipes/649443792980001/",
+                        "https://www.apicbase.com/api/v1/recipes/349743823440003/",
+                        "https://www.apicbase.com/api/v1/recipes/449743033470003/"
                     ]
                 }
             ],
