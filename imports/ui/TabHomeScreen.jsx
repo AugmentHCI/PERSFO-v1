@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MuiAlert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
-import { CardRecommendedMeal } from "./CardRecommendedMeal";
 import { getElementID } from "/imports/api/apiPersfo";
 import { RecipeComponent } from './RecipeComponent';
 
