@@ -11,7 +11,7 @@ import {
   getNutriscoreImage
 } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
-
+import { capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const BorderLinearProgress = withStyles((theme) => ({
   colorPrimary: {
@@ -391,7 +391,7 @@ export const MealScreen = ({ recipe }) => {
       let className = userAllergens.includes(allergy) ? classes.activeAllergenBox : classes.allergenBox;
       return (
         <div className={className} key={i}>
-          {allergy}
+          {capitalizeFirstLetter(allergy.replace(/_/g, " "))}
         </div>
       );
     });
