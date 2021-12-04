@@ -90,7 +90,6 @@ Meteor.methods({
         const dislikedIngredients = UserPreferences.findOne({ userid: this.userId }).dislikedIngredients;
         todaysRecipes = _.sortBy(todaysRecipes, r => [getNbDisliked(r, dislikedIngredients), getNutriscore(r)]);
 
-
         // last step! Assign rankings
         // todaysRecipes = _.reverse(todaysRecipes);
         for (let i = 0; i < todaysRecipes.length; i++) {

@@ -254,7 +254,6 @@ export function getNbDisliked(recipe, dislikedIngredients) {
       }
     }
   }
-  console.log(counter);
   return counter;
 }
 

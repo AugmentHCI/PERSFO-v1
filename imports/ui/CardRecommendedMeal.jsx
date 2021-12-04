@@ -21,6 +21,7 @@ import React, { useState } from "react";
 import { OrderButton } from "./components/OrderButton";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import { getNbDisliked } from "/imports/api/apiPersfo";
 
 
 const useStyles = makeStyles(() => ({
@@ -104,13 +105,13 @@ const componentName = "CardRecommendedMeal";
 export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent, dietaryConflict }) => {
   const classes = useStyles();
 
-  const { ingredients, thumbsDown } = useTracker(() => {
-    const noDataAvailable = { ingredients: [], thumbsDown: false };
-    if (!Meteor.user() || _.isEmpty(recipe)) {
-      return noDataAvailable;
-    }
+  const { ingredients, thumbsDown, thumbsUp } = useTracker(() => {
+    const noDataAvailable = { ingredients: [], thumbsDown: false, thumbsUp: false, };
+    const handler = Meteor.subscribe("userpreferences");
 
-    const thumbsDown = false; // TODO
+    if (!Meteor.user() || _.isEmpty(recipe) || !handler.ready()) {
+      return { ...noDataAvailable };
+    }
 
     let tempIngredients = [];
     if (recipe.cleanedIngredients) {
@@ -120,34 +121,26 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     }
     const ingredients = tempIngredients.slice(0, 7);
 
-    return { ingredients, thumbsDown };
-  });
-
-  // Like and thumb logic
-  const { thumbsUp } = useTracker(() => {
-    const noDataAvailable = {
-      thumbsUp: false,
-    };
-    if (!recipe) return noDataAvailable;
-    const handler = Meteor.subscribe("userpreferences");
-    if (!handler.ready()) {
-      return { ...noDataAvailable };
-    }
     const thumbsUp =
       UserPreferences.find({
         userid: Meteor.userId(),
         likedRecommendations: { $in: [recipe.id] },
       }).fetch().length > 0;
-    return { thumbsUp };
+
+    const dislikedIngredients = UserPreferences.findOne({ userid: Meteor.userId() }).dislikedIngredients;
+    let tempThumbDown = false;
+    if (dislikedIngredients) {
+      tempThumbDown = getNbDisliked(recipe, dislikedIngredients) > 0;
+    }
+    const thumbsDown = tempThumbDown;
+
+    return { ingredients, thumbsDown, thumbsUp };
   });
 
   const handleThumbsUp = () => {
     if (recipe) {
       Meteor.call("users.handleLikeRecommendation", recipe.id, true);
       Meteor.call("log", componentName, "handleThumbsUp");
-      // if (!thumbsUp) {
-      //   setThumbsDown(false);
-      // }
     }
   };
 
@@ -175,21 +168,18 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
 
   const handleModalOpen = () => {
     if (!thumbsDown) {
-      // setThumbsDown(true);
       Meteor.call("users.handleLikeRecommendation", recipe.id, false);
       setOpen(true);
       Meteor.call("log", componentName, "handleModalOpen");
     }
   };
   const handleModalClose = () => {
-    // setThumbsDown(false);
     Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(false);
     Meteor.call("log", componentName, "handleModalClose");
   };
 
   const cancelModal = () => {
-    // setThumbsDown(false);
     setOpen(false);
     Meteor.call("log", componentName, "cancelModal");
   };
@@ -233,6 +223,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
 
         <CardActions className={classes.sideCardActions}>
           <IconButton
+            disabled={thumbsDown}
             onClick={() => handleThumbsUp()}
             className={classes.likeButton}
           >
