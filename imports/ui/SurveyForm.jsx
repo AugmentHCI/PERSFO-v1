@@ -59,11 +59,13 @@ export const SurveyForm = () => {
                 page.CombinedQuestions.forEach(subQuestion => {
 
                     let dependsOn = subQuestion.DependsOn;
+                    let disabledWhen = subQuestion.DisabledWhen;
                     // per question per page
                     subQuestion.Questions.forEach(question => {
                         // question.Title = question.Title + " - " + subQuestion.Title;
                         question.Title = subQuestion.Title;
-                        question.disabledOnGroup = dependsOn;
+                        question.DependsOnParent = dependsOn;
+                        question.DisabledWhenParent = disabledWhen;
                         questions.push(parseQuestion(question));
                     });
                 });
@@ -81,8 +83,13 @@ export const SurveyForm = () => {
         let visible = "true";
 
         if (question.DependsOn) {
-            visible = "{" + question.DependsOn + "}!= " + question.DisabledWhen + "and {" + question.DependsOn + "} notempty";
+            visible = "{" + question.DependsOn + "}!=" + question.DisabledWhen + "and {" + question.DependsOn + "} notempty";
         }
+
+        if (question.DependsOnParent) {
+            visible = visible + "and {" + question.DependsOnParent + "}!=" + question.DisabledWhenParent;
+        }
+
         switch (question.QuestionType) {
             case 0:
                 // parse answer in SurveyJS format
@@ -186,7 +193,7 @@ export const SurveyForm = () => {
     return (
         <Container>
             {/* <h1 className={classes.title}>Onboarding questionnaires</h1> */}
-            <Survey.Survey model={model} onComplete={onComplete}/>
+            <Survey.Survey model={model} onComplete={onComplete} />
         </Container>
     );
 };
