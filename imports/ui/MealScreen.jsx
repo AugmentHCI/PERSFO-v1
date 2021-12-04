@@ -14,33 +14,19 @@ import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 
 const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 4,
-    borderRadius: 4,
-  },
   colorPrimary: {
     backgroundColor:
       theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  },
-  bar: {
-    borderRadius: 5,
-    backgroundColor: "#F57D20",
-  },
+  }
 }))(LinearProgress);
 
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
-  const [heightBuffer, setHeightBuffer] = useState(
-    window.innerHeight >= 640 ? 60 : 0
-  );
+  const [heightBuffer, setHeightBuffer] = useState(window.innerHeight >= 640 ? 60 : 0);
 
-  window.addEventListener("resize", () => {
-    setComponentHeight(window.innerHeight);
-    setHeightBuffer(window.innerHeight >= 640 ? 60 : 0);
-  });
-
-  const useStyles = makeStyles((persfoTheme) => ({
+  //in component style due to dynamic height.
+  const useStyles = makeStyles(() => ({
     mealTitleCard: {
       display: "flex",
       borderRadius: "60px 60px 0px 0px",
@@ -141,6 +127,12 @@ export const MealScreen = ({ recipe }) => {
       borderRadius: "10px",
       color: "white",
     },
+    gapInBetween: {
+      display: "flex",
+      flexDirection: "column",
+      rowGap: "8px",
+      justifyContent: "space-between"
+    }
   }));
 
   const classes = useStyles();
@@ -170,7 +162,6 @@ export const MealScreen = ({ recipe }) => {
     const userPreferences = UserPreferences.findOne({
       userid: Meteor.userId(),
     });
-
 
     const userAllergens = userPreferences?.allergens ? _.map(userPreferences?.allergens, a => a.allergen) : [];
 
@@ -308,7 +299,7 @@ export const MealScreen = ({ recipe }) => {
       );
 
     return (
-      <div>
+      <>
         <h1 className={classes.subtitle}>
           {i18n.__("general.nutrients")}
         </h1>
@@ -388,7 +379,7 @@ export const MealScreen = ({ recipe }) => {
             />
           )}
         </div>
-      </div>
+      </>
     );
   };
 
@@ -410,11 +401,9 @@ export const MealScreen = ({ recipe }) => {
       );
 
     return (
-      <div>
+      <>
         <h1 className={classes.subtitle}>Allergens</h1>
-        <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
-        }}>
+        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px" }}>
           <div
             style={{
               display: "flex",
@@ -426,7 +415,7 @@ export const MealScreen = ({ recipe }) => {
             {render}
           </div>
         </div>
-      </div>
+      </>
     );
   };
 
@@ -450,7 +439,7 @@ export const MealScreen = ({ recipe }) => {
         </p>
       );
     return (
-      <div>
+      <>
         <h1 className={classes.subtitle}>{" "}{i18n.__("general.ingredients")}{" "}</h1>
         <div style={{
           overflowY: "scroll",
@@ -467,27 +456,27 @@ export const MealScreen = ({ recipe }) => {
             {render}
           </div>
         </div>
-      </div>
+      </>
     );
   };
 
   const SustainabilityContent = (props) => {
     return (
-      <div>
+      <>
         <h1 className={classes.subtitle}>{i18n.__("sustainability.sustainability")}</h1>
         <div style={{
           overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
         }}>
           <h1 className={classes.subtitle}>{i18n.__("sustainability.labels")}</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("general.no_data")}{" "}
+            {" "}{i18n.__("general.no_data")}{" "}
           </p>
           <h1 className={classes.subtitle}>{i18n.__("sustainability.co2")}</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("general.no_data")}{" "}
+            {" "}{i18n.__("general.no_data")}{" "}
           </p>
         </div>
-      </div>
+      </>
     );
   };
 
@@ -505,14 +494,7 @@ export const MealScreen = ({ recipe }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        rowGap: "8px",
-        justifyContent: "space-between",
-      }}
-    >
+    <div className={classes.gapInBetween}>
       <div className={classes.mealTitleCard}>
         <div style={{ padding: "24px 24px 0px 24px" }}>
           <div
@@ -529,7 +511,6 @@ export const MealScreen = ({ recipe }) => {
             >
               {recipe.name}
             </h1>
-            {/* <h2>{recipe.id}</h2> */}
             {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }} /> : <></>}
             <img
               className={classes.nutriscore}
