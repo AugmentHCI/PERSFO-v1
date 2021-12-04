@@ -25,6 +25,6 @@ body {
 
 /* needed to style the survey.js body */
 .sv_main.sv_default_css .sv_body {
-  border-color: transparent;
+  border-color: transparent !important;
   margin-top: 10px;
 }

@@ -11,7 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Meteor } from "meteor/meteor";
 import { useTracker } from "meteor/react-meteor-data";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { getImage } from '../api/apiPersfo';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
@@ -81,14 +81,10 @@ const componentName = "ShoppingBasket";
 export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
 
     const [componentHeight, setComponentHeight] = useState(window.innerHeight);
-    const [heightBuffer, setHeightBuffer] = useState(
-        window.innerHeight >= 640 ? 60 : 0
-    );
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [deletedRecipe, setDeletedRecipe] = useState({ name: "", recipeId: "" });
+    const [deletedOrderAmount, setDeletedOrderAmount] = useState(0);
 
-    window.addEventListener("resize", () => {
-        setComponentHeight(window.innerHeight);
-        setHeightBuffer(window.innerHeight >= 640 ? 60 : 0);
-    });
     const classes = useStyles();
 
     const { orders, totalPrice } = useTracker(() => {
@@ -118,11 +114,6 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
         return { orders, totalPrice };
     });
 
-    const [openConfirmation, setOpenConfirmation] = useState(false);
-
-    const [deletedRecipe, setDeletedRecipe] = useState({ name: "", recipeId: "" });
-    const [deletedOrderAmount, setDeletedOrderAmount] = useState(0);
-
     const handleRemove = (order) => () => {
         setOpenConfirmation(true);
         setDeletedOrderAmount(order.amount);
@@ -148,7 +139,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     }
 
     const action = (
-        <Fragment>
+        <>
             <Button color="secondary" size="small" onClick={() => handleUndoDelete(deletedRecipe, deletedOrderAmount)}>
                 {i18n.__("general.cancel")}
             </Button>
@@ -160,11 +151,10 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
             >
                 <CloseIcon fontSize="small" />
             </IconButton>
-        </Fragment>
+        </>
     );
 
     return (
-
         <SwipeableDrawer
             anchor="right"
             open={drawerOpen}
@@ -186,7 +176,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                             const labelId = `checkbox-list-secondary-label-${value.recipeId}`;
                             const recipe = RecipesCollection.findOne({ id: value.recipeId });
                             return (
-                                <Fragment key={value.recipeId}>
+                                <div key={value.recipeId}>
                                     <ListItem button>
                                         <ListItemAvatar>
                                             <Avatar
@@ -194,12 +184,12 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                                                 src={getImage(recipe)}
                                             />
                                         </ListItemAvatar>
-                                        <ListItemText id={labelId} primary={recipe.name} secondary={"prijs: € " + recipe.current_sell_price.pricing.toFixed(2) }/>
+                                        <ListItemText id={labelId} primary={recipe.name} secondary={"prijs: € " + recipe.current_sell_price.pricing.toFixed(2)} />
                                         <DeleteIcon className={classes.deleteButtons} onClick={handleRemove(value)} style={{ color: grey[500] }} />
                                         <GroupedButtons recipeId={value.recipeId} className={classes.counterButtons}></GroupedButtons>
                                     </ListItem>
                                     <Divider variant="inset" component="li" />
-                                </Fragment>
+                                </div>
                             );
                         })}
                     </List>
@@ -209,8 +199,8 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                     {i18n.__("shopping.empty")}
                 </Typography>
             }
-                        <Typography className={classes.header} variant="subtitle1" color="primary">
-                        {i18n.__("shopping.total_price")}{": € " + totalPrice.toFixed(2)}
+            <Typography className={classes.header} variant="subtitle1" color="primary">
+                {i18n.__("shopping.total_price")}{": € " + totalPrice.toFixed(2)}
             </Typography>
             <Button
                 type="submit"
@@ -232,6 +222,5 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
                 className={classes.undoToast}
             />
         </SwipeableDrawer >
-
     );
 };

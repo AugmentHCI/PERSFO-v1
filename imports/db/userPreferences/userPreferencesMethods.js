@@ -1,6 +1,5 @@
 import { check } from 'meteor/check';
 import { food4me } from '../../api/apiFFQ';
-import { food4me2 } from '../../api/apiFFQ';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 Meteor.methods({
@@ -32,18 +31,25 @@ Meteor.methods({
             throw new Meteor.Error("Not authorized.");
         }
 
-        const ffqAnswers = Object.keys(SurveyAnswers)
-        .filter(key => !key.includes("HEXAD"))
+        const cleanedData = Object.keys(SurveyAnswers)
+        .filter(key => !key.includes("page"))
         .reduce((obj, key) => {
             obj[key] = SurveyAnswers[key];
             return obj;
         }, {});
 
+        const ffqAnswers = Object.keys(cleanedData)
+        .filter(key => !key.includes("HEXAD"))
+        .reduce((obj, key) => {
+            obj[key] = cleanedData[key];
+            return obj;
+        }, {});
+
         // duplication of above needed because object and not an array
-        const hexadAnswers = Object.keys(SurveyAnswers)
+        const hexadAnswers = Object.keys(cleanedData)
         .filter(key => key.includes("HEXAD"))
         .reduce((obj, key) => {
-            obj[key] = SurveyAnswers[key];
+            obj[key] = cleanedData[key];
             return obj;
         }, {});
 
@@ -53,6 +59,18 @@ Meteor.methods({
         );
 
         food4me(ffqAnswers);
+    },
+    "users.savePartialSurvey"(SurveyAnswers) {
+        check(SurveyAnswers, Object);
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        UserPreferences.upsert(
+            { userid: this.userId },
+            { $set: { partialAnswers: SurveyAnswers} }
+        );
     },
     "users.updateAllergens"(allergens) {
         check(allergens, Array);
@@ -135,7 +153,6 @@ Meteor.methods({
         }
     },
     "users.finishedICF"() {
-
         if (!this.userId) {
             throw new Meteor.Error("Not authorized.");
         }
@@ -143,17 +160,6 @@ Meteor.methods({
         UserPreferences.upsert(
             { userid: this.userId },
             { $set: { icfFinished: true } }
-        );
-    },
-    "users.finishedSurvey"(results) {
-
-        if (!this.userId) {
-            throw new Meteor.Error("Not authorized.");
-        }
-
-        UserPreferences.upsert(
-            { userid: this.userId },
-            { $set: { surveyFinished: true, surveyResults: results } }
         );
     },
 });

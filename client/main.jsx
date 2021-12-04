@@ -7,23 +7,23 @@ import { Tracker } from 'meteor/tracker';
 import '/i18n/en.i18n.json';
 import '/i18n/nl.i18n.json';
 
-const deviceLocale = getLang();
+// const deviceLocale = getLang();
 
-i18n.setOptions({
-  defaultLocale: deviceLocale,
-  sameLocaleOnServerConnection: true
-});
+// i18n.setOptions({
+//   defaultLocale: deviceLocale,
+//   sameLocaleOnServerConnection: true
+// });
 
 Meteor.startup(() => {
   Tracker.autorun(() => {
     const user = Meteor.user();
 
-    if (user) {
-      const locale = user.profile.lang || deviceLocale;
-      i18n.setLocale(locale);
-    } else {
-      i18n.setLocale(deviceLocale);
-    }
+    // if (user) {
+    //   const locale = user.profile.lang || deviceLocale;
+    i18n.setLocale('nl');
+    // } else {
+    //   i18n.setLocale(deviceLocale);
+    // }
   });
 
   // wait for menus, recipes, AND userpreferences to load before initializing recommendations
@@ -33,24 +33,24 @@ Meteor.startup(() => {
   render(<App />, document.getElementById('react-target'));
 });
 
-function getLang() {
-  const defaultLang = 'nl';
-  const locales = ['nl', defaultLang];
+// function getLang() {
+//   const defaultLang = 'nl';
+//   const locales = ['nl', defaultLang];
 
-  let result =
-    (navigator.languages && navigator.languages[0]) ||
-    navigator.language ||
-    navigator.browserLanguage ||
-    navigator.userLanguage ||
-    defaultLang;
+//   let result =
+//     (navigator.languages && navigator.languages[0]) ||
+//     navigator.language ||
+//     navigator.browserLanguage ||
+//     navigator.userLanguage ||
+//     defaultLang;
 
-  result = result.substring(0, 2)
+//   result = result.substring(0, 2)
 
-  if (!locales.includes(result)) {
-    result = defaultLang;
-  }
+//   if (!locales.includes(result)) {
+//     result = defaultLang;
+//   }
 
-  console.log(result);
+//   console.log(result);
 
-  return result;
-}
+//   return result;
+// }
