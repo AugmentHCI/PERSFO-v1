@@ -47,11 +47,6 @@ const useStyles = makeStyles(() => ({
     height: "24px",
     marginTop: "8px",
   },
-  reasonLabel: {
-    alignSelf: "center",
-    padding: "10px",
-    height: "100%",
-  },
   cardActions: {
     display: "flex",
     alignItems: "center",
@@ -92,6 +87,17 @@ const useStyles = makeStyles(() => ({
     fontSize: "16px",
     fontWeight: 400,
   },
+  ingredientList: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "16px",
+  },
+  dislikeOptions: {
+    display: "flex",
+    columnGap: "16px",
+    marginTop: "32px",
+    justifyContent: "flex-end",
+  }
 }));
 
 const componentName = "CardRecommendedMeal";
@@ -100,7 +106,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
 
   const { ingredients, thumbsDown } = useTracker(() => {
     const noDataAvailable = { ingredients: [], thumbsDown: false };
-    if (!Meteor.user() || _.isEmpty(recipe) ) {
+    if (!Meteor.user() || _.isEmpty(recipe)) {
       return noDataAvailable;
     }
 
@@ -112,7 +118,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     } else {
       console.error("no cleaned ingredients for: " + recipe.id);
     }
-    const ingredients = tempIngredients.slice(0,7);
+    const ingredients = tempIngredients.slice(0, 7);
 
     return { ingredients, thumbsDown };
   });
@@ -275,13 +281,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
           <h3 className={classes.modalTitle}>
             {i18n.__("recommendations.explanation")}
           </h3>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              rowGap: "16px",
-            }}
-          >
+          <div className={classes.ingredientList}>
             {_.map(ingredients, (ingredient, i) => {
               return (
                 <FormControlLabel
@@ -294,21 +294,13 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
                       onChange={(e) => handleModalCheckboxChange(e, i)}
                     />
                   }
-                  label={ingredient.label}
                   label={ingredient}
                   labelPlacement="start"
                 />
               );
             })}
           </div>
-          <div
-            style={{
-              display: "flex",
-              columnGap: "16px",
-              marginTop: "32px",
-              justifyContent: "flex-end",
-            }}
-          >
+          <div className={classes.dislikeOptions}>
             <Button
               size="large"
               onClick={() => cancelModal()}
