@@ -5,6 +5,7 @@ import { HexadCollection } from "../db/surveys/HexadCollection";
 
 const token = "pmvPgoauir3ZLHlWiynAUfSJw725yi";
 const url = "https://www.apicbase.com/api/v1/recipes/";
+const API_LOGS = false;
 
 var fs = require("fs");
 
@@ -26,7 +27,6 @@ export function initData() {
     });
   });
   console.log("initData: menus loaded");
-  console.log(allRecipeIds)
 
   // allRecipeIds.forEach((recipeId) => {
   //   try {
@@ -74,7 +74,7 @@ export function initData() {
       try {
         const currentId = allRecipeIds[index];
         if (currentId) {
-          console.log("initData: recipe: " + currentId);
+          if (API_LOGS) console.log("initData: recipe: " + currentId);
           let call = HTTP.call("GET", url + currentId, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ export function initData() {
       try {
         let ingredientURL = allIngredients[ingredientIndex].ingredient;
         if (ingredientURL) {
-          console.log("initData: ingredient: " + ingredientURL);
+          if (API_LOGS) console.log("initData: ingredient: " + ingredientURL);
           let call = HTTP.call("GET", ingredientURL, {
             headers: {
               Authorization: `Bearer ${token}`,

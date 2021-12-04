@@ -17,7 +17,6 @@ import {
 } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
-import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import i18n from 'meteor/universe:i18n';
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const componentName = "AppBarPersfo";
-export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer }) => {
+export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpen, toggleShoppingBasketDrawer, surveyFinished, icfFinished, doneForToday }) => {
   const classes = useStyles();
 
   const user = useTracker(() => Meteor.user());
@@ -76,22 +75,12 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     }
   );
 
-  const { nbOrders, doneForToday, icfFinished, surveyFinished } = useTracker(() => {
-    const noDataAvailable = { nbOrders: 0, doneForToday: false, onboardingFinished: true, surveyFinished: true };
+  const { nbOrders } = useTracker(() => {
+    const noDataAvailable = { nbOrders: 0, doneForToday: false, onboardingFinished: true };
     const handler = Meteor.subscribe("orders");
-    const preferencesHandler = Meteor.subscribe("userpreferences");
-    const orderHandler = Meteor.subscribe("orders");
 
     if (!handler.ready()) {
       return { ...noDataAvailable };
-    }
-
-    if (!preferencesHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
-    if (!orderHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
     }
 
     // find only orders made today
@@ -103,14 +92,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
       orderday: nowString,
     }).fetch().length;
 
-    let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
-    const doneForToday = randomConfirmedOrder !== undefined;
-
-    const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
-    const icfFinished = userPreferences?.icfFinished;
-    const surveyFinished = userPreferences?.survey;
-
-    return { nbOrders, doneForToday, icfFinished, surveyFinished };
+    return { nbOrders };
   });
 
   document.addEventListener("backbutton", onBackKeyDown, false);

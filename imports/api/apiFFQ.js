@@ -1,11 +1,10 @@
 import { FFQCollection } from "../db/surveys/FFQCollection";
 import { UserPreferences } from "../db/userPreferences/UserPreferences";
 
-const token = "";
+const quisperToken = "dOETXx7hPv7aJHKUMlLfJ3NxhEY9UFEe8UPf19K9";
 const language = "nl-NL"
 const url = "https://quisper.onsafecape.gr/FFQ/questionnaire?lang=";
-const food4meURL = "https://api.quisper.eu/nutrient-intake-values/beta/ffq/1";
-const food4meURL2 = "https://api.quisper.eu/ffq-personalised-nutrition-advice/beta/ffq-food4me-l1/1";
+const food4meURL = "https://api.quisper.eu/ffq-personalised-nutrition-advice/beta/ffq-food4me-l1/1";
 
 
 var fs = require("fs");
@@ -32,35 +31,16 @@ export function initFFQ() {
 export function food4me(FFQ) {
     let call = HTTP.call("POST", food4meURL, {
         headers: {
-            "x-api-key": "dOETXx7hPv7aJHKUMlLfJ3NxhEY9UFEe8UPf19K9",
+            "x-api-key": quisperToken,
             Accept: "application/json",
         },
-        data: FFQ
-    });
-
-    if (call.data) {
-        console.log(call.data);
-        UserPreferences.upsert(
-            { userid: this.userId },
-            { $addToSet: { food4me: call.data } }
-        );
+        data: { "Questionnaire": { "Questions": FFQ } }
     }
-}
-
-export function food4me2(FFQ) {
-    let call = HTTP.call("POST", food4meURL2, {
-        headers: {
-            "x-api-key": "dOETXx7hPv7aJHKUMlLfJ3NxhEY9UFEe8UPf19K9",
-            Accept: "application/json",
-        },
-        data: FFQ
-    });
-
+    );
     if (call.data) {
-        console.log(call.data);
         UserPreferences.upsert(
             { userid: this.userId },
-            { $addToSet: { food4me2: call.data } }
+            { $set: { food4me2: call.data } }
         );
     }
 }

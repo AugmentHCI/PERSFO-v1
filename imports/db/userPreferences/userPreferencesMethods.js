@@ -32,13 +32,27 @@ Meteor.methods({
             throw new Meteor.Error("Not authorized.");
         }
 
+        const ffqAnswers = Object.keys(SurveyAnswers)
+        .filter(key => !key.includes("HEXAD"))
+        .reduce((obj, key) => {
+            obj[key] = SurveyAnswers[key];
+            return obj;
+        }, {});
+
+        // duplication of above needed because object and not an array
+        const hexadAnswers = Object.keys(SurveyAnswers)
+        .filter(key => key.includes("HEXAD"))
+        .reduce((obj, key) => {
+            obj[key] = SurveyAnswers[key];
+            return obj;
+        }, {});
+
         UserPreferences.upsert(
             { userid: this.userId },
-            { $addToSet: { survey: SurveyAnswers } }
+            { $set: { ffqAnswers: ffqAnswers, hexadAnswers: hexadAnswers } }
         );
 
-        // food4me(SurveyAnswers);
-        food4me2(SurveyAnswers);
+        food4me(ffqAnswers);
     },
     "users.updateAllergens"(allergens) {
         check(allergens, Array);

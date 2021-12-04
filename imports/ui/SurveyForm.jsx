@@ -54,8 +54,6 @@ export const SurveyForm = () => {
 
                 // in case of combined questions
             } if (page.CombinedQuestions) {
-                console.log(page.CombinedQuestions)
-
                 page.CombinedQuestions.forEach(subQuestion => {
 
                     let dependsOn = subQuestion.DependsOn;
@@ -97,15 +95,6 @@ export const SurveyForm = () => {
                 question.Answers.forEach(answer => {
                     answers.push({ value: answer.Value, text: answer.Answer });
                 })
-
-                console.log({
-                    type: "radiogroup",
-                    choices: answers,
-                    isRequired: !question.optional,
-                    name: QuestionID,
-                    title: QuestionTitle,
-                    visibleIf: visible
-                });
                 return {
                     type: "radiogroup",
                     choices: answers,

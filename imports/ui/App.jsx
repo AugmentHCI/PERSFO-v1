@@ -173,7 +173,7 @@ export const App = () => {
 
     const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
     const icfFinished = userPreferences?.icfFinished;
-    const surveyFinished = userPreferences?.survey;
+    const surveyFinished = userPreferences?.ffqAnswers;
 
 
     let recommendedRecipeId = "749543530170001";
@@ -287,7 +287,10 @@ export const App = () => {
         drawerOpen={drawerOpen}
         toggleDrawer={toggleDrawer}
         shoppingBasketdrawerOpen={shoppingBasketdrawerOpen}
-        toggleShoppingBasketDrawer={toggleShoppingBasketDrawer} />
+        toggleShoppingBasketDrawer={toggleShoppingBasketDrawer}
+        surveyFinished={surveyFinished}
+        icfFinished={icfFinished}
+        doneForToday={doneForToday} />
       <div className="main">{switchRenderScreen()}</div>
     </ThemeProvider>
   );
