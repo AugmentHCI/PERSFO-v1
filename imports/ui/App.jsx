@@ -139,7 +139,7 @@ export const App = () => {
 
     // // wait for menus, recipes, AND userpreferences to load before initializing recommendations
     // // recalculate new recommendation on every app startup
-    // Meteor.call("recommender.updateRecommendations");
+    Meteor.call("recommender.updateRecommendations");
 
     const now = new Date();
     const nowString = now.toISOString().substring(0, 10);

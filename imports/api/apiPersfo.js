@@ -245,6 +245,19 @@ export function getNutriscoreImage(recipe) {
   return "/images/nutri" + getNutriscore(recipe) + ".jpg";
 }
 
+export function getNbDisliked(recipe, dislikedIngredients) {
+  let counter = 0;
+  if (recipe && recipe.cleanedIngredients) {
+    for (let i = 0; i < recipe.cleanedIngredients.length; i++) {
+      if(_.includes(dislikedIngredients, recipe.cleanedIngredients[i])) {
+        counter++;
+      }
+    }
+  }
+  console.log(counter);
+  return counter;
+}
+
 export function getImage(recipe) {
   if (recipe) {
     if (recipe.id) { // cached images for demo version

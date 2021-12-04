@@ -4,7 +4,9 @@ import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
-import { getElementID } from "/imports/api/apiPersfo";
+import { getElementID, getNutriscore, getNbDisliked } from "/imports/api/apiPersfo";
+
+const coursesToIgnore = ["Dranken", "Soep"];
 
 Meteor.methods({
     "recommender.updateRecommendations"() {
@@ -15,10 +17,14 @@ Meteor.methods({
             starting_date: new Date().toISOString().substring(0, 10),
         });
         // pick random menu when no menu available today
-        if (!menu) menu = MenusCollection.findOne();
+        if (!menu) {
+            menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
+            console.log("recommender: no menu for today!")
+        }
+
         let todaysCourses = menu.courses;
 
-        let userpreferences = UserPreferences.findOne({ userid: this.userId });
+        const userpreferences = UserPreferences.findOne({ userid: this.userId });
 
         // Find all recipes that are available today --> TODO tailor per course
         let todaysRecipes = [];
@@ -30,6 +36,12 @@ Meteor.methods({
         todaysRecipes = RecipesCollection.find({
             id: { $in: todaysRecipes },
         }).fetch();
+
+        // Filter courses
+        let filteredCourseURLs = _.filter(todaysCourses, c => _.includes(coursesToIgnore, c.name));
+        filteredCourseURLs = _.flatten(filteredCourseURLs.map(c => c.recipes));
+        const filteredCourseIds = _.map(filteredCourseURLs, getElementID);
+        todaysRecipes = _.filter(todaysRecipes, (recipe) => !_.includes(filteredCourseIds, recipe.id));
 
         // Filter allergies
         let userAllergens = [];
@@ -50,25 +62,17 @@ Meteor.methods({
 
         // filter recipes without an image and/or no nutrient data
         todaysRecipes = _.filter(todaysRecipes, (recipe) => {
-            return recipe.main_image !== null && recipe.kcal > 0;
+            return recipe.main_image !== null;
         });
 
-        // filter recipes with disliked ingredients
-        try {
-            let dislikedIngredients = UserPreferences.findOne({ userid: this.userId })
-                .dislikedIngredients;
-            todaysRecipes = _.filter(todaysRecipes, (recipe) => {
-                for (let i = 0; i < dislikedIngredients.length; i++) {
-                    const ingredient = dislikedIngredients[i];
-                    for (let j = 0; j < recipe.ingredients.length; j++) {
-                        if (ingredient.description === recipe.ingredients[j].description) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            });
-        } catch (error) { }
+        // filter recipes without ingredients
+        todaysRecipes = _.filter(todaysRecipes, (recipe) => {
+            if (recipe.cleanedIngredients) {
+                return recipe.cleanedIngredients.length > 0;
+            } else {
+                return false;
+            }
+        });
 
         // filter smoothies
         todaysRecipes = _.filter(todaysRecipes, recipe => {
@@ -80,13 +84,15 @@ Meteor.methods({
         });
 
         // find recipe with most likes --> TODO make smarter
-        todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
+        // todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
 
-
+        // sort recipe by dislikedingredient first, then by decent nutriscore
+        const dislikedIngredients = UserPreferences.findOne({ userid: this.userId }).dislikedIngredients;
+        todaysRecipes = _.sortBy(todaysRecipes, r => [getNbDisliked(r, dislikedIngredients), getNutriscore(r)]);
 
 
         // last step! Assign rankings
-        todaysRecipes = _.reverse(todaysRecipes);
+        // todaysRecipes = _.reverse(todaysRecipes);
         for (let i = 0; i < todaysRecipes.length; i++) {
             todaysRecipes[i].ranking = i + 1;
         }
