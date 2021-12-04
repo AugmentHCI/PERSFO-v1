@@ -130,6 +130,7 @@
         "empty": "U heeft nog geen maaltijden besteld.",
         "total_price": "Totale prijs",
         "confirm": "Bevestig uw keuzes",
-        "added": "Toegevoegd aan uw winkelmandje"
+        "added": "Toegevoegd aan uw winkelmandje",
+        "warning": "OPGEPAST: deze maaltijd voeldoet niet aan uw instellingen!"
     }
 }

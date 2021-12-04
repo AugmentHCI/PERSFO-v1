@@ -112,8 +112,12 @@ export const OrderButton = ({ recipe, allergensPresent, dietaryConflict, floatin
                 autoHideDuration={6000}
                 onClose={() => setToast(false)}
             >
-                <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
-                    {i18n.__("shopping.added")}
+                <Alert
+                    onClose={() => setToast(false)}
+                    icon={<CheckIcon fontSize="inherit" />}
+                    variant={(allergensPresent || dietaryConflict) ? "filled" : "outlined"}
+                    severity={(allergensPresent || dietaryConflict) ? "error" : "warning"}>
+                    {(allergensPresent || dietaryConflict) ? i18n.__("shopping.warning") : i18n.__("shopping.added")}
                 </Alert>
             </Snackbar>
         </>
