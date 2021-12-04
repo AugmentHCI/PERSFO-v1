@@ -12,18 +12,10 @@ import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 4,
-    borderRadius: 4,
-  },
   colorPrimary: {
     backgroundColor:
       theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  },
-  bar: {
-    borderRadius: 5,
-    backgroundColor: "#F57D20",
-  },
+  }
 }))(LinearProgress);
 
 // recipeURL come from menu --> courses
@@ -75,8 +67,6 @@ export const Progress = ({ recommendedRecipe }) => {
 
   const {
     userName,
-    isLoggedIn,
-    GetOpenMealDetails,
     daysActive,
     orders,
     nbLikes,
@@ -84,32 +74,19 @@ export const Progress = ({ recommendedRecipe }) => {
   } = useTracker(() => {
     const noDataAvailable = {
       userName: "",
-      GetOpenMealDetails: undefined,
       daysActive: 0,
       orders: [],
       nbLikes: 0,
       nbDislikes: 0,
     };
 
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
     const userHandler = Meteor.subscribe("userData");
-    if (!userHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
     const orderHandler = Meteor.subscribe("orders");
-    if (!orderHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
     const recipeHandler = Meteor.subscribe("recipes");
-    if (!recipeHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-
     const userPreferencesHandler = Meteor.subscribe("userpreferences");
-    if (!userPreferencesHandler.ready()) {
+
+
+    if (!Meteor.user() || !userHandler.ready() || !orderHandler.ready() || !recipeHandler.ready() || !userPreferencesHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
 
@@ -117,37 +94,33 @@ export const Progress = ({ recommendedRecipe }) => {
     let nbLikes = 0;
     try {
       nbLikes = userPreferences.likedRecipes.length;
-    } catch (error) { }
+    } catch (error) {
+      console.log("Progress: unexpected error at nblikes")
+    }
 
     let nbDislikes = 0;
     try {
       nbDislikes = userPreferences.dislikedIngredients.length;
-    } catch (error) { }
+    } catch (error) {
+      console.log("Progress: unexpected error at nbDislikes")
+    }
 
     let orders = OrdersCollection.find({ userid: Meteor.userId() }).fetch();
     orders = _.map(orders, (order) => {
       return RecipesCollection.findOne({ id: order.recipeId });
     });
 
-    const daysActive =
-      Math.floor((new Date() - Meteor.user().createdAt) / 86400000);
+    const daysActive = Math.floor((new Date() - Meteor.user().createdAt) / 86400000);
     const userName = capitalizeFirstLetter(Meteor.user().username);
 
-    const GetOpenMealDetails = OpenMealDetails.get();
     return {
       userName,
-      GetOpenMealDetails,
-      isLoggedIn: !!Meteor.userId(),
       daysActive,
       orders,
       nbLikes,
       nbDislikes,
     };
   });
-
-  if (!isLoggedIn) {
-    return null;
-  }
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -185,62 +158,55 @@ export const Progress = ({ recommendedRecipe }) => {
     );
   };
 
-  if (GetOpenMealDetails !== null) {
-    return (
-      <MealScreen
-        recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
-      />
-    );
-  } else {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", rowGap: "16px" }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          scrollButtons="auto"
-          centered={true}
-        >
-          <Tab key={0} label={i18n.__("progress.weekly_overview")} />
-          <Tab key={1} label={i18n.__("progress.goals")} />
-        </Tabs>
+  return (
+    <div style={{ display: "flex", flexDirection: "column", rowGap: "16px" }}>
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="fullWidth"
+        scrollButtons="auto"
+        centered={true}
+      >
+        <Tab key={0} label={i18n.__("progress.weekly_overview")} />
+        <Tab key={1} label={i18n.__("progress.goals")} />
+      </Tabs>
 
-        {tabValue == 0 ? (
-          <div
-            className={classes.mainContent}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
-            <div className={classes.stat}>
-              {i18n.__("progress.hello")}, <span className={classes.statNum}>{userName}</span>
-            </div>
-            <div className={classes.stat}>
-              {i18n.__("progress.creation1")}
-              <span className={classes.statNum}>{" " + daysActive}</span> {i18n.__("progress.creation2")}
-            </div>
-            <div className={classes.stat}>
-              {i18n.__("progress.using1")}{" "}
-              <span className={classes.statNum}>{orders.length}</span> {i18n.__("progress.using2")}{" "}
-              <span className={classes.statNum}>
-                {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
-                  ? _.sumBy(orders, (o) =>
-                    calculateNutrientforRecipe(o, "kcal")
-                  )
-                  : 0}
-              </span>{" "}
-              kcal.
-            </div>
-            <div className={classes.stat}>
-              {i18n.__("progress.liked1")}{" "}<span className={classes.statNum}>{nbLikes}</span>
-              {" "}{i18n.__("progress.liked2")}{" "}<span className={classes.statNum}>{nbDislikes}</span>{" "}
-              {i18n.__("progress.liked3")}
-            </div>
-            {/*<div className={classes.statTitle}>Doing so you:</div>
+      {tabValue == 0 ? (
+        <div
+          className={classes.mainContent}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div className={classes.stat}>
+            {i18n.__("progress.hello")}, <span className={classes.statNum}>{userName}</span>
+          </div>
+          <div className={classes.stat}>
+            {i18n.__("progress.creation1")}
+            <span className={classes.statNum}>{" " + daysActive}</span> {i18n.__("progress.creation2")}
+          </div>
+          <div className={classes.stat}>
+            {i18n.__("progress.using1")}{" "}
+            <span className={classes.statNum}>{orders.length}</span> {i18n.__("progress.using2")}{" "}
+            <span className={classes.statNum}>
+              {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
+                ? _.sumBy(orders, (o) =>
+                  calculateNutrientforRecipe(o, "kcal")
+                )
+                : 0}
+            </span>{" "}
+            kcal.
+          </div>
+          <div className={classes.stat}>
+            {i18n.__("progress.liked1")}{" "}<span className={classes.statNum}>{nbLikes}</span>
+            {" "}{i18n.__("progress.liked2")}{" "}<span className={classes.statNum}>{nbDislikes}</span>{" "}
+            {i18n.__("progress.liked3")}
+          </div>
+          {/*<div className={classes.statTitle}>Doing so you:</div>
             <div className={classes.stat}>
               ate <span className={classes.statNum}>25%</span> less fat
             </div>
@@ -255,20 +221,20 @@ export const Progress = ({ recommendedRecipe }) => {
               reduced your carbon footprint with{" "}
               <span className={classes.statNum}>7%</span>
             </div> */}
-          </div>
-        ) : (
-          <div
-            className={classes.mainContent}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "start",
-            }}
-          >
-            <div className={classes.stat}>
+        </div>
+      ) : (
+        <div
+          className={classes.mainContent}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+          }}
+        >
+          <div className={classes.stat}>
             {i18n.__("progress.wip")}
-            </div>
-            {/* <GoalsBar
+          </div>
+          {/* <GoalsBar
               title="Eat less calories"
               value={1200}
               maxValue={2500}
@@ -286,21 +252,20 @@ export const Progress = ({ recommendedRecipe }) => {
               maxValue={7}
               unit={"days"}
             /> */}
-          </div>
-        )}
+        </div>
+      )}
 
-        <div>
-          <div className={classes.titleContent}>
-            <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
-          </div>
-          <div style={{ padding: "4px" }}>
-            <RecipeComponent
-              recipeId={recommendedRecipe.id}
-              type="recommended"
-            ></RecipeComponent>
-          </div>
+      <div>
+        <div className={classes.titleContent}>
+          <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
+        </div>
+        <div style={{ padding: "4px" }}>
+          <RecipeComponent
+            recipeId={recommendedRecipe.id}
+            type="recommended"
+          ></RecipeComponent>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };

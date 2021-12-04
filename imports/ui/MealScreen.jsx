@@ -147,6 +147,9 @@ export const MealScreen = ({ recipe }) => {
       recipeAllergens: [],
       allergensPresent: false,
     };
+    if (!Meteor.user()) {
+      return noDataAvailable;
+    }
     if (!recipe) return noDataAvailable;
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
@@ -493,87 +496,93 @@ export const MealScreen = ({ recipe }) => {
     }
   };
 
-  return (
-    <div className={classes.gapInBetween}>
-      <div className={classes.mealTitleCard}>
-        <div style={{ padding: "24px 24px 0px 24px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h1 className={String(recipe.name).length < 40
-              ? classes.menuTitle
-              : classes.menuTitleLong}
-              style={allergensPresent ? { color: red[300] } : {}}
+  if(recipe) {
+    return (
+      <div className={classes.gapInBetween}>
+        <div className={classes.mealTitleCard}>
+          <div style={{ padding: "24px 24px 0px 24px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              {recipe.name}
-            </h1>
-            {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }} /> : <></>}
-            <img
-              className={classes.nutriscore}
-              src={getNutriscoreImage(recipe)}
-            />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-            }}
-          >
-            <Button
-              onClick={() => handleIncreaseLike()}
-              style={
-                liked
-                  ? { backgroundColor: red[100], borderRadius: "14px" }
-                  : undefined
-              }
-            >
-              <FavoriteIcon
-                className={classes.heartButton}
-                style={{ color: red[300] }}
+              <h1 className={String(recipe.name).length < 40
+                ? classes.menuTitle
+                : classes.menuTitleLong}
+                style={allergensPresent ? { color: red[300] } : {}}
+              >
+                {recipe.name}
+              </h1>
+              {allergensPresent ? <WarningRoundedIcon style={{ color: red[300] }} /> : <></>}
+              <img
+                className={classes.nutriscore}
+                src={getNutriscoreImage(recipe)}
               />
-              <span className={classes.heartButtonText}>{nbLikes}</span>
-            </Button>
-            <span className={classes.kcal}>{getKcalInfo()}</span>
-            <span className={classes.pricing}>{getMPricing()}</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
+              <Button
+                onClick={() => handleIncreaseLike()}
+                style={
+                  liked
+                    ? { backgroundColor: red[100], borderRadius: "14px" }
+                    : undefined
+                }
+              >
+                <FavoriteIcon
+                  className={classes.heartButton}
+                  style={{ color: red[300] }}
+                />
+                <span className={classes.heartButtonText}>{nbLikes}</span>
+              </Button>
+              <span className={classes.kcal}>{getKcalInfo()}</span>
+              <span className={classes.pricing}>{getMPricing()}</span>
+            </div>
+          </div>
+  
+          <div>
+            <Tabs
+              value={tabValue}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              scrollButtons="auto"
+              centered={true}
+            >
+              <Tab
+                key={"key1"}
+                label={<span className={classes.tabFont}>{i18n.__("general.nutrients")}</span>}
+              />
+              <Tab
+                key={"key2"}
+                label={<span className={classes.tabFont}>{i18n.__("general.ingredients")}</span>}
+              />
+              <Tab
+                key={"key3"}
+                label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>{i18n.__("general.allergens")}</span>}
+              />
+              <Tab
+                key={"key4"}
+                label={<span className={classes.tabFont}>{i18n.__("sustainability.sustainability")}</span>}
+              />
+            </Tabs>
           </div>
         </div>
-
-        <div>
-          <Tabs
-            value={tabValue}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            scrollButtons="auto"
-            centered={true}
-          >
-            <Tab
-              key={"key1"}
-              label={<span className={classes.tabFont}>{i18n.__("general.nutrients")}</span>}
-            />
-            <Tab
-              key={"key2"}
-              label={<span className={classes.tabFont}>{i18n.__("general.ingredients")}</span>}
-            />
-            <Tab
-              key={"key3"}
-              label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>{i18n.__("general.allergens")}</span>}
-            />
-            <Tab
-              key={"key4"}
-              label={<span className={classes.tabFont}>{i18n.__("sustainability.sustainability")}</span>}
-            />
-          </Tabs>
-        </div>
+        <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
+        <OrderButton recipe={recipe} allergensPresent={allergensPresent} floating={true}></OrderButton>
       </div>
-      <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
-      <OrderButton recipe={recipe} allergensPresent={allergensPresent} floating={true}></OrderButton>
-    </div>
-  );
+    )
+  } else {
+    // no recipe loaded yet.
+    return null;
+  }
+  
 };

@@ -241,6 +241,18 @@ export const App = () => {
                 </>
               );
 
+              if (GetOpenProgress) {
+                renderScreen = <Progress recommendedRecipe={recommendedRecipe} />;
+              }
+    
+              if (GetOpenSettings) {
+                renderScreen = <Preferences />;
+              }
+    
+              if (GetOpenFeedback) {
+                renderScreen = <Feedback />;
+              }
+
             } else if (GetOpenMealDetails !== null) {
               renderScreen = (
                 <MealScreen
@@ -248,18 +260,6 @@ export const App = () => {
                 />
               );
             }
-          }
-
-          if (GetOpenProgress) {
-            renderScreen = <Progress recommendedRecipe={recommendedRecipe} />;
-          }
-
-          if (GetOpenSettings) {
-            renderScreen = <Preferences />;
-          }
-
-          if (GetOpenFeedback) {
-            renderScreen = <Feedback />;
           }
         }
       }
