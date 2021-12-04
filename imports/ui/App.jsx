@@ -25,7 +25,6 @@ import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
-
 const persfoTheme = createTheme({
   palette: {
     primary: {
@@ -45,20 +44,12 @@ const persfoTheme = createTheme({
     MuiAppBar: {
       root: {
         borderRadius: "0px 0px 40px 0px",
-      },
-    },
-    // MuiButton: {
-    //   outlined: {
-    //     borderRadius: "75px 75px 75px 75px",
-    //     borderColor: "#F6EBE4",
-    //     color: "#222222",
-    //     boxShadow: "10px",
-    //   },
-    // },
-  },
+      }
+    }
+  }
 });
 
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   tabs: {
     display: "flex",
     width: "100%",
@@ -66,11 +57,6 @@ const useStyles = makeStyles((persfoTheme) => ({
     height: "38px",
   },
 }));
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-  return <div {...other}>{value === index && <Box>{children}</Box>}</div>;
-}
 
 const componentName = "App";
 export const App = () => {
@@ -165,8 +151,8 @@ export const App = () => {
     //   starting_date: nowString,
     // });
 
-    // pick random menu when no menu available today
-    if (!menu) menu = MenusCollection.findOne();
+    // pick menu of December 6 when no menu available today
+    if (!menu) menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
 
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;
@@ -174,7 +160,6 @@ export const App = () => {
     const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
     const icfFinished = userPreferences?.icfFinished;
     const surveyFinished = userPreferences?.ffqAnswers;
-
 
     let recommendedRecipeId = "749543530170001";
     try {
@@ -196,6 +181,11 @@ export const App = () => {
 
     return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
   });
+
+  const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+    return <div {...other}>{value === index && <Box>{children}</Box>}</div>;
+  }
 
   const getCoursesTabs = () => {
     if (!isLoading) {
@@ -261,7 +251,7 @@ export const App = () => {
           }
 
           if (GetOpenProgress) {
-            renderScreen = <Progress recommendedRecipe={recommendedRecipe}/>;
+            renderScreen = <Progress recommendedRecipe={recommendedRecipe} />;
           }
 
           if (GetOpenSettings) {
@@ -291,7 +281,9 @@ export const App = () => {
         surveyFinished={surveyFinished}
         icfFinished={icfFinished}
         doneForToday={doneForToday} />
+
       <div className="main">{switchRenderScreen()}</div>
+      
     </ThemeProvider>
   );
 };
