@@ -5,6 +5,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import MenuIcon from "@material-ui/icons/Menu";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useTracker } from "meteor/react-meteor-data";
+import i18n from 'meteor/universe:i18n';
 import React, { useEffect, useState } from "react";
 import { AdherenceTimeline } from "./AdherenceTimeline";
 import { PersfoDrawer } from "./PersfoDrawer";
@@ -17,9 +18,18 @@ import {
 } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
-import i18n from 'meteor/universe:i18n';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
+  header: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: "8px",
+  },
+  mealScreenHeader: {
+    display: "flex",
+    height: "100px",
+    alignItems: "flex-start"
+  },
   backButton: {
     marginLeft: "8px",
     marginTop: "8px",
@@ -41,11 +51,6 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
     alignSelf: "left",
   },
-  adherenceTitle: {
-    flexGrow: 1,
-    alignSelf: "flex-end",
-    color: "white",
-  },
   initTitle: {
     fontSize: "15px",
     fontFamily: "sans-serif",
@@ -53,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 10,
     fontWeight: 400,
     opacity: 0.8,
-    // alignSelf: "left",
+    marginTop: "18px"
   },
 }));
 
@@ -153,19 +158,11 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     >
       {
         (() => {
+          // Normal header
           if (user && GetOpenMealDetails == null && icfFinished && surveyFinished) {
             return (
-              <div
-                style={{ display: "flex", flexDirection: "column", height: "100px" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    // justifyContent: "space-between",
-                    marginTop: "8px",
-                  }}
-                >
+              <>
+                <div className={classes.header}>
                   <IconButton
                     className={classes.menuButton}
                     color="secondary"
@@ -183,41 +180,22 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
                       <></>}
                   </div>
                 </div>
-                <div style={{ height: "48px" }}>
-                  <AdherenceTimeline />
-                </div>
-              </div>
+                <AdherenceTimeline />
+              </>
             )
+            // Mealscreen header
           } else if (user && icfFinished && surveyFinished) {
             return (
-              <div
-                style={{ display: "flex", height: "100px", alignItems: "flex-start" }}
-              >
-                <IconButton
-                  className={classes.backButton}
-                  color="secondary"
-                  onClick={() => handleDetailsClick()}
-                >
+              <div className={classes.mealScreenHeader}>
+                <IconButton className={classes.backButton} color="secondary" onClick={() => handleDetailsClick()}>
                   <ArrowBackIcon />
                 </IconButton>
               </div>
             )
+            // Initial header (not logged in)
           } else {
             return (
-              <div
-                style={{ display: "flex", height: "50px", alignItems: "flex-start" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    // justifyContent: "space-between",
-                    marginTop: "8px",
-                  }}
-                >
-                  <h1 className={classes.initTitle}>{switchHeader()}</h1>
-                </div>
-              </div>
+              <h1 className={classes.initTitle}>{switchHeader()}</h1>
             )
           }
         })()
