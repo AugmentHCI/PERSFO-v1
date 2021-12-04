@@ -103,6 +103,7 @@ export const Progress = ({ recommendedRecipe }) => {
       nbDislikes = userPreferences.dislikedIngredients.length;
     } catch (error) {
       console.log("Progress: unexpected error at nbDislikes")
+      console.log(error);
     }
 
     let orders = OrdersCollection.find({ userid: Meteor.userId() }).fetch();
