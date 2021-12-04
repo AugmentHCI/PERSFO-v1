@@ -19,9 +19,7 @@ Meteor.startup(() => {
     const user = Meteor.user();
 
     if (user) {
-      console.log(user);
       const locale = user.profile.lang || deviceLocale;
-
       i18n.setLocale(locale);
     } else {
       i18n.setLocale(deviceLocale);

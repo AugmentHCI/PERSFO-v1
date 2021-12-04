@@ -57,10 +57,13 @@ export const SurveyForm = () => {
                 console.log(page.CombinedQuestions)
 
                 page.CombinedQuestions.forEach(subQuestion => {
+
+                    let dependsOn = subQuestion.DependsOn;
                     // per question per page
                     subQuestion.Questions.forEach(question => {
                         // question.Title = question.Title + " - " + subQuestion.Title;
                         question.Title = subQuestion.Title;
+                        question.disabledOnGroup = dependsOn;
                         questions.push(parseQuestion(question));
                     });
                 });
@@ -78,24 +81,24 @@ export const SurveyForm = () => {
         let visible = "true";
 
         if (question.DependsOn) {
-            // TODO: depend on certain answer, query 
-            console.log(question);
-            visible = "{" + question.DependsOn + "} notempty";
-            console.log("{" + question.DependsOn + "} notempty");
-            // visible = "{false}";
-        }
-
-        if (question.DependsOn != null) {
-            // TODO"Q54 DependsOn": "Q53", "DisabledWhen": "1"
+            visible = "{" + question.DependsOn + "}!= " + question.DisabledWhen + "and {" + question.DependsOn + "} notempty";
         }
         switch (question.QuestionType) {
             case 0:
                 // parse answer in SurveyJS format
                 let answers = [];
                 question.Answers.forEach(answer => {
-                    answers.push({ quisperValue: answer.Value, text: answer.Answer });
+                    answers.push({ value: answer.Value, text: answer.Answer });
                 })
 
+                console.log({
+                    type: "radiogroup",
+                    choices: answers,
+                    isRequired: !question.optional,
+                    name: QuestionID,
+                    title: QuestionTitle,
+                    visibleIf: visible
+                });
                 return {
                     type: "radiogroup",
                     choices: answers,
@@ -127,7 +130,7 @@ export const SurveyForm = () => {
 
         let parsedOutput = { ...survey.data }; //clone
         _.each(survey.data, (value, key) => {
-            parsedOutput[key] = value.quisperValue !== undefined ? value.quisperValue : value; // >= confusion 0 and undefined
+            parsedOutput[key] = value.value !== undefined ? value.value : value; // >= confusion 0 and undefined
         });
 
         Meteor.call('users.saveSurvey', parsedOutput);
