@@ -18,7 +18,7 @@ import {
   OpenSettings
 } from "/imports/api/methods.js";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   list: {
     width: 250,
   },

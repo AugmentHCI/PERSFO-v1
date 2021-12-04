@@ -8,7 +8,6 @@ import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const useStyles = makeStyles(() => ({
   mainWindow: {
-    // height: "100vh",
     overflowY: "scroll",
   },
   title: {
@@ -453,7 +452,6 @@ export const Preferences = () => {
     );
   };
 
-
   const getDietaryBar = (dietary, i) => {
     return (
       <FormControlLabel
@@ -474,8 +472,30 @@ export const Preferences = () => {
 
   return (
     <div className={classes.mainWindow}>
-      <h1 className={classes.title}>{i18n.__("preferences.configure_goals")}</h1>
 
+      <h1 className={classes.title}>{i18n.__("preferences.dietary_info")}</h1>
+      <div
+        className={classes.formContainer}
+        style={{ marginTop: "16px" }}
+      >
+        <p className={classes.subtitle}>{i18n.__("preferences.dietary_info_configuration")}</p>
+        <div className={classes.form}>
+          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
+        </div>
+      </div>
+
+      <h1 className={classes.title}>{i18n.__("general.allergens")}</h1>
+      <div
+        className={classes.formContainer}
+        style={{ marginTop: "16px", marginBottom: "10px" }}
+      >
+        <p className={classes.subtitle}>{i18n.__("preferences.allergens_configuration")}</p>
+        <div className={classes.form}>
+          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
+        </div>
+      </div>
+
+      <h1 className={classes.title}>{i18n.__("preferences.configure_goals")}</h1>
       <div className={classes.formContainer}>
         <h1 className={classes.subtitle}>{i18n.__("preferences.maximum_nutrients")}</h1>
         <div className={classes.form}>
@@ -521,7 +541,7 @@ export const Preferences = () => {
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-            {i18n.__("general.saturated_fats")} ({SatfatSlider} g)
+              {i18n.__("general.saturated_fats")} ({SatfatSlider} g)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -559,7 +579,7 @@ export const Preferences = () => {
           </div>
           <div className={classes.sliderContainer}>
             <div className={classes.sliderTitle}>
-            {i18n.__("general.proteins")} ({ProteinSlider} g)
+              {i18n.__("general.proteins")} ({ProteinSlider} g)
             </div>
             <div className={classes.slider}>
               <Slider
@@ -613,28 +633,6 @@ export const Preferences = () => {
               />
             </div>
           </div>
-        </div>
-      </div>
-
-      <h1 className={classes.title}>{i18n.__("preferences.dietary_info")}</h1>
-      <div
-        className={classes.formContainer}
-        style={{ marginTop: "16px" }}
-      >
-        <p className={classes.subtitle}>{i18n.__("preferences.dietary_info_configuration")}</p>
-        <div className={classes.form}>
-          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
-        </div>
-      </div>
-
-      <h1 className={classes.title}>{i18n.__("general.allergens")}</h1>
-      <div
-        className={classes.formContainer}
-        style={{ marginTop: "16px", marginBottom: "10px" }}
-      >
-        <p className={classes.subtitle}>{i18n.__("preferences.allergens_configuration")}</p>
-        <div className={classes.form}>
-          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
         </div>
       </div>
     </div>
