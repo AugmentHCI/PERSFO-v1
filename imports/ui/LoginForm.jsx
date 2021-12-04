@@ -142,7 +142,7 @@ export const LoginForm = ({ setForgotPassword, setExistingUser }) => {
       </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          Incorrect username or password!
+          {i18n.__("login.incorrect_username_or_password")}
         </Alert>
       </Snackbar>
     </Container>
