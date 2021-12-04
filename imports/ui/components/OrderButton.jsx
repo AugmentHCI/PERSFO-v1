@@ -113,7 +113,7 @@ export const OrderButton = ({ recipe, allergensPresent, dietaryConflict, floatin
                 onClose={() => setToast(false)}
             >
                 <Alert onClose={() => setToast(false)} icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="warning">
-                    Added to your shopping cart!
+                    {i18n.__("shopping.added")}
                 </Alert>
             </Snackbar>
         </>

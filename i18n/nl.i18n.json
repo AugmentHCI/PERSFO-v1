@@ -129,6 +129,7 @@
         "shopping_cart": "Winkelmandje",
         "empty": "U heeft nog geen maaltijden besteld.",
         "total_price": "Totale prijs",
-        "confirm": "Bevestig uw keuzes"
+        "confirm": "Bevestig uw keuzes",
+        "added": "Toegevoegd aan uw winkelmandje"
     }
 }
