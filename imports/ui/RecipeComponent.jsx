@@ -1,22 +1,13 @@
-import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React from "react";
 import { CardOtherMeal } from "./CardOtherMeal";
 import { CardRecommendedMeal } from "./CardRecommendedMeal";
-import {
-    OpenMealDetails
-} from "/imports/api/methods.js";
+import { OpenMealDetails } from "/imports/api/methods.js";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
-
-const useStyles = makeStyles(() => ({
-
-}));
-
 const componentName = "RecipeComponent";
 export const RecipeComponent = (({ recipeId, type }) => {
-    const classes = useStyles();
 
     const { recipe } = useTracker(() => {
         const noDataAvailable = { recipe: {} };
@@ -80,8 +71,6 @@ export const RecipeComponent = (({ recipeId, type }) => {
         });
         const allergensPresent = allergensPresentTmp;
 
-
-
         const userDietaries = userPreferences?.dietaries ? _.map(userPreferences?.dietaries, a => a.dietary) : [];
 
         const recipeDietaryInfo = _.without(
@@ -134,5 +123,9 @@ export const RecipeComponent = (({ recipeId, type }) => {
         }
     };
 
-    return (<>{renderSwitch(type)}</>);
+    return (
+        <>
+            {renderSwitch(type)}
+        </>
+    );
 });

@@ -78,6 +78,8 @@
         "not_already_an_account": "Nog geen account? Registreer",
         "incorrect_username_or_token": "Onjuiste gebruikersnaam of token!",
         "incorrect_username_or_password": "Onjuiste gebruikersnaam of wachtwoord!",
+        "mismatch_passwords": "Wachtwoorden komen niet overeen!",
+        "user_exists": "Deze gebruikersnaam is al in gebruik!",
         "sign_in": "Aanmelden",
         "warning": "Om uw anonimiteit te garanderen, gebruikt u best geen herkenbare aanmeldnaam."
     },

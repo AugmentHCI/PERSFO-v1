@@ -183,7 +183,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
       </Box>
       <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          Passwords do not match!
+          {i18n.__("login.mismatch_passwords")}
         </Alert>
       </Snackbar>
       <Snackbar
@@ -192,7 +192,7 @@ export const RegisterForm = ({ setExistingUser, setForgotPassword }) => {
         onClose={handleUserAlreadyExistsToastClose}
       >
         <Alert onClose={handleUserAlreadyExistsToastClose} severity="error">
-          This username already exists!
+        {i18n.__("login.user_exists")}
         </Alert>
       </Snackbar>
     </Container>
