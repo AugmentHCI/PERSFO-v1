@@ -32,8 +32,6 @@ export const AuthenticationScreen = () => {
   };
 
   return (
-    <>
-      <div className="main">{renderScreen()}</div>
-    </>
+    <div className="main">{renderScreen()}</div>
   );
 };

@@ -75,7 +75,7 @@ export const ForgotPasswordForm = ({ setForgotPassword }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Forgot password
+          {i18n.__("login.forgot_password_title")}
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
