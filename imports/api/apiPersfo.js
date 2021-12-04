@@ -2,6 +2,7 @@ import { MenusCollection } from "/imports/db/menus/MenusCollection";
 import { RecipesCollection } from "/imports/db/recipes/RecipesCollection";
 import { IngredientCollection } from '/imports/db/ingredients/IngredientCollection';
 import { HexadCollection } from "../db/surveys/HexadCollection";
+import { capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const token = "pmvPgoauir3ZLHlWiynAUfSJw725yi";
 const url = "https://www.apicbase.com/api/v1/recipes/";
@@ -198,8 +199,12 @@ export function initData() {
               let tempIngredients = composition
                 .replace(/\*/g,"")
                 .replace(/NFM/g,"")
-                .replace(/(^\'|\'+$)/g,"")
                 .split(',');
+              tempIngredients = tempIngredients.map(tmp => capitalizeFirstLetter(tmp
+                .trim()
+                .replace(/\[|\]/g,"")
+                .replace(/(^'+|'+$)/mg,"")
+                .toLowerCase()));
               cleanedIngredients.push(tempIngredients);
             }
           } catch (error) {
