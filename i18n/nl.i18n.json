@@ -111,7 +111,10 @@
         "maximum_nutrients": "Stel je gewenste maximale nutriënten in.",
         "dietary_info": "Voedselvoorkeuren",
         "dietary_info_configuration": "Gelieve uw voedselvoorkeuren hier in te stellen.",
-        "allergens_configuration": "Gelieve hier aan te duiden indien u allergisch bent aan bepaalde producten."
+        "allergens_configuration": "Gelieve hier aan te duiden indien u allergisch bent aan bepaalde producten.",
+        "resetDislikes": "Reset uw aanbevelingen",
+        "resetDislikes_info": "Verwijder hier de lijst met ingrediënten die u niet lekker vindt.",
+        "resetted": "Uw aanbevelingen zijn opnieuw ingesteld."
     },
     "progress": {
         "weekly_overview": "Weekoverzicht",

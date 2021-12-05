@@ -1,10 +1,13 @@
-import { FormControlLabel, Slider, Switch } from "@material-ui/core/";
+import { Button, FormControlLabel, Slider, Switch } from "@material-ui/core/";
+import { red } from "@material-ui/core/colors";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
-import React from "react";
+import React, { useState } from "react";
 import { capitalizeFirstLetter, makeArrayOf } from "/imports/api/auxMethods";
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import MuiAlert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles(() => ({
   mainWindow: {
@@ -59,7 +62,15 @@ const useStyles = makeStyles(() => ({
     width: "120px",
     marginRight: "24px",
   },
+  resetButton: {
+    float: "right",
+    color: red[500],
+  }
 }));
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const componentName = "Preferences";
 export const Preferences = () => {
@@ -467,171 +478,203 @@ export const Preferences = () => {
     );
   };
 
+  const reset = (e) => {
+    e.preventDefault();
+    setOpen(true);
+    Meteor.call("users.deleteDislikes");
+    Meteor.call("log", componentName, "reset", navigator.userAgent);
+  };
+
+  const [toastShown, setOpen] = useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   return (
-    <div className={classes.mainWindow}>
+    <>
+      <div className={classes.mainWindow}>
 
-      <h1 className={classes.title}>{i18n.__("preferences.dietary_info")}</h1>
-      <div
-        className={classes.formContainer}
-        style={{ marginTop: "16px" }}
-      >
-        <p className={classes.subtitle}>{i18n.__("preferences.dietary_info_configuration")}</p>
-        <div className={classes.form}>
-          {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
-        </div>
-      </div>
-
-      <h1 className={classes.title}>{i18n.__("general.allergens")}</h1>
-      <div
-        className={classes.formContainer}
-        style={{ marginTop: "16px", marginBottom: "10px" }}
-      >
-        <p className={classes.subtitle}>{i18n.__("preferences.allergens_configuration")}</p>
-        <div className={classes.form}>
-          {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
-        </div>
-      </div>
-
-      <h1 className={classes.title}>{i18n.__("preferences.configure_goals")}</h1>
-      <div className={classes.formContainer}>
-        <h1 className={classes.subtitle}>{i18n.__("preferences.maximum_nutrients")}</h1>
-        <div className={classes.form}>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>
-              {i18n.__("general.energy")} ({EnergySlider} kcal)
-            </div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!EnergySwitch}
-                value={EnergySlider}
-                onChange={energySliderChange}
-                min={0}
-                max={5000}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={EnergySwitch}
-                onChange={energySwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>
-              {i18n.__("general.total_fat")} ({TotalFatSlider} g)
-            </div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!TotalFatSwitch}
-                value={TotalFatSlider}
-                onChange={totalFatSliderChange}
-                min={0}
-                max={200}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={TotalFatSwitch}
-                onChange={totalFatSwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>
-              {i18n.__("general.saturated_fats")} ({SatfatSlider} g)
-            </div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!SatfatSwitch}
-                value={SatfatSlider}
-                onChange={satfatSliderChange}
-                min={0}
-                max={200}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={SatfatSwitch}
-                onChange={satfatSwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>{i18n.__("general.sugar")} ({SugarSlider} g)</div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!SugarSwitch}
-                value={SugarSlider}
-                onChange={sugarSliderChange}
-                min={0}
-                max={200}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={SugarSwitch}
-                onChange={sugarSwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>
-              {i18n.__("general.proteins")} ({ProteinSlider} g)
-            </div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!ProteinSwitch}
-                value={ProteinSlider}
-                onChange={proteinSliderChange}
-                min={0}
-                max={200}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={ProteinSwitch}
-                onChange={proteinSwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>{i18n.__("general.salt")} ({SaltSlider} g)</div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!SaltSwitch}
-                value={SaltSlider}
-                onChange={saltSliderChange}
-                min={0}
-                max={100}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={SaltSwitch}
-                onChange={saltSwitchChange}
-              />
-            </div>
-          </div>
-          <div className={classes.sliderContainer}>
-            <div className={classes.sliderTitle}>{i18n.__("general.fibers")} ({FiberSlider} g)</div>
-            <div className={classes.slider}>
-              <Slider
-                disabled={!FiberSwitch}
-                value={FiberSlider}
-                onChange={fiberSliderChange}
-                min={0}
-                max={200}
-                valueLabelDisplay="auto"
-              />
-              <Switch
-                color="primary"
-                checked={FiberSwitch}
-                onChange={fiberSwitchChange}
-              />
-            </div>
+        <h1 className={classes.title}>{i18n.__("preferences.dietary_info")}</h1>
+        <div
+          className={classes.formContainer}
+          style={{ marginTop: "16px" }}
+        >
+          <p className={classes.subtitle}>{i18n.__("preferences.dietary_info_configuration")}</p>
+          <div className={classes.form}>
+            {_.map(dietaries, (dietary, i) => getDietaryBar(dietary, i))}
           </div>
         </div>
+
+        <h1 className={classes.title}>{i18n.__("general.allergens")}</h1>
+        <div
+          className={classes.formContainer}
+          style={{ marginTop: "16px", marginBottom: "10px" }}
+        >
+          <p className={classes.subtitle}>{i18n.__("preferences.allergens_configuration")}</p>
+          <div className={classes.form}>
+            {_.map(allergens, (allergen, i) => getAllergenBar(allergen, i))}
+          </div>
+        </div>
+
+        <h1 className={classes.title}>{i18n.__("preferences.configure_goals")}</h1>
+        <div className={classes.formContainer}>
+          <h1 className={classes.subtitle}>{i18n.__("preferences.maximum_nutrients")}</h1>
+          <div className={classes.form}>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>
+                {i18n.__("general.energy")} ({EnergySlider} kcal)
+              </div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!EnergySwitch}
+                  value={EnergySlider}
+                  onChange={energySliderChange}
+                  min={0}
+                  max={5000}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={EnergySwitch}
+                  onChange={energySwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>
+                {i18n.__("general.total_fat")} ({TotalFatSlider} g)
+              </div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!TotalFatSwitch}
+                  value={TotalFatSlider}
+                  onChange={totalFatSliderChange}
+                  min={0}
+                  max={200}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={TotalFatSwitch}
+                  onChange={totalFatSwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>
+                {i18n.__("general.saturated_fats")} ({SatfatSlider} g)
+              </div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!SatfatSwitch}
+                  value={SatfatSlider}
+                  onChange={satfatSliderChange}
+                  min={0}
+                  max={200}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={SatfatSwitch}
+                  onChange={satfatSwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>{i18n.__("general.sugar")} ({SugarSlider} g)</div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!SugarSwitch}
+                  value={SugarSlider}
+                  onChange={sugarSliderChange}
+                  min={0}
+                  max={200}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={SugarSwitch}
+                  onChange={sugarSwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>
+                {i18n.__("general.proteins")} ({ProteinSlider} g)
+              </div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!ProteinSwitch}
+                  value={ProteinSlider}
+                  onChange={proteinSliderChange}
+                  min={0}
+                  max={200}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={ProteinSwitch}
+                  onChange={proteinSwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>{i18n.__("general.salt")} ({SaltSlider} g)</div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!SaltSwitch}
+                  value={SaltSlider}
+                  onChange={saltSliderChange}
+                  min={0}
+                  max={100}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={SaltSwitch}
+                  onChange={saltSwitchChange}
+                />
+              </div>
+            </div>
+            <div className={classes.sliderContainer}>
+              <div className={classes.sliderTitle}>{i18n.__("general.fibers")} ({FiberSlider} g)</div>
+              <div className={classes.slider}>
+                <Slider
+                  disabled={!FiberSwitch}
+                  value={FiberSlider}
+                  onChange={fiberSliderChange}
+                  min={0}
+                  max={200}
+                  valueLabelDisplay="auto"
+                />
+                <Switch
+                  color="primary"
+                  checked={FiberSwitch}
+                  onChange={fiberSwitchChange}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h1 className={classes.title}>{i18n.__("preferences.resetDislikes")}</h1>
+        <div
+          className={classes.formContainer}
+          style={{ marginTop: "16px", marginBottom: "16px", height: "80px" }}
+        >
+          <p className={classes.subtitle}>{i18n.__("preferences.resetDislikes_info")}</p>
+          <Button onClick={reset} className={classes.resetButton}>RESET</Button>
+        </div>
       </div>
-    </div>
+      <Snackbar open={toastShown} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning">
+          {i18n.__("preferences.resetted")}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };

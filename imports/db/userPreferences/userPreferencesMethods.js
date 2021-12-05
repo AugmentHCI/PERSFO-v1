@@ -24,6 +24,23 @@ Meteor.methods({
             );
         });
     },
+    "users.deleteDislikes"() {
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
+
+        const oldDislikedIngredients = UserPreferences.findOne({ userid: this.userId }).dislikedIngredients;
+
+        if (oldDislikedIngredients && oldDislikedIngredients.length == 0) {
+            // do nothing - already empty
+        } else {
+            UserPreferences.upsert(
+                { userid: this.userId },
+                { $set: { dislikedIngredients: [], oldDislikedIngredients: oldDislikedIngredients } }
+            );
+        }
+
+    },
     "users.saveSurvey"(SurveyAnswers) {
         check(SurveyAnswers, Object);
 
@@ -32,26 +49,26 @@ Meteor.methods({
         }
 
         const cleanedData = Object.keys(SurveyAnswers)
-        .filter(key => !key.includes("page"))
-        .reduce((obj, key) => {
-            obj[key] = SurveyAnswers[key];
-            return obj;
-        }, {});
+            .filter(key => !key.includes("page"))
+            .reduce((obj, key) => {
+                obj[key] = SurveyAnswers[key];
+                return obj;
+            }, {});
 
         const ffqAnswers = Object.keys(cleanedData)
-        .filter(key => !key.includes("HEXAD"))
-        .reduce((obj, key) => {
-            obj[key] = cleanedData[key];
-            return obj;
-        }, {});
+            .filter(key => !key.includes("HEXAD"))
+            .reduce((obj, key) => {
+                obj[key] = cleanedData[key];
+                return obj;
+            }, {});
 
         // duplication of above needed because object and not an array
         const hexadAnswers = Object.keys(cleanedData)
-        .filter(key => key.includes("HEXAD"))
-        .reduce((obj, key) => {
-            obj[key] = cleanedData[key];
-            return obj;
-        }, {});
+            .filter(key => key.includes("HEXAD"))
+            .reduce((obj, key) => {
+                obj[key] = cleanedData[key];
+                return obj;
+            }, {});
 
         UserPreferences.upsert(
             { userid: this.userId },
@@ -69,7 +86,7 @@ Meteor.methods({
 
         UserPreferences.upsert(
             { userid: this.userId },
-            { $set: { partialAnswers: SurveyAnswers} }
+            { $set: { partialAnswers: SurveyAnswers } }
         );
     },
     "users.updateAllergens"(allergens) {
