@@ -135,7 +135,6 @@ export const App = () => {
     if (!Meteor.user() || !menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
-
     // // wait for menus, recipes, AND userpreferences to load before initializing recommendations
     // // recalculate new recommendation on every app startup
 
