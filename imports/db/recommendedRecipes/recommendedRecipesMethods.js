@@ -95,9 +95,11 @@ Meteor.methods({
         todaysRecipes = _.sortBy(todaysRecipes, r => [getNbDisliked(r, dislikedIngredients), getNutriscore(r)]);
 
         // last step! Assign rankings
-        // todaysRecipes = _.reverse(todaysRecipes);
+        const now = new Date().getTime();
         for (let i = 0; i < todaysRecipes.length; i++) {
             todaysRecipes[i].ranking = i + 1;
+            // needed to force rerender (new order does not change ids)
+            todaysRecipes[i].lastUpdated = now;
         }
 
         // insert/update recommendations for user

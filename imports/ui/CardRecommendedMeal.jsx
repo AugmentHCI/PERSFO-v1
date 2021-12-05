@@ -168,7 +168,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
 
   const handleModalOpen = () => {
     if (!thumbsDown) {
-      Meteor.call("users.handleLikeRecommendation", recipe.id, false);
+      // Meteor.call("users.handleLikeRecommendation", recipe.id, false);
       setOpen(true);
       Meteor.call("log", componentName, "handleModalOpen");
     }
@@ -195,6 +195,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
     Meteor.call("log", componentName, "sendModal");
+    Meteor.call("recommender.updateRecommendations")
   };
 
   return (
