@@ -74,18 +74,26 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
         })}
       </div>
 
-      <div className={classes.titleContent}>
-        <h1 className={classes.title}>{i18n.__("app.today_recommendation")}</h1>
-        <IconButton onClick={handleInfo}>
-          <HelpOutlineIcon fontSize="small" />
-        </IconButton>
-      </div>
-      <div style={{ padding: "4px" }}>
-        <RecipeComponent
-          recipeId={recommendedRecipe.id}
-          type="recommended"
-        ></RecipeComponent>
-      </div>
+      {(recommendedRecipe !== null) ?
+        (
+          <>
+            <div className={classes.titleContent}>
+              <h1 className={classes.title}>{i18n.__("app.today_recommendation")}</h1>
+              <IconButton onClick={handleInfo}>
+                <HelpOutlineIcon fontSize="small" />
+              </IconButton>
+            </div>
+            <div style={{ padding: "4px" }}>
+              <RecipeComponent
+                recipeId={recommendedRecipe.id}
+                type="recommended"
+              ></RecipeComponent>
+            </div>
+          </>
+        ) :
+        console.log("no recommendations left")
+      }
+
 
       <Snackbar
         open={toastShown}
@@ -93,7 +101,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
         onClose={() => setToast(false)}
       >
         <Alert onClose={() => setToast(false)} severity="info">
-        {i18n.__("app.temp_explanation")}
+          {i18n.__("app.temp_explanation")}
         </Alert>
       </Snackbar>
     </>

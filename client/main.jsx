@@ -28,7 +28,7 @@ Meteor.startup(() => {
 
   // wait for menus, recipes, AND userpreferences to load before initializing recommendations
   // recalculate new recommendation on every app startup
-  Meteor.call("recommender.updateRecommendations");
+  // Meteor.call("recommender.updateRecommendations");
 
   render(<App />, document.getElementById('react-target'));
 });

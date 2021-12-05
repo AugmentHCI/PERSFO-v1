@@ -10,6 +10,10 @@ const coursesToIgnore = ["Dranken", "Soep"];
 
 Meteor.methods({
     "recommender.updateRecommendations"() {
+
+        if (!this.userId) {
+            throw new Meteor.Error("Not authorized.");
+        }
         // init recommendations
 
         // find today's menu

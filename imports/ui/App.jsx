@@ -99,6 +99,8 @@ export const App = () => {
     Meteor.call("log", componentName, "handleChange");
   };
 
+  const [lastRecommenderUpdate, setLastRecommenderUpdate] = useState(undefined);
+
   const {
     GetOpenMealDetails,
     GetOpenProgress,
@@ -117,7 +119,7 @@ export const App = () => {
       doneForToday: false,
       icfFinished: true,
       surveyFinished: true,
-      recommendedRecipe: "749543530170001" // in case no meal is recommended, suggest a sandwhich
+      recommendedRecipe: null // in case no meal is recommended, suggest a sandwhich
     };
 
     const menuHandler = Meteor.subscribe("menus");
@@ -139,10 +141,17 @@ export const App = () => {
 
     // // wait for menus, recipes, AND userpreferences to load before initializing recommendations
     // // recalculate new recommendation on every app startup
-    Meteor.call("recommender.updateRecommendations");
 
     const now = new Date();
     const nowString = now.toISOString().substring(0, 10);
+
+    if (lastRecommenderUpdate === undefined) {
+      Meteor.call("recommender.updateRecommendations");
+      setLastRecommenderUpdate(now.getTime());
+    } else if (now.getTime() - lastRecommenderUpdate >= (60 * 1000)) {
+      Meteor.call("recommender.updateRecommendations");
+      setLastRecommenderUpdate(now.getTime());
+    }
 
     // pick specific date for demo
     let menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
@@ -161,7 +170,9 @@ export const App = () => {
     const icfFinished = userPreferences?.icfFinished;
     const surveyFinished = userPreferences?.ffqAnswers;
 
-    let recommendedRecipeId = "749543530170001";
+    let recommendedRecipeId = "";
+    let tempRecommendation = null;
+    let noMoreRecommendations = false;
     try {
       const recommendedRecipes = RecommendedRecipes.findOne({
         userid: Meteor.userId(),
@@ -171,13 +182,17 @@ export const App = () => {
         (r) => r.ranking === 1
       )[0].id;
     } catch (error) {
-      console.log("no recommendations yet: " + error)
-      // no recommendations yet
+      console.log("no recommendations anymore: " + error)
+      noMoreRecommendations = true;
     }
 
-    const recommendedRecipe = RecipesCollection.findOne({
-      id: recommendedRecipeId,
-    });
+    if (!noMoreRecommendations) {
+      tempRecommendation = RecipesCollection.findOne({
+        id: recommendedRecipeId,
+      });
+    }
+
+    const recommendedRecipe = tempRecommendation
 
     return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
   });
@@ -244,11 +259,11 @@ export const App = () => {
               if (GetOpenProgress) {
                 renderScreen = <Progress recommendedRecipe={recommendedRecipe} />;
               }
-    
+
               if (GetOpenSettings) {
                 renderScreen = <Preferences />;
               }
-    
+
               if (GetOpenFeedback) {
                 renderScreen = <Feedback />;
               }
@@ -283,7 +298,7 @@ export const App = () => {
         doneForToday={doneForToday} />
 
       <div className="main">{switchRenderScreen()}</div>
-      
+
     </ThemeProvider>
   );
 };
