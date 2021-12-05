@@ -272,17 +272,21 @@ export const Progress = ({ recommendedRecipe }) => {
             </div> */}
 
           </div>
-          <div>
-            <div className={classes.titleContent}>
-              <h1 className={classes.menuTitle}>{i18n.__("app.today_recommendation")}</h1>
+          {(recommendedRecipe !== null) ? (
+            <div>
+              <div className={classes.titleContent}>
+                <h1 className={classes.menuTitle}>{i18n.__("app.today_recommendation")}</h1>
+              </div>
+              <div style={{ padding: "4px" }}>
+                <RecipeComponent
+                  recipeId={recommendedRecipe.id}
+                  type="recommended"
+                ></RecipeComponent>
+              </div>
             </div>
-            <div style={{ padding: "4px" }}>
-              <RecipeComponent
-                recipeId={recommendedRecipe.id}
-                type="recommended"
-              ></RecipeComponent>
-            </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </>
       )}
     </div>
