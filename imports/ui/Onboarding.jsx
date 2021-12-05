@@ -100,14 +100,20 @@ export const Onboarding = () => {
                 steps.findIndex((step, i) => !(i in completed))
                 : activeStep + 1;
         setActiveStep(newActiveStep);
+        Meteor.call("log", componentName, "handleNext", newActiveStep);
+
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        Meteor.call("log", componentName, "handleBack", activeStep);
+
     };
 
     const handleStep = (step) => () => {
         setActiveStep(step);
+        Meteor.call("log", componentName, "handleStep", activeStep);
+
     };
 
     const handleComplete = () => {
@@ -118,6 +124,7 @@ export const Onboarding = () => {
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
         handleNext();
+        Meteor.call("log", componentName, "handleComplete");
     };
 
     return (

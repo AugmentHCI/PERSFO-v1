@@ -40,13 +40,10 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
 
   const handleInfo = () => {
     setToast(true);
+    Meteor.call("log", componentName, "handleInfo");
   };
 
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
-
-  window.addEventListener("resize", () => {
-    setComponentHeight(window.innerHeight);
-  });
 
   // Info message
   function Alert(props) {
@@ -93,7 +90,6 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
         ) :
         console.log("no recommendations left")
       }
-
 
       <Snackbar
         open={toastShown}

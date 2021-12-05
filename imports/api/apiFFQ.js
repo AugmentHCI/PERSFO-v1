@@ -29,7 +29,6 @@ export function initFFQ() {
 }
 
 export function food4me(FFQ) {
-    console.log("food4me")
     let call = HTTP.call("POST", food4meURL, {
         headers: {
             "x-api-key": quisperToken,

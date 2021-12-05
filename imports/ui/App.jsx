@@ -148,7 +148,7 @@ export const App = () => {
     if (lastRecommenderUpdate === undefined) {
       Meteor.call("recommender.updateRecommendations");
       setLastRecommenderUpdate(now.getTime());
-    } else if (now.getTime() - lastRecommenderUpdate >= (60 * 1000)) {
+    } else if (now.getTime() - lastRecommenderUpdate >= (10 * 1000)) {
       Meteor.call("recommender.updateRecommendations");
       setLastRecommenderUpdate(now.getTime());
     }

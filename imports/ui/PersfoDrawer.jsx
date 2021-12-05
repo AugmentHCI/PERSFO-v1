@@ -65,6 +65,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
   };
 
   const logOut = () => {
+    Meteor.call("log", componentName, "logOut");
     Meteor.logout();
   }
 

@@ -199,16 +199,16 @@ export const MealScreen = ({ recipe }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
-      Meteor.call("log", componentName, "handleIncreaseLike");
+      Meteor.call("log", componentName, "handleIncreaseLike", liked);
     }
   };
 
   // tab logic
   const [tabValue, setTabValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const changeTab = (event, newValue) => {
     setTabValue(newValue);
-    Meteor.call("log", componentName, "handleChange");
+    Meteor.call("log", componentName, "changeTab", newValue);
   };
 
   const getKcalInfo = () => {
@@ -550,7 +550,7 @@ export const MealScreen = ({ recipe }) => {
           <div>
             <Tabs
               value={tabValue}
-              onChange={handleChange}
+              onChange={changeTab}
               indicatorColor="primary"
               textColor="primary"
               variant="fullWidth"

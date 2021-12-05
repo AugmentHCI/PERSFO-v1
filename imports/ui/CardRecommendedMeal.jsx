@@ -140,8 +140,8 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
   const handleThumbsUp = () => {
     if (recipe) {
       Meteor.call("users.handleLikeRecommendation", recipe.id, true);
-      Meteor.call("log", componentName, "handleThumbsUp");
     }
+    Meteor.call("log", componentName, "handleThumbsUp");
   };
 
   // modal logic

@@ -44,7 +44,7 @@ export function initData() {
   // });
 
   // init hexad
-  let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad.json"));
+  let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad-nl.json"));
   HexadCollection.upsert({ version: "1" }, { $set: { survey: hexadQuestions } });
 
   console.log("initData: hexad loaded");
@@ -208,7 +208,7 @@ export function initData() {
               cleanedIngredients.push(tempIngredients);
             }
           } catch (error) {
-            console.log("composition error for: " + ingredientID);
+            console.log("initData: composition error for: " + ingredientID);
           }
         });
       }

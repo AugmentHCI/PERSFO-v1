@@ -60,11 +60,13 @@ const GroupedButtons = ({ recipeId }) => {
 
     handleIncrement = () => {
         Meteor.call('orders.incrementOrder', recipeId);
+        Meteor.call("log", "GroupedButtons", "handleIncrement", recipeId);
     };
 
     handleDecrement = () => {
         if (counter > 1) {
             Meteor.call('orders.decrementOrder', recipeId);
+            Meteor.call("log", "GroupedButtons", "handleDecrement", recipeId);
         }
     };
 
@@ -119,6 +121,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
         setDeletedOrderAmount(order.amount);
         setDeletedRecipe(RecipesCollection.findOne({ id: order.recipeId }));
         Meteor.call('orders.removeOrder', order.recipeId);
+        Meteor.call("log", componentName, "handleRemove", order.recipeId);
     };
 
     const handleCloseConfirmation = (event, reason) => {
@@ -131,11 +134,13 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
     const handleUndoDelete = (deletedRecipe, deletedOrderAmount) => {
         Meteor.call('orders.undoRemoveOrder', deletedRecipe.id, deletedOrderAmount);
         setOpenConfirmation(false);
+        Meteor.call("log", componentName, "handleUndoDelete", deletedRecipe.id);
     };
 
     const submit = () => {
         Meteor.call('orders.confirmOrders');
         toggleDrawer(false).call(); // not sure why call is needed here, but does not work without.
+        Meteor.call("log", componentName, "confirmOrders");
     }
 
     const action = (

@@ -103,13 +103,13 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   document.addEventListener("backbutton", onBackKeyDown, false);
 
   function onBackKeyDown() {
-    handleDetailsClick();
+    closeMealScreen();
   }
 
-  const handleDetailsClick = () => {
+  const closeMealScreen = () => {
     OpenMealDetails.set(null);
     setBackground("none");
-    Meteor.call("log", componentName, "handleDetailsClick");
+    Meteor.call("log", componentName, "closeMealScreen");
   };
 
   useEffect(() => {
@@ -187,7 +187,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
           } else if (user && icfFinished && surveyFinished) {
             return (
               <div className={classes.mealScreenHeader}>
-                <IconButton className={classes.backButton} color="secondary" onClick={() => handleDetailsClick()}>
+                <IconButton className={classes.backButton} color="secondary" onClick={() => closeMealScreen()}>
                   <ArrowBackIcon />
                 </IconButton>
               </div>
