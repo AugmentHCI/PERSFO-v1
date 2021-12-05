@@ -109,7 +109,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
   const closeMealScreen = () => {
     OpenMealDetails.set(null);
     setBackground("none");
-    Meteor.call("log", componentName, "closeMealScreen");
+    Meteor.call("log", componentName, "closeMealScreen", navigator.userAgent);
   };
 
   useEffect(() => {

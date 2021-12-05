@@ -42,7 +42,7 @@ export const OrderButton = ({ recipe, allergensPresent, dietaryConflict, floatin
         if (recipe) {
             if (!ordered) setToast(true);
             Meteor.call("orders.handleOrder", recipe.id);
-            Meteor.call("log", componentName, "handleOrder");
+            Meteor.call("log", componentName, "handleOrder", navigator.userAgent);
         }
     };
 

@@ -40,7 +40,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
 
   const handleInfo = () => {
     setToast(true);
-    Meteor.call("log", componentName, "handleInfo");
+    Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
   };
 
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);

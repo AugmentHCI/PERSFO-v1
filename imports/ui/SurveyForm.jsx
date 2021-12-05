@@ -124,7 +124,7 @@ export const SurveyForm = () => {
 
         //Write survey results into database
         Meteor.call('users.saveSurvey', parsedOutput);
-        Meteor.call("log", componentName, "onComplete");
+        Meteor.call("log", componentName, "onComplete", navigator.userAgent);
     }
 
     var defaultThemeColors = Survey.StylesManager.ThemeColors["default"];

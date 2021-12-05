@@ -20,7 +20,7 @@ export const Done = () => {
 
     const undo = () => {
         Meteor.call("orders.undoConfirmation");
-        Meteor.call("log", componentName, "undo");
+        Meteor.call("log", componentName, "undo", navigator.userAgent);
     }
 
     return (

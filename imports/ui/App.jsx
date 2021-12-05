@@ -75,7 +75,7 @@ export const App = () => {
       return;
     }
     setState(open);
-    Meteor.call("log", componentName, "toggleDrawer");
+    Meteor.call("log", componentName, "toggleDrawer", navigator.userAgent );
   };
 
   // Shopping basket drawer logic
@@ -89,14 +89,14 @@ export const App = () => {
       return;
     }
     setStateShoppingBasket(open);
-    Meteor.call("log", componentName, "toggleShoppingBasketDrawer");
+    Meteor.call("log", componentName, "toggleShoppingBasketDrawer", navigator.userAgent);
   };
 
   // tab logic
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    Meteor.call("log", componentName, "handleChange");
+    Meteor.call("log", componentName, "handleChange", navigator.userAgent);
   };
 
   const [lastRecommenderUpdate, setLastRecommenderUpdate] = useState(undefined);

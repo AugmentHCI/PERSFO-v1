@@ -2,9 +2,10 @@ import { check } from 'meteor/check';
 import { LogsCollection } from '/imports/db/logs/LogsCollection';
 
 Meteor.methods({
-    "log"(component, method, extra) {
+    "log"(component, method, navigator, extra) {
         check(component, String);
         check(method, String);
+        check(navigator, String);
 
         if (!this.userId) {
             throw new Meteor.Error("Not authorized.");
@@ -14,6 +15,7 @@ Meteor.methods({
             LogsCollection.insert({
                 userid: this.userId,
                 component: component,
+                agent: navigator,
                 method: method,
                 extra: extra,
                 timestamp: new Date(),
@@ -22,6 +24,7 @@ Meteor.methods({
             LogsCollection.insert({
                 userid: this.userId,
                 component: component,
+                agent: navigator,
                 method: method,
                 timestamp: new Date(),
             });

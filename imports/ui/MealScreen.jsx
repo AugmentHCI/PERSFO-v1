@@ -196,7 +196,7 @@ export const MealScreen = ({ recipe }) => {
   const handleIncreaseLike = () => {
     if (recipe) {
       Meteor.call("recipes.handleLike", recipe.id);
-      Meteor.call("log", componentName, "handleIncreaseLike", liked);
+      Meteor.call("log", componentName, "handleIncreaseLike", navigator.userAgent, liked);
     }
   };
 
@@ -205,7 +205,7 @@ export const MealScreen = ({ recipe }) => {
 
   const changeTab = (event, newValue) => {
     setTabValue(newValue);
-    Meteor.call("log", componentName, "changeTab", newValue);
+    Meteor.call("log", componentName, "changeTab", navigator.userAgent, newValue);
   };
 
   const getKcalInfo = () => {

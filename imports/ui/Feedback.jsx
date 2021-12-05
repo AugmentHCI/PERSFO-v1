@@ -32,7 +32,7 @@ export const Feedback = () => {
     e.preventDefault();
     setOpen(true);
     Meteor.call("feedback.submitNewFeedback", feedback);
-    Meteor.call("log", componentName, "submit");
+    Meteor.call("log", componentName, "submit", navigator.userAgent);
     setFeedback("");
   };
 

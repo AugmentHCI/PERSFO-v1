@@ -37,7 +37,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(false);
-    Meteor.call("log", componentName, "handleHomeButton");
+    Meteor.call("log", componentName, "handleHomeButton", navigator.userAgent);
   };
 
   const handleProgress = () => {
@@ -45,7 +45,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(true);
     OpenSettings.set(false);
     OpenFeedback.set(false);
-    Meteor.call("log", componentName, "handleProgress");
+    Meteor.call("log", componentName, "handleProgress", navigator.userAgent);
   };
 
   const handleSettings = () => {
@@ -53,7 +53,7 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(true);
     OpenFeedback.set(false);
-    Meteor.call("log", componentName, "handleSettings");
+    Meteor.call("log", componentName, "handleSettings", navigator.userAgent);
   };
 
   const handleFeedback = () => {
@@ -61,11 +61,11 @@ export const PersfoDrawer = ({ drawerOpen, toggleDrawer }) => {
     OpenProgress.set(false);
     OpenSettings.set(false);
     OpenFeedback.set(true);
-    Meteor.call("log", componentName, "handleFeedback");
+    Meteor.call("log", componentName, "handleFeedback", navigator.userAgent);
   };
 
   const logOut = () => {
-    Meteor.call("log", componentName, "logOut");
+    Meteor.call("log", componentName, "logOut", navigator.userAgent);
     Meteor.logout();
   }
 

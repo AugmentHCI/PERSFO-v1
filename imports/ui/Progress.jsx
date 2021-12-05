@@ -161,7 +161,7 @@ export const Progress = ({ recommendedRecipe }) => {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
-    Meteor.call("log", componentName, "handleTabChange", newValue);
+    Meteor.call("log", componentName, "handleTabChange", navigator.userAgent, newValue);
   };
 
   const GoalsBar = (props) => {

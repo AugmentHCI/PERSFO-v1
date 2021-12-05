@@ -176,7 +176,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "energySliderChange");
+    Meteor.call("log", componentName, "energySliderChange", navigator.userAgent);
   };
   const totalFatSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -188,7 +188,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "totalFatSliderChange");
+    Meteor.call("log", componentName, "totalFatSliderChange", navigator.userAgent);
   };
   const satfatSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -200,7 +200,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "satfatSliderChange");
+    Meteor.call("log", componentName, "satfatSliderChange", navigator.userAgent);
   };
   const sugarSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -212,7 +212,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "sugarSliderChange");
+    Meteor.call("log", componentName, "sugarSliderChange", navigator.userAgent);
   };
   const proteinSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -224,7 +224,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "proteinSliderChange");
+    Meteor.call("log", componentName, "proteinSliderChange", navigator.userAgent);
   };
   const saltSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -236,7 +236,7 @@ export const Preferences = () => {
       salt: newValue,
       fiber: FiberSlider,
     });
-    Meteor.call("log", componentName, "saltSliderChange");
+    Meteor.call("log", componentName, "saltSliderChange", navigator.userAgent);
   };
   const fiberSliderChange = (event, newValue) => {
     Meteor.call("users.updateNutrientGoals", {
@@ -248,7 +248,7 @@ export const Preferences = () => {
       salt: SaltSlider,
       fiber: newValue,
     });
-    Meteor.call("log", componentName, "fiberSliderChange");
+    Meteor.call("log", componentName, "fiberSliderChange", navigator.userAgent);
   };
 
   const energySwitchChange = (event, newValue) => {
@@ -261,7 +261,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "energySwitchChange");
+    Meteor.call("log", componentName, "energySwitchChange", navigator.userAgent);
   };
   const totalFatSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -273,7 +273,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "totalFatSwitchChange");
+    Meteor.call("log", componentName, "totalFatSwitchChange", navigator.userAgent);
   };
   const satfatSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -285,7 +285,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "satfatSwitchChange");
+    Meteor.call("log", componentName, "satfatSwitchChange", navigator.userAgent);
   };
   const sugarSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -297,7 +297,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "sugarSwitchChange");
+    Meteor.call("log", componentName, "sugarSwitchChange", navigator.userAgent);
   };
   const proteinSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -309,7 +309,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "proteinSwitchChange");
+    Meteor.call("log", componentName, "proteinSwitchChange", navigator.userAgent);
   };
   const saltSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -321,7 +321,7 @@ export const Preferences = () => {
       salt: newValue,
       fiber: FiberSwitch,
     });
-    Meteor.call("log", componentName, "saltSwitchChange");
+    Meteor.call("log", componentName, "saltSwitchChange", navigator.userAgent);
   };
   const fiberSwitchChange = (event, newValue) => {
     Meteor.call("users.updateActiveNutrientGoals", {
@@ -333,7 +333,7 @@ export const Preferences = () => {
       salt: SaltSwitch,
       fiber: newValue,
     });
-    Meteor.call("log", componentName, "fiberSwitchChange");
+    Meteor.call("log", componentName, "fiberSwitchChange", navigator.userAgent);
   };
 
   const { allergens, allergenCheckboxes, dietaries, dietariesCheckboxes } = useTracker(() => {
@@ -411,7 +411,7 @@ export const Preferences = () => {
       }
     }
     Meteor.call("users.updateAllergens", listAllergens);
-    Meteor.call("log", componentName, "handleAllergenCheckboxChange");
+    Meteor.call("log", componentName, "handleAllergenCheckboxChange", navigator.userAgent);
   };
 
   const handleDietaryCheckboxChange = (event, i) => {
@@ -428,7 +428,7 @@ export const Preferences = () => {
       }
     }
     Meteor.call("users.updateDietaries", listDietaries);
-    Meteor.call("log", componentName, "handleDietaryCheckboxChange");
+    Meteor.call("log", componentName, "handleDietaryCheckboxChange", navigator.userAgent);
   };
 
   const getAllergenBar = (allergen, i) => {

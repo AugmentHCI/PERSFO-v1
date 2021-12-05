@@ -153,7 +153,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     if (recipe) {
       Meteor.call("users.handleLikeRecommendation", recipe.id, true);
     }
-    Meteor.call("log", componentName, "handleThumbsUp");
+    Meteor.call("log", componentName, "handleThumbsUp", navigator.userAgent);
   };
 
   // modal logic
@@ -175,25 +175,25 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     let newArr = [...checkboxes];
     newArr[i] = event.target.checked;
     updateCheckboxes(newArr);
-    Meteor.call("log", componentName, "handleModalCheckboxChange");
+    Meteor.call("log", componentName, "handleModalCheckboxChange", navigator.userAgent);
   };
 
   const handleModalOpen = () => {
     if (!thumbsDown) {
       // Meteor.call("users.handleLikeRecommendation", recipe.id, false);
       setOpen(true);
-      Meteor.call("log", componentName, "handleModalOpen");
+      Meteor.call("log", componentName, "handleModalOpen", navigator.userAgent);
     }
   };
   const handleModalClose = () => {
     Meteor.call("users.handleLikeRecommendation", recipe.id, false);
     setOpen(false);
-    Meteor.call("log", componentName, "handleModalClose");
+    Meteor.call("log", componentName, "handleModalClose", navigator.userAgent);
   };
 
   const cancelModal = () => {
     setOpen(false);
-    Meteor.call("log", componentName, "cancelModal");
+    Meteor.call("log", componentName, "cancelModal", navigator.userAgent);
   };
 
   const sendModal = () => {
@@ -206,7 +206,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     }
     Meteor.call("users.addDislikes", listOfDislikes);
     setOpen(false);
-    Meteor.call("log", componentName, "sendModal");
+    Meteor.call("log", componentName, "sendModal", navigator.userAgent);
     Meteor.call("recommender.updateRecommendations")
   };
 

@@ -13,7 +13,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
     const handleIncreaseLike = () => {
         if (recipe) {
             Meteor.call("recipes.handleLike", recipe.id);
-            Meteor.call("log", componentName, "handleIncreaseLike", recipe.id);
+            Meteor.call("log", componentName, "handleIncreaseLike", navigator.userAgent, recipe.id);
         }
     };
 
@@ -84,7 +84,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
     // Detail logic
     const handleDetailsClick = () => {
         OpenMealDetails.set(recipeId);
-        Meteor.call("log", componentName, "handleDetailsClick", recipeId);
+        Meteor.call("log", componentName, "handleDetailsClick", navigator.userAgent, recipeId);
     };
 
     const renderSwitch = (type) => {
