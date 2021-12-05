@@ -38,7 +38,6 @@ export function food4me(FFQ) {
     }
     );
     if (call.data) {
-        console.log(call.data);
         UserPreferences.upsert(
             { userid: this.userId },
             { $set: { food4me: call.data } }
