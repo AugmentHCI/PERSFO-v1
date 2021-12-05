@@ -60,8 +60,10 @@ export const AdherenceTimeline = () => {
       day5: undefined,
     };
     const orderHandler = Meteor.subscribe("orders");
-    if (!orderHandler.ready()) {
-      return { ...noDataAvailable };
+    const recipeHandler = Meteor.subscribe("recipes");
+
+    if (!orderHandler.ready() || !recipeHandler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
     }
     // find five last orders
     let start = new Date();
@@ -75,11 +77,6 @@ export const AdherenceTimeline = () => {
       },
       { sort: { timestamp: -1 } }
     ).fetch();
-
-    const recipeHandler = Meteor.subscribe("recipes");
-    if (!recipeHandler.ready()) {
-      return { ...noDataAvailable };
-    }
 
     const groupedOrders = _.groupBy(orders, "orderday");
     let nutries = _.map(groupedOrders, (value, key) => {

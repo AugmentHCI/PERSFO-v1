@@ -110,7 +110,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
     const handler = Meteor.subscribe("userpreferences");
 
     if (!Meteor.user() || _.isEmpty(recipe) || !handler.ready()) {
-      return { ...noDataAvailable };
+      return { ...noDataAvailable, isLoading: true };
     }
 
     let tempIngredients = [];

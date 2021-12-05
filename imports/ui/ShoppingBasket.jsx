@@ -44,7 +44,7 @@ const GroupedButtons = ({ recipeId }) => {
         const noDataAvailable = { counter: 1 };
         const handler = Meteor.subscribe("orders");
         if (!handler.ready()) {
-            return { ...noDataAvailable };
+            return { ...noDataAvailable, isLoading: true };
         }
 
         // find only orders made today
@@ -95,7 +95,7 @@ export const ShoppingBasket = ({ drawerOpen, toggleDrawer }) => {
         const recipeHandler = Meteor.subscribe("recipes");
 
         if (!handler.ready() || !recipeHandler.ready()) {
-            return { ...noDataAvailable };
+            return { ...noDataAvailable, isLoading: true };
         }
 
         // find only orders made today

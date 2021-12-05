@@ -132,10 +132,7 @@ export const App = () => {
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
 
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
-    if (!menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
+    if (!Meteor.user() || !menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
 

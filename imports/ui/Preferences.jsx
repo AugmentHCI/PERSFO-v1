@@ -99,7 +99,7 @@ export const Preferences = () => {
     };
     const handler = Meteor.subscribe("userpreferences");
     if (!handler.ready()) {
-      return { ...noDataAvailable };
+      return { ...noDataAvailable, isLoading: true };
     }
     let nutrientGoals = [];
     let activeNutrientGoals = [];
@@ -162,7 +162,7 @@ export const Preferences = () => {
         FiberSwitch,
       };
     } catch (error) {
-      return { ...noDataAvailable };
+      return { ...noDataAvailable, isLoading: true };
     }
   });
 
@@ -344,10 +344,7 @@ export const Preferences = () => {
     const recipeHandler = Meteor.subscribe("recipes");
     const preferencesHandler = Meteor.subscribe("userpreferences");
 
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
-    if (!recipeHandler.ready() || !preferencesHandler.ready()) {
+    if (!Meteor.user() || !recipeHandler.ready() || !preferencesHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
     const recipe = RecipesCollection.findOne({});

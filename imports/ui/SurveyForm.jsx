@@ -18,7 +18,7 @@ export const SurveyForm = () => {
         const preferencesHandler = Meteor.subscribe("userpreferences");
 
         if (!Meteor.user() || !handlerFFQ.ready() || !handlerHexad.ready() || !preferencesHandler.ready()) {
-            return { ...noDataAvailable };
+            return { ...noDataAvailable, isLoading: true };
         }
 
         const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });

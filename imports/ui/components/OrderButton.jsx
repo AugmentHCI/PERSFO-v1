@@ -50,7 +50,7 @@ export const OrderButton = ({ recipe, allergensPresent, dietaryConflict, floatin
         const noDataAvailable = { ordered: false };
         const handler = Meteor.subscribe("orders");
         if (!handler.ready()) {
-            return { ...noDataAvailable };
+            return { ...noDataAvailable, isLoading: true };
         }
         if (!recipe) return { ...noDataAvailable };
 

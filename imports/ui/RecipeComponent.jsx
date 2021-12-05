@@ -9,19 +9,6 @@ import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 const componentName = "RecipeComponent";
 export const RecipeComponent = (({ recipeId, type }) => {
 
-    const { recipe } = useTracker(() => {
-        const noDataAvailable = { recipe: {} };
-        if (!Meteor.user()) {
-            return noDataAvailable;
-        }
-        const handler = Meteor.subscribe("recipes");
-        if (!handler.ready()) {
-            return { ...noDataAvailable };
-        }
-        const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
-        return { recipe };
-    });
-
     // Like logic
     const handleIncreaseLike = () => {
         if (recipe) {
@@ -31,18 +18,22 @@ export const RecipeComponent = (({ recipeId, type }) => {
     };
 
     // Like logic
-    const { liked, nbLikes, allergensPresent, dietaryConflict } = useTracker(() => {
+    const { recipe, liked, nbLikes, allergensPresent, dietaryConflict } = useTracker(() => {
         const noDataAvailable = {
+            recipe: {},
             liked: false,
             nbLikes: 0,
             allergensPresent: false,
             dietaryConflict: false,
         };
-        if (!recipe) return noDataAvailable;
         const handler = Meteor.subscribe("userpreferences");
-        if (!handler.ready()) {
-            return { ...noDataAvailable };
+        const handlerRecipe = Meteor.subscribe("recipes");
+
+        if (!Meteor.user() || !handler.ready() || !handlerRecipe.ready()) {
+            return { ...noDataAvailable, isLoading: true };
         }
+        const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
+
         const nbLikes = recipe.nbLikes;
         const liked =
             UserPreferences.find({
@@ -87,7 +78,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
             }
         });
         const dietaryConflict = dietariesPresentTmp;
-        return { liked, nbLikes, allergensPresent, dietaryConflict };
+        return { recipe, liked, nbLikes, allergensPresent, dietaryConflict };
     });
 
     // Detail logic

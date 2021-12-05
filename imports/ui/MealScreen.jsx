@@ -147,13 +147,10 @@ export const MealScreen = ({ recipe }) => {
       recipeAllergens: [],
       allergensPresent: false,
     };
-    if (!Meteor.user()) {
-      return noDataAvailable;
-    }
-    if (!recipe) return noDataAvailable;
+    if (!recipe) return { ...noDataAvailable };
     const handler = Meteor.subscribe("userpreferences");
-    if (!handler.ready()) {
-      return { ...noDataAvailable };
+    if (!Meteor.user() || !handler.ready()) {
+      return { ...noDataAvailable, isLoading: true };
     }
     const nbLikes = recipe.nbLikes;
     const liked =
