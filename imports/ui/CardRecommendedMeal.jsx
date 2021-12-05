@@ -44,6 +44,18 @@ const useStyles = makeStyles(() => ({
     lineHeight: 1,
     color: "#717171",
   },
+  menuTitleWarning: {
+    fontSize: "12px",
+    fontWeight: 500,
+    width: "100%",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    textTransform: "uppercase",
+    letterSpacing: "0px",
+    lineHeight: 1,
+    color: red[500],
+  },
   nutriscoreImage: {
     height: "24px",
     marginTop: "8px",
@@ -210,7 +222,12 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
             image={getImage(recipe)}
           />
           <CardContent className={classes.cardContent}>
-            <Typography className={classes.menuTitle}>
+            <Typography className={
+            (allergensPresent || dietaryConflict) ?
+              classes.menuTitleWarning
+              :
+              classes.menuTitle
+          }>
               {String(recipe.name).length > 40
                 ? recipe.name.slice(0, 40) + "..."
                 : recipe.name}

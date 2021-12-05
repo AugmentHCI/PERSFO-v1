@@ -50,6 +50,19 @@ const useStyles = makeStyles((persfoTheme) => ({
     textAlign: "center",
     color: "#717171",
   },
+  menuTitleWarning: {
+    fontSize: "11px",
+    fontWeight: 500,
+    width: "100%",
+    height: "40px",
+    display: "flex",
+    alignItems: "center",
+    textTransform: "uppercase",
+    letterSpacing: "0px",
+    lineHeight: 1,
+    textAlign: "center",
+    color: red[500],
+  },
   nutriscoreImage: {
     height: "24px",
     marginBottom: "8px",
@@ -81,7 +94,12 @@ export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, 
       >
         <CardMedia className={classes.menuImage} image={getImage(recipe)} />
         <CardContent className={classes.cardContent}>
-          <Typography className={classes.menuTitle}>
+          <Typography className={
+            (allergensPresent || dietaryConflict) ?
+              classes.menuTitleWarning
+              :
+              classes.menuTitle
+          }>
             {String(recipe.name).length > 36
               ? recipe.name.slice(0, 36) + "..."
               : recipe.name}
@@ -109,6 +127,6 @@ export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, 
         </Button>
         <OrderButton recipe={recipe} allergensPresent={allergensPresent} dietaryConflict={dietaryConflict}></OrderButton>
       </CardActions>
-    </Card>
+    </Card >
   );
 };
