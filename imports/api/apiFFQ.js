@@ -42,6 +42,8 @@ export function food4me(FFQ) {
             { userid: this.userId },
             { $set: { food4me: call.data } }
         );
+    } else {
+        console.log("no food4me data for user:" + this.userId);
     }
 }
 

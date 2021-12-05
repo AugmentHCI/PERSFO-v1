@@ -147,6 +147,12 @@ export const Progress = ({ recommendedRecipe }) => {
 
     }
 
+    if(tempAdvices.length == 0) {
+      tempAdvices.push({
+        title: "Foutmelding", 
+        advice: i18n.__("errors.quisper")})
+    }
+
     const advices = tempAdvices;
 
     return {

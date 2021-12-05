@@ -45,7 +45,8 @@
         "home": "Maaltijden"
     },
     "errors": {
-        "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend"
+        "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend",
+        "quisper": "Er is iets misgegaan bij het ophalen van uw persoonlijk advies. U zou dit bericht niet mogen zien. Gelieve contact op te nemen met robin.decroon@kuleuven.be zodat we u uw persoonlijk advies kunnen nasturen."
     },
     "sustainability": {
         "sustainability": "Duurzaamheid",
