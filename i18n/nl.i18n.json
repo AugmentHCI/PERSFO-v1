@@ -4,7 +4,7 @@
         "welcome": "Welkom bij de PERSFO app!",
         "icf": "Geinformeerde toestemming informatie",
         "survey": "Studie vragenlijsten",
-        "progress": "Voortgang",
+        "progress": "Persoonlijk advies",
         "settings": "Instellingen",
         "feedback": "Feedback",
         "thanks": "Bedankt",
@@ -123,6 +123,7 @@
         "liked1": "Je vond",
         "liked2": "maaltijden lekker en vond",
         "liked3": "ingrediënten minder lekker.",
+        "advice": "Persoonlijk advies",
         "wip": "Deze functie is momenteel nog onder ontwikkeling. Gelieve uw maaltijden te bevestigen in het winkelmandje om ons te helpen bij het optimaliseren van deze functie."
     },
     "shopping": {

@@ -1,12 +1,10 @@
-import { LinearProgress, Tab, Tabs } from "@material-ui/core/";
+import { LinearProgress, Tab, Tabs, Typography } from "@material-ui/core/";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { RecipeComponent } from "./RecipeComponent";
-import { MealScreen } from "./MealScreen";
 import { calculateNutrientforRecipe } from "/imports/api/apiPersfo";
 import { capitalizeFirstLetter } from "/imports/api/auxMethods";
-import { OpenMealDetails } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
@@ -41,13 +39,19 @@ export const Progress = ({ recommendedRecipe }) => {
       borderRadius: "25px",
       padding: "16px",
       borderRadius: "30px 0px 0px 30px",
-      height: componentHeight >= 640 ? "200px" : "120px",
+      // height: componentHeight >= 640 ? componentHeight : "120px",
       marginLeft: "16px",
       color: "#717171",
       fontFamily: "sans-serif",
     },
     stat: {
       fontSize: "13px",
+    },
+    advice: {
+      fontSize: "13px",
+      marginBottom: "10px",
+      fontFamily: "sans-serif",
+      lineHeight: 1.4
     },
     statTitle: {
       color: "#726f6c",
@@ -60,6 +64,17 @@ export const Progress = ({ recommendedRecipe }) => {
       fontWeight: 600,
       fontSize: "14px",
     },
+    subtitle: {
+      color: "#F57D20",
+      width: "100%",
+      display: "flex",
+      fontSize: "12px",
+      alignItems: "center",
+      fontWeight: 600,
+      lineHeight: 1,
+      letterSpacing: "0px",
+      textTransform: "uppercase",
+    },
   }));
 
   const classes = useStyles();
@@ -71,6 +86,7 @@ export const Progress = ({ recommendedRecipe }) => {
     orders,
     nbLikes,
     nbDislikes,
+    advices
   } = useTracker(() => {
     const noDataAvailable = {
       userName: "",
@@ -102,8 +118,7 @@ export const Progress = ({ recommendedRecipe }) => {
     try {
       nbDislikes = userPreferences.dislikedIngredients.length;
     } catch (error) {
-      console.log("Progress: unexpected error at nbDislikes")
-      console.log(error);
+      // no dislikes yet
     }
 
     let orders = OrdersCollection.find({ userid: Meteor.userId() }).fetch();
@@ -114,12 +129,27 @@ export const Progress = ({ recommendedRecipe }) => {
     const daysActive = Math.floor((new Date() - Meteor.user().createdAt) / 86400000);
     const userName = capitalizeFirstLetter(Meteor.user().username);
 
+    let tempAdvices = []
+    try {
+      let food4me = userPreferences.food4me.Output;
+      _.forEach(food4me, (value, key) => {
+        if (food4me[key].Advice && food4me[key].Advice !== "") {
+          tempAdvices.push({ title: key, advice: value.Advice });
+        }
+      });
+    } catch (error) {
+
+    }
+
+    const advices = tempAdvices;
+
     return {
       userName,
       daysActive,
       orders,
       nbLikes,
       nbDislikes,
+      advices
     };
   });
 
@@ -170,8 +200,8 @@ export const Progress = ({ recommendedRecipe }) => {
         scrollButtons="auto"
         centered={true}
       >
-        <Tab key={0} label={i18n.__("progress.weekly_overview")} />
-        <Tab key={1} label={i18n.__("progress.goals")} />
+        <Tab key={0} label={i18n.__("progress.advice")} />
+        <Tab key={1} label={i18n.__("progress.weekly_overview")} />
       </Tabs>
 
       {tabValue == 0 ? (
@@ -183,31 +213,49 @@ export const Progress = ({ recommendedRecipe }) => {
             justifyContent: "space-between",
           }}
         >
-          <div className={classes.stat}>
-            {i18n.__("progress.hello")}, <span className={classes.statNum}>{userName}</span>
-          </div>
-          <div className={classes.stat}>
-            {i18n.__("progress.creation1")}
-            <span className={classes.statNum}>{" " + daysActive}</span> {i18n.__("progress.creation2")}
-          </div>
-          <div className={classes.stat}>
-            {i18n.__("progress.using1")}{" "}
-            <span className={classes.statNum}>{orders.length}</span> {i18n.__("progress.using2")}{" "}
-            <span className={classes.statNum}>
-              {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
-                ? _.sumBy(orders, (o) =>
-                  calculateNutrientforRecipe(o, "kcal")
-                )
-                : 0}
-            </span>{" "}
-            kcal.
-          </div>
-          <div className={classes.stat}>
-            {i18n.__("progress.liked1")}{" "}<span className={classes.statNum}>{nbLikes}</span>
-            {" "}{i18n.__("progress.liked2")}{" "}<span className={classes.statNum}>{nbDislikes}</span>{" "}
-            {i18n.__("progress.liked3")}
-          </div>
-          {/*<div className={classes.statTitle}>Doing so you:</div>
+          {_.map(advices, a =>
+            <div key={a.title + "d"}>
+              <h1 className={classes.subtitle}>{a.title}</h1>
+              <div className={classes.advice}>{a.advice}</div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          <div
+            className={classes.mainContent}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              height: "200px"
+            }}
+          >
+            <div className={classes.stat}>
+              {i18n.__("progress.hello")}, <span className={classes.statNum}>{userName}</span>
+            </div>
+            <div className={classes.stat}>
+              {i18n.__("progress.creation1")}
+              <span className={classes.statNum}>{" " + daysActive}</span> {i18n.__("progress.creation2")}
+            </div>
+            <div className={classes.stat}>
+              {i18n.__("progress.using1")}{" "}
+              <span className={classes.statNum}>{orders.length}</span> {i18n.__("progress.using2")}{" "}
+              <span className={classes.statNum}>
+                {_.sumBy(orders, (o) => calculateNutrientforRecipe(o, "kcal"))
+                  ? _.sumBy(orders, (o) =>
+                    calculateNutrientforRecipe(o, "kcal")
+                  )
+                  : 0}
+              </span>{" "}
+              kcal.
+            </div>
+            <div className={classes.stat}>
+              {i18n.__("progress.liked1")}{" "}<span className={classes.statNum}>{nbLikes}</span>
+              {" "}{i18n.__("progress.liked2")}{" "}<span className={classes.statNum}>{nbDislikes}</span>{" "}
+              {i18n.__("progress.liked3")}
+            </div>
+            {/*<div className={classes.statTitle}>Doing so you:</div>
             <div className={classes.stat}>
               ate <span className={classes.statNum}>25%</span> less fat
             </div>
@@ -222,51 +270,53 @@ export const Progress = ({ recommendedRecipe }) => {
               reduced your carbon footprint with{" "}
               <span className={classes.statNum}>7%</span>
             </div> */}
-        </div>
-      ) : (
-        <div
-          className={classes.mainContent}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "start",
-          }}
-        >
-          <div className={classes.stat}>
-            {i18n.__("progress.wip")}
-          </div>
-          {/* <GoalsBar
-              title="Eat less calories"
-              value={1200}
-              maxValue={2500}
-              unit={"kcal"}
-            />
-            <GoalsBar
-              title="Eat more fruit"
-              value={10}
-              maxValue={15}
-              unit={"pieces"}
-            />
-            <GoalsBar
-              title="Track my meals everyday"
-              value={6}
-              maxValue={7}
-              unit={"days"}
-            /> */}
-        </div>
-      )}
 
-      <div>
-        <div className={classes.titleContent}>
-          <h1 className={classes.menuTitle}>TODAY'S RECOMMENDATION</h1>
-        </div>
-        <div style={{ padding: "4px" }}>
-          <RecipeComponent
-            recipeId={recommendedRecipe.id}
-            type="recommended"
-          ></RecipeComponent>
-        </div>
-      </div>
+          </div>
+          <div>
+            <div className={classes.titleContent}>
+              <h1 className={classes.menuTitle}>{i18n.__("app.today_recommendation")}</h1>
+            </div>
+            <div style={{ padding: "4px" }}>
+              <RecipeComponent
+                recipeId={recommendedRecipe.id}
+                type="recommended"
+              ></RecipeComponent>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
+
+// old goal div
+// <div
+//   className={classes.mainContent}
+//   style={{
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent: "start",
+//   }}
+// >
+//   <div className={classes.stat}>
+//     {i18n.__("progress.wip")}
+//   </div>
+//   {/* <GoalsBar
+//       title="Eat less calories"
+//       value={1200}
+//       maxValue={2500}
+//       unit={"kcal"}
+//     />
+//     <GoalsBar
+//       title="Eat more fruit"
+//       value={10}
+//       maxValue={15}
+//       unit={"pieces"}
+//     />
+//     <GoalsBar
+//       title="Track my meals everyday"
+//       value={6}
+//       maxValue={7}
+//       unit={"days"}
+//     /> */}
+// </div>
