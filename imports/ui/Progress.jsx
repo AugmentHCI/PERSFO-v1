@@ -21,7 +21,12 @@ const componentName = "Progress";
 export const Progress = ({ recommendedRecipe }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
-  const useStyles = makeStyles(() => ({
+  const useStyles = makeStyles((theme) => ({
+    tabs: {
+      position: "fixed",
+      background: "#f9f1ec",
+      width: "100%"
+    },
     menuTitle: {
       color: "#726f6c",
       margin: "4px",
@@ -40,6 +45,7 @@ export const Progress = ({ recommendedRecipe }) => {
       padding: "16px",
       borderRadius: "30px 0px 0px 30px",
       // height: componentHeight >= 640 ? componentHeight : "120px",
+      marginTop: "62px",
       marginLeft: "16px",
       color: "#717171",
       fontFamily: "sans-serif",
@@ -199,6 +205,7 @@ export const Progress = ({ recommendedRecipe }) => {
         variant="fullWidth"
         scrollButtons="auto"
         centered={true}
+        className={classes.tabs}
       >
         <Tab key={0} label={i18n.__("progress.advice")} />
         <Tab key={1} label={i18n.__("progress.weekly_overview")} />
@@ -208,7 +215,7 @@ export const Progress = ({ recommendedRecipe }) => {
         <div
           className={classes.mainContent}
           style={{
-            display: "flex",
+            // display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
           }}

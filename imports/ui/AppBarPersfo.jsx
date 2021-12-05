@@ -85,7 +85,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
     const handler = Meteor.subscribe("orders");
 
     if (!handler.ready()) {
-      return { ...noDataAvailable };
+      return { ...noDataAvailable, isLoading: true };
     }
 
     // find only orders made today
@@ -142,7 +142,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   return (
     <AppBar
-      position="static"
+      position="sticky"
       style={{
         backgroundImage: background, backgroundSize: "cover", backgroundPosition: 'center center',
         '&:before': {
