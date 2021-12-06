@@ -91,7 +91,7 @@ Meteor.methods({
         // todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
 
         // sort recipe by dislikedingredient first, then by decent nutriscore
-        const dislikedIngredients = userpreferences.dislikedIngredients ? userpreferences.dislikedIngredients : [];
+        const dislikedIngredients = userpreferences?.dislikedIngredients ? userpreferences.dislikedIngredients : [];
         todaysRecipes = _.sortBy(todaysRecipes, r => [getNbDisliked(r, dislikedIngredients), getNutriscore(r)]);
 
         // last step! Assign rankings
