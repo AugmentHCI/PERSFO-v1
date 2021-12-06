@@ -6,7 +6,7 @@ import { capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const token = "pmvPgoauir3ZLHlWiynAUfSJw725yi";
 const url = "https://www.apicbase.com/api/v1/recipes/";
-const API_LOGS = true;
+const API_LOGS = false;
 
 var fs = require("fs");
 
@@ -68,6 +68,7 @@ export function initData() {
   }, 30 * 60 * 1000);
 
   updateRecipeDetails();
+  console.log("initData: reciped loadings started");
 
   // function to fetch data in intervals
   function updateRecipeDetails() {
