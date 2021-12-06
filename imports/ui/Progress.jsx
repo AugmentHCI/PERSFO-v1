@@ -2,6 +2,7 @@ import { LinearProgress, Tab, Tabs, Typography } from "@material-ui/core/";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import { food4me } from "../api/apiFFQ";
 import { RecipeComponent } from "./RecipeComponent";
 import { calculateNutrientforRecipe } from "/imports/api/apiPersfo";
 import { capitalizeFirstLetter } from "/imports/api/auxMethods";
@@ -19,7 +20,6 @@ const BorderLinearProgress = withStyles((theme) => ({
 // recipeURL come from menu --> courses
 const componentName = "Progress";
 export const Progress = ({ recommendedRecipe }) => {
-  const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
   const useStyles = makeStyles((theme) => ({
     tabs: {
@@ -44,7 +44,6 @@ export const Progress = ({ recommendedRecipe }) => {
       borderRadius: "25px",
       padding: "16px",
       borderRadius: "30px 0px 0px 30px",
-      // height: componentHeight >= 640 ? componentHeight : "120px",
       marginTop: "62px",
       marginLeft: "16px",
       color: "#717171",
@@ -147,10 +146,17 @@ export const Progress = ({ recommendedRecipe }) => {
 
     }
 
-    if(tempAdvices.length == 0) {
+    if (tempAdvices.length == 0) {
       tempAdvices.push({
-        title: "Foutmelding", 
-        advice: i18n.__("errors.quisper")})
+        title: "Foutmelding",
+        advice: i18n.__("errors.quisper")
+      });
+      try {
+        Meteor.call("users.saveSurvey", userPreferences.ffqAnswers)
+      } catch (error) {
+        console.log("Progress: error re-loading food4me");
+        console.log(error)
+      }
     }
 
     const advices = tempAdvices;
