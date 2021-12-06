@@ -6,7 +6,7 @@ import { capitalizeFirstLetter } from "/imports/api/auxMethods";
 
 const token = "pmvPgoauir3ZLHlWiynAUfSJw725yi";
 const url = "https://www.apicbase.com/api/v1/recipes/";
-const API_LOGS = false;
+const API_LOGS = true;
 
 var fs = require("fs");
 

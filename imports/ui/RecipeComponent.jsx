@@ -34,7 +34,7 @@ export const RecipeComponent = (({ recipeId, type }) => {
         }
         const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
 
-        const nbLikes = recipe.nbLikes;
+        const nbLikes = recipe.nbLikes ? recipe.nbLikes : 0;
         const liked =
             UserPreferences.find({
                 userid: Meteor.userId(),

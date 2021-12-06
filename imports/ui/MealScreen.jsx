@@ -152,7 +152,7 @@ export const MealScreen = ({ recipe }) => {
     if (!Meteor.user() || !handler.ready()) {
       return { ...noDataAvailable, isLoading: true };
     }
-    const nbLikes = recipe.nbLikes;
+    const nbLikes = recipe.nbLikes ? recipe.nbLikes : 0;
     const liked =
       UserPreferences.find({
         userid: Meteor.userId(),
