@@ -253,6 +253,22 @@ export function getNutriscoreImage(recipe) {
   return "/images/nutri" + getNutriscore(recipe) + ".jpg";
 }
 
+export function getEcoScore(recipe) {
+  if (recipe && recipe.custom_fields) {
+    for (let i = 0; i < recipe.custom_fields.length; i++) {
+      let custom = recipe.custom_fields[i];
+      if (custom.name == "CO2Rating") {
+        return custom.value;
+      }
+    }
+  }
+  return null;
+}
+
+export function getEcoImage(recipe) {
+  return "/images/eco" + getEcoScore(recipe) + ".png";
+}
+
 export function getNbDisliked(recipe, dislikedIngredients) {
   let counter = 0;
   if (recipe && recipe.cleanedIngredients) {

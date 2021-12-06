@@ -8,7 +8,8 @@ import React, { useState } from "react";
 import { OrderButton } from "./components/OrderButton";
 import {
   calculateNutrientforRecipe,
-  getNutriscoreImage
+  getNutriscoreImage,
+  getEcoImage,
 } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { capitalizeFirstLetter } from "/imports/api/auxMethods";
@@ -64,6 +65,9 @@ export const MealScreen = ({ recipe }) => {
     },
     nutriscore: {
       height: "32px",
+    },
+    ecoscore: {
+      height: "64px",
     },
     tabFont: {
       fontSize: "10px",
@@ -473,7 +477,10 @@ export const MealScreen = ({ recipe }) => {
           </p>
           <h1 className={classes.subtitle}>{i18n.__("sustainability.co2")}</h1>
           <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}{i18n.__("general.no_data")}{" "}
+            <img
+                className={classes.ecoscore}
+                src={getEcoImage(recipe)}
+              />
           </p>
         </div>
       </>
