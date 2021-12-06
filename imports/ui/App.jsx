@@ -150,14 +150,14 @@ export const App = () => {
     }
 
     // pick specific date for demo
-    // let menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
+    // let menu = MenusCollection.findOne({ starting_date: "2021-12-07" });
     // pick menu of today TODO
     let menu = MenusCollection.findOne({
       starting_date: nowString,
     });
 
     // pick menu of December 6 when no menu available today
-    if (!menu) menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
+    if (!menu) menu = MenusCollection.findOne({ starting_date: "2021-12-07" });
 
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;

@@ -117,7 +117,7 @@ const {
   const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
   let nbLikes = 0;
   try {
-    nbLikes = userPreferences.likedRecipes.length;
+    nbLikes = userPreferences?.likedRecipes?.length ? userPreferences?.likedRecipes?.length : 0;
   } catch (error) {
     console.log("Progress: unexpected error at nblikes")
   }
@@ -245,18 +245,6 @@ return (
                   {a.advice.split("\n•").slice(1).map((b, i) => <li key={a.title + "-" + i}>{b}</li>)}
                 </ul>
               </div>
-              {/* {(a) => {
-                console.log(a);
-
-                // let splittedAdvice = a.advice.split("\n•");
-                // return (
-                //   <div className={classes.advice}>
-                //     <div>{splittedAdvice[0]}</div>
-                //     {splittedAdvice.slice(1).map((a) => <li>{a}</li>)}
-                //   </div>
-                // )
-              }
-              } */}
             </div>
           )
         }
