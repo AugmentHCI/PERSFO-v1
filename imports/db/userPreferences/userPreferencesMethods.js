@@ -75,7 +75,8 @@ Meteor.methods({
             { $set: { ffqAnswers: ffqAnswers, hexadAnswers: hexadAnswers } }
         );
 
-        food4me(ffqAnswers);
+        const userID = this.userId; // needed because this is different in HTTP call.
+        food4me(ffqAnswers, userID);
     },
     "users.savePartialSurvey"(SurveyAnswers) {
         check(SurveyAnswers, Object);

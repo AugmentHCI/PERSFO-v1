@@ -28,7 +28,7 @@ export function initFFQ() {
     }
 }
 
-export function food4me(FFQ) {
+export function food4me(FFQ, userID) {
     let call = HTTP.call("POST", food4meURL, {
         headers: {
             "x-api-key": quisperToken,
@@ -38,12 +38,13 @@ export function food4me(FFQ) {
     }
     );
     if (call.data) {
+        console.log("food4me: food4me data for user loaded:" + userID);
         UserPreferences.upsert(
-            { userid: this.userId },
+            { userid: userID },
             { $set: { food4me: call.data } }
         );
     } else {
-        console.log("no food4me data for user:" + this.userId);
+        console.log("food4me: no food4me data for user:" + userID);
     }
 }
 
