@@ -27,7 +27,12 @@ export function initData() {
       });
     });
   });
-  console.log("initData: menus loaded");
+
+
+  allRecipeIds = [...new Set(allRecipeIds)];
+
+
+  console.log("initData: menus loaded: " + new Date());
 
   // allRecipeIds.forEach((recipeId) => {
   //   try {
@@ -47,7 +52,7 @@ export function initData() {
   let hexadQuestions = JSON.parse(Assets.getText("data/surveys/hexad-nl.json"));
   HexadCollection.upsert({ version: "1" }, { $set: { survey: hexadQuestions } });
 
-  console.log("initData: hexad loaded");
+  console.log("initData: hexad loaded: " + new Date());
 
   // TODO check if needed
   // const oldRecipeIds = _.map(RecipesCollection.find({}).fetch(), r => r.id);
@@ -65,10 +70,10 @@ export function initData() {
     ingredientIndex = 0;
     updateRecipeDetails();
 
-  }, 30 * 60 * 1000);
+  }, 45 * 60 * 1000);
 
   updateRecipeDetails();
-  console.log("initData: reciped loadings started");
+  console.log("initData: reciped loadings started: "+ new Date());
 
   // function to fetch data in intervals
   function updateRecipeDetails() {
@@ -125,6 +130,8 @@ export function initData() {
           { multi: true }
         );
 
+        allIngredients = [...new Set(allIngredients)];
+
         updateIngredientDetails();
       }
     }, 1001);
@@ -172,7 +179,7 @@ export function initData() {
   }
 
   function configureIngredients() {
-    console.log("initData: ingredient cleaning started");
+    console.log("initData: ingredient cleaning started: " + new Date());
     RecipesCollection.find({}).fetch().forEach(recipe => {
 
       let cleanedIngredients = [];
@@ -198,13 +205,13 @@ export function initData() {
             let composition = ingredient.composition;
             if (composition && composition !== null) {
               let tempIngredients = composition
-                .replace(/\*/g,"")
-                .replace(/NFM/g,"")
+                .replace(/\*/g, "")
+                .replace(/NFM/g, "")
                 .split(',');
               tempIngredients = tempIngredients.map(tmp => capitalizeFirstLetter(tmp
                 .trim()
-                .replace(/\[|\]/g,"")
-                .replace(/(^'+|'+$)/mg,"")
+                .replace(/\[|\]/g, "")
+                .replace(/(^'+|'+$)/mg, "")
                 .toLowerCase()));
               cleanedIngredients.push(tempIngredients);
             }
@@ -226,7 +233,7 @@ export function initData() {
 
     });
 
-    console.log("initData: done");
+    console.log("initData: done: " + new Date());
   }
 }
 
@@ -250,7 +257,7 @@ export function getNbDisliked(recipe, dislikedIngredients) {
   let counter = 0;
   if (recipe && recipe.cleanedIngredients) {
     for (let i = 0; i < recipe.cleanedIngredients.length; i++) {
-      if(_.includes(dislikedIngredients, recipe.cleanedIngredients[i])) {
+      if (_.includes(dislikedIngredients, recipe.cleanedIngredients[i])) {
         counter++;
       }
     }
