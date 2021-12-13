@@ -16,9 +16,12 @@ Meteor.methods({
         }
         // init recommendations
 
+            const earlier = new Date(new Date().setDate(new Date().getDate()-7)).toISOString().substring(0, 10);
+
         // find today's menu
         let menu = MenusCollection.findOne({
-            starting_date: new Date().toISOString().substring(0, 10),
+            starting_date: earlier,
+            // starting_date: new Date().toISOString().substring(0, 10),
         });
         // pick random menu when no menu available today
         if (!menu) {
