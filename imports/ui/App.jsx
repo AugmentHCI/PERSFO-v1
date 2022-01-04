@@ -174,9 +174,9 @@ export const App = () => {
       const recommendedRecipes = RecommendedRecipes.findOne({
         userid: Meteor.userId(),
       }).recommendations;
-      recommendedRecipeId = _.filter(
+      recommendedRecipeId = _.sortBy(
         recommendedRecipes,
-        (r) => r.ranking === 1
+        r => -r.ranking
       )[0].id;
     } catch (error) {
       console.log("no recommendations anymore: " + error)

@@ -70,43 +70,31 @@ Meteor.methods({
         });
 
         // calculate min and max nutritional values
-        let fiber = { min: 9999, max: 0 };
-        let vitamineA = { min: 9999, max: 0 };
-        let vitamineB12 = { min: 9999, max: 0 };
-        let vitamineC = { min: 9999, max: 0 };
-        let unsaturatedFat = { min: 9999, max: 0 };
-        let monoUnsaturatedFat = { min: 9999, max: 0 };
-        let polyUnsaturatedFat = { min: 9999, max: 0 };
-        let carbohydrate = { min: 9999, max: 0 };
-        let protein = { min: 9999, max: 0 };
-        let totalFat = { min: 9999, max: 0 };
-        let calcium = { min: 9999, max: 0 };;
-        let iron = { min: 9999, max: 0 };
-        let salt = { min: 9999, max: 0 };
-        let saturatedFats = { min: 9999, max: 0 };
+        let fiber = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "fibre", quisperName: "Fiber", quisperRating: "Rating_Total" };
+        let vitamineA = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_a", quisperName: "VitaminA", quisperRating: "Rating_Total" };
+        let vitamineB12 = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_b12", quisperName: "VitaminB12", quisperRating: "Rating_Total" };
+        let vitamineC = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_c", quisperName: "VitaminC", quisperRating: "Rating_Total" };
+        // let unsaturatedFat = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
+        let monoUnsaturatedFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "mono_unsaturated_fat", quisperName: "UnsaturatedFat.MonoUnsaturatedFat", quisperRating: "Rating_Total" };
+        let polyUnsaturatedFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "poly_unsaturated_fat", quisperName: "UnsaturatedFat.PolyUnsaturatedFat", quisperRating: "Rating_Total" };
+        // let carbohydrate = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
+        let protein = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "protein", quisperName: "Protein", quisperRating: "Rating_Total" };
+        let totalFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "fat", quisperName: "TotalFat", quisperRating: "Rating_Total" };
+        let calcium = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "calcium", quisperName: "Calcium", quisperRating: "Rating_Total" };;
+        let iron = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "iron", quisperName: "Iron", quisperRating: "Rating_Total" };
+        // let salt = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
+        let saturatedFats = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "saturated_fat", quisperName: "SaturatedFats", quisperRating: "Rating" };
+
+        const nutrients = [fiber, vitamineA, vitamineB12, vitamineC, monoUnsaturatedFat, polyUnsaturatedFat, protein, totalFat, calcium, iron, saturatedFats]
 
         // update today's min and max values.
         todaysRecipes.forEach(recipe => {
-            updateMinMax(fiber, calculateNutrientforRecipe(recipe, "fibre"));
-            updateMinMax(vitamineA, calculateNutrientforRecipe(recipe, "vitamin_a"));
-            updateMinMax(vitamineB12, calculateNutrientforRecipe(recipe, "vitamin_b12"));
-            updateMinMax(vitamineC, calculateNutrientforRecipe(recipe, "vitamin_c"));
-            // updateMinMax(unsaturatedFat, calculateNutrientforRecipe(recipe, "fat"));
-            updateMinMax(monoUnsaturatedFat, calculateNutrientforRecipe(recipe, "mono_unsaturated_fat"));
-            updateMinMax(polyUnsaturatedFat, calculateNutrientforRecipe(recipe, "poly_unsaturated_fat"));
-            // updateMinMax(carbohydrate, calculateNutrientforRecipe(recipe, "vitamin_a"));
-            updateMinMax(protein, calculateNutrientforRecipe(recipe, "protein"));
-            updateMinMax(totalFat, calculateNutrientforRecipe(recipe, "fat"));
-            updateMinMax(calcium, calculateNutrientforRecipe(recipe, "calcium"));
-            updateMinMax(iron, calculateNutrientforRecipe(recipe, "iron"));
-            // updateMinMax(salt, calculateNutrientforRecipe(recipe, "vitamin_a"));
-            updateMinMax(saturatedFats, calculateNutrientforRecipe(recipe, "saturated_fat"));
+            nutrients.forEach(nutrient => {
+                const value = calculateNutrientforRecipe(recipe, nutrient["apicName"])
+                nutrient["min"] = nutrient["min"] < value ? nutrient["min"] : value;
+                nutrient["max"] = nutrient["max"] > value ? nutrient["max"] : value;
+            });
         });
-
-        function updateMinMax(parameter, value) {
-            parameter["min"] = parameter["min"] < value ? parameter["min"] : value;
-            parameter["max"] = parameter["max"] > value ? parameter["max"] : value;
-        }
 
         // filter recipes without an image and/or no nutrient data
         todaysRecipes = _.filter(todaysRecipes, (recipe) => {
@@ -142,51 +130,27 @@ Meteor.methods({
         const food4me = userpreferences?.food4me?.Output;
         // console.log(food4me);
 
-        // Food4Me weights
-        const fiberRating = food4me.Fiber.Rating_Total;
-        const vitamineARating = food4me.VitaminA.Rating_Total;
-
         // last step! Assign rankings
         const now = new Date().getTime();
         for (let i = 0; i < todaysRecipes.length; i++) {
             let score = 0;
             const recipe = todaysRecipes[i];
 
-            // // fibers
-            // switch (fiberRating) {
-            //     case "LOW":
-            //         score += fiber.max ? (calculateNutrientforRecipe(recipe, "fibre")) / fiber.max : fiber.max;
-            //         break;
-            //     case "HIGH":
-            //         score -= 0.5 * (fiber.max ? (calculateNutrientforRecipe(recipe, "fibre")) / fiber.max : fiber.max);
-            //         break;
-            //     case "NA":
-            //         score += 0.01; // todo decide fiber positive or negative
-            //         console.log("no fiber food4me data")
-            //         break;
-            //     default:
-            //         break;
-            // }
+            nutrients.forEach(nutrient => {
+                try {
+                    score += getNutrientRatingForRecipe(nutrient, recipe);
+                } catch (error) {
+                    console.log(nutrient.quisperName);
+                    console.log(error);
+                }
+            });
 
-            // // vitamineA
-            // switch (vitamineARating) {
-            //     case "LOW":
-            //         score += vitamineA.max ? (calculateNutrientforRecipe(recipe, "fibre")) / vitamineA.max : vitamineA.max;
-            //         break;
-            //     case "HIGH":
-            //         score -= 0.5 * (vitamineA.max ? (calculateNutrientforRecipe(recipe, "fibre")) / vitamineA.max : vitamineA.max);
-            //         break;
-            //     case "NA":
-            //         score += 0.01; // todo decide fiber positive or negative
-            //         console.log("no vitamineA food4me data")
-            //         break;
-            //     default:
-            //         break;
-            // }
-            // todaysRecipes[i].ranking = score;
+            console.log(recipe.name + " " + score);
+
+            todaysRecipes[i].ranking = score;
 
             // old
-            todaysRecipes[i].ranking = i + 1;
+            // todaysRecipes[i].ranking = i + 1;
 
             // needed to force rerender (new order does not change ids)
             todaysRecipes[i].lastUpdated = now;
@@ -197,5 +161,32 @@ Meteor.methods({
             { userid: this.userId },
             { $set: { recommendations: todaysRecipes } }
         );
+
+        function getNutrientRatingForRecipe(ranges, recipe) {
+            let score,rating;
+            let splittedQuisperName = ranges.quisperName.split(".");
+            if (splittedQuisperName.length == 1) {
+                rating = food4me[ranges.quisperName][ranges.quisperRating]
+            } else {
+                rating = food4me[splittedQuisperName[0]][splittedQuisperName[1]][ranges.quisperRating]
+            }
+            switch (rating) {
+                case "LOW":
+                    score = ranges["low"] * (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+                    break;
+                case "HIGH":
+                    score = ranges["high"] * (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+                    break;
+                case "NA":
+                    score = ranges["neutral"];
+                    break;
+                case "NORMAL":
+                    score = ranges["neutral"];
+                    break;
+                default:
+                    break;
+            }
+            return score;
+        }
     },
 });
