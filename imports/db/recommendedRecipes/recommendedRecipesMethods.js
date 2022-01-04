@@ -3,8 +3,9 @@ import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRe
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
+import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 
-import { getElementID, getNutriscore, getNbDisliked } from "/imports/api/apiPersfo";
+import { getElementID, getNutriscoreRankingValue, getNbDisliked } from "/imports/api/apiPersfo";
 import { calculateNutrientforRecipe } from '../../api/apiPersfo';
 
 const coursesToIgnore = ["Dranken", "Soep"];
@@ -69,33 +70,6 @@ Meteor.methods({
             return true;
         });
 
-        // calculate min and max nutritional values
-        let fiber = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "fibre", quisperName: "Fiber", quisperRating: "Rating_Total" };
-        let vitamineA = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_a", quisperName: "VitaminA", quisperRating: "Rating_Total" };
-        let vitamineB12 = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_b12", quisperName: "VitaminB12", quisperRating: "Rating_Total" };
-        let vitamineC = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "vitamin_c", quisperName: "VitaminC", quisperRating: "Rating_Total" };
-        // let unsaturatedFat = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
-        let monoUnsaturatedFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "mono_unsaturated_fat", quisperName: "UnsaturatedFat.MonoUnsaturatedFat", quisperRating: "Rating_Total" };
-        let polyUnsaturatedFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "poly_unsaturated_fat", quisperName: "UnsaturatedFat.PolyUnsaturatedFat", quisperRating: "Rating_Total" };
-        // let carbohydrate = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
-        let protein = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "protein", quisperName: "Protein", quisperRating: "Rating_Total" };
-        let totalFat = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "fat", quisperName: "TotalFat", quisperRating: "Rating_Total" };
-        let calcium = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "calcium", quisperName: "Calcium", quisperRating: "Rating_Total" };;
-        let iron = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "iron", quisperName: "Iron", quisperRating: "Rating_Total" };
-        // let salt = { min: 9999, max: 0, low: 1, high: -0.5, neutral: 0.01, apicName:  };
-        let saturatedFats = { min: 9999, max: 0, low: 2, high: 0.05, neutral: 0.5, apicName: "saturated_fat", quisperName: "SaturatedFats", quisperRating: "Rating" };
-
-        const nutrients = [fiber, vitamineA, vitamineB12, vitamineC, monoUnsaturatedFat, polyUnsaturatedFat, protein, totalFat, calcium, iron, saturatedFats]
-
-        // update today's min and max values.
-        todaysRecipes.forEach(recipe => {
-            nutrients.forEach(nutrient => {
-                const value = calculateNutrientforRecipe(recipe, nutrient["apicName"])
-                nutrient["min"] = nutrient["min"] < value ? nutrient["min"] : value;
-                nutrient["max"] = nutrient["max"] > value ? nutrient["max"] : value;
-            });
-        });
-
         // filter recipes without an image and/or no nutrient data
         todaysRecipes = _.filter(todaysRecipes, (recipe) => {
             return recipe.main_image !== null;
@@ -119,38 +93,58 @@ Meteor.methods({
             }
         });
 
-        // find recipe with most likes --> TODO make smarter
-        // todaysRecipes = _.sortBy(todaysRecipes, ["nbLikes"]);
+        // calculate min and max nutritional values
+        let fiber = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "fibre", quisperName: "Fiber", quisperRating: "Rating_Total" };
+        let vitamineA = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_a", quisperName: "VitaminA", quisperRating: "Rating_Total" };
+        let vitamineB12 = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_b12", quisperName: "VitaminB12", quisperRating: "Rating_Total" };
+        let vitamineC = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_c", quisperName: "VitaminC", quisperRating: "Rating_Total" };
+        let monoUnsaturatedFat = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "mono_unsaturated_fat", quisperName: "UnsaturatedFat.MonoUnsaturatedFat", quisperRating: "Rating_Total" };
+        let polyUnsaturatedFat = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "poly_unsaturated_fat", quisperName: "UnsaturatedFat.PolyUnsaturatedFat", quisperRating: "Rating_Total" };
+        let protein = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "protein", quisperName: "Protein", quisperRating: "Rating_Total" };
+        let totalFat = { min: 9999, max: 0, low: 2, high: -1, neutral: 0, apicName: "fat", quisperName: "TotalFat", quisperRating: "Rating_Total" };
+        let calcium = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "calcium", quisperName: "Calcium", quisperRating: "Rating_Total" };;
+        let iron = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "iron", quisperName: "Iron", quisperRating: "Rating_Total" };
+        let saturatedFats = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "saturated_fat", quisperName: "SaturatedFats", quisperRating: "Rating" };
+
+        const nutrients = [fiber, vitamineA, vitamineB12, vitamineC, monoUnsaturatedFat, polyUnsaturatedFat, protein, totalFat, calcium, iron, saturatedFats]
+
+        let nbOrderedMax = 0;
+
+        // update today's min and max values.
+        todaysRecipes.forEach(recipe => {
+            nutrients.forEach(nutrient => {
+                const value = calculateNutrientforRecipe(recipe, nutrient["apicName"])
+                nutrient["min"] = nutrient["min"] < value ? nutrient["min"] : value;
+                nutrient["max"] = nutrient["max"] > value ? nutrient["max"] : value;
+            });
+            const nbOrders = OrdersCollection.find({ recipeId: recipe.id }).fetch().length;
+            nbOrderedMax = nbOrders < nbOrderedMax ? nbOrderedMax : nbOrders;
+        });
 
         // sort recipe by dislikedingredient first, then by decent nutriscore
         const dislikedIngredients = userpreferences?.dislikedIngredients ? userpreferences.dislikedIngredients : [];
-        todaysRecipes = _.sortBy(todaysRecipes, r => [getNbDisliked(r, dislikedIngredients), getNutriscore(r)]);
-
-
         const food4me = userpreferences?.food4me?.Output;
-        // console.log(food4me);
+        const nbLikedMax = _.maxBy(todaysRecipes, "nbLikes").nbLikes;
 
         // last step! Assign rankings
         const now = new Date().getTime();
         for (let i = 0; i < todaysRecipes.length; i++) {
-            let score = 0;
+            let totalfood4meRankingScore = 0;
+            let scoreContributions = [];
             const recipe = todaysRecipes[i];
 
             nutrients.forEach(nutrient => {
-                try {
-                    score += getNutrientRatingForRecipe(nutrient, recipe);
-                } catch (error) {
-                    console.log(nutrient.quisperName);
-                    console.log(error);
-                }
+                score = getNutrientRatingForRecipe(nutrient, recipe);
+                totalfood4meRankingScore += score.value;
+                scoreContributions.push(score);
             });
 
-            console.log(recipe.name + " " + score);
-
-            todaysRecipes[i].ranking = score;
-
-            // old
-            // todaysRecipes[i].ranking = i + 1;
+            todaysRecipes[i].dislikedIngredientsRanking = dislikedIngredients.length !== 0 ? 1 - (getNbDisliked(recipe, dislikedIngredients) / dislikedIngredients.length) : 0;
+            todaysRecipes[i].nblikedRanking = recipe.nbLikes / nbLikedMax;
+            todaysRecipes[i].nutriscoreRanking = getNutriscoreRankingValue(recipe);
+            todaysRecipes[i].food4meRanking = totalfood4meRankingScore;
+            todaysRecipes[i].ordersRanking = OrdersCollection.find({ recipeId: recipe.id }).fetch().length / nbOrderedMax; // TODO make smarter, use Nyi Nyi's ranking score
+            todaysRecipes[i].explanations = _.sortBy(scoreContributions, s => -Math.abs(s.value));;
 
             // needed to force rerender (new order does not change ids)
             todaysRecipes[i].lastUpdated = now;
@@ -159,29 +153,31 @@ Meteor.methods({
         // insert/update recommendations for user
         RecommendedRecipes.upsert(
             { userid: this.userId },
-            { $set: { recommendations: todaysRecipes } }
+            { $set: { recommendations: _.sortBy(todaysRecipes, r => -r.food4meRanking) } }
         );
 
         function getNutrientRatingForRecipe(ranges, recipe) {
-            let score,rating;
+            let rating;
             let splittedQuisperName = ranges.quisperName.split(".");
             if (splittedQuisperName.length == 1) {
                 rating = food4me[ranges.quisperName][ranges.quisperRating]
             } else {
                 rating = food4me[splittedQuisperName[0]][splittedQuisperName[1]][ranges.quisperRating]
             }
+            let normalizedNutrient = (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+            let score = { value: 0, food4me: ranges.quisperName, rating: rating, normalizedNutrient: normalizedNutrient }
             switch (rating) {
                 case "LOW":
-                    score = ranges["low"] * (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+                    score.value = ranges["low"] * normalizedNutrient;
                     break;
                 case "HIGH":
-                    score = ranges["high"] * (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+                    score.value = ranges["high"] * normalizedNutrient;
                     break;
                 case "NA":
-                    score = ranges["neutral"];
+                    score.value = ranges["neutral"] * normalizedNutrient;
                     break;
                 case "NORMAL":
-                    score = ranges["neutral"];
+                    score.value = ranges["neutral"] * normalizedNutrient;
                     break;
                 default:
                     break;

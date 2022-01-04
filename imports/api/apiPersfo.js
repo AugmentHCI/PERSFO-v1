@@ -73,7 +73,7 @@ export function initData() {
   }, 45 * 60 * 1000);
 
   updateRecipeDetails();
-  console.log("initData: reciped loadings started: "+ new Date());
+  console.log("initData: reciped loadings started: " + new Date());
 
   // function to fetch data in intervals
   function updateRecipeDetails() {
@@ -107,7 +107,7 @@ export function initData() {
 
         }
       } catch (error) {
-          console.log(error);
+        console.log(error);
       }
 
       index++;
@@ -251,6 +251,24 @@ export function getNutriscore(recipe) {
 
 export function getNutriscoreImage(recipe) {
   return "/images/nutri" + getNutriscore(recipe) + ".jpg";
+}
+
+export function getNutriscoreRankingValue(recipe) {
+  switch (getNutriscore(recipe)) {
+    case "A":
+      return 1;
+    case "B":
+      return 0.8;
+    case "C":
+      return 0.5;
+    case "D":
+      return 0.2;
+    case "E":
+      return 0;
+    default:
+      console.log("apipersfo - getNutriscoreRankingValue: should not have happend!")
+      break;
+  };
 }
 
 export function getEcoScore(recipe) {

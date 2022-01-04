@@ -176,7 +176,7 @@ export const App = () => {
       }).recommendations;
       recommendedRecipeId = _.sortBy(
         recommendedRecipes,
-        r => -r.ranking
+        r => -r.food4meRanking
       )[0].id;
     } catch (error) {
       console.log("no recommendations anymore: " + error)
