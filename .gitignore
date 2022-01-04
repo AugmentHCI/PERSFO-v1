@@ -1,2 +1,4 @@
 app/node_modules/
 private/
+python-app/data_exclude/
+python-app/extras/
