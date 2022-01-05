@@ -17,7 +17,7 @@ import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings
+  OpenSettings, OpenRecommenderExplanations
 } from "/imports/api/methods.js";
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
@@ -28,6 +28,7 @@ import { AllergiesContent } from "./tabs/AllergiesContent";
 import { IngredientsContent } from "./tabs/IngredientsContent";
 import { NutrientsContent } from "./tabs/NutrientsContent";
 import { SustainabilityContent } from "./tabs/SustainabilityContent";
+import { Food4MeContent } from "./tabs/Food4MeContent";
 
 const persfoTheme = createTheme({
   palette: {
@@ -110,6 +111,7 @@ export const App = () => {
     GetOpenProgress,
     GetOpenSettings,
     GetOpenFeedback,
+    GetOpenRecommenderExplanations,
     menu,
     isLoading,
     doneForToday,
@@ -135,6 +137,7 @@ export const App = () => {
     const GetOpenProgress = OpenProgress.get();
     const GetOpenSettings = OpenSettings.get();
     const GetOpenFeedback = OpenFeedback.get();
+    const GetOpenRecommenderExplanations = OpenRecommenderExplanations.get();
 
     if (!Meteor.user() || !menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
       return { ...noDataAvailable, isLoading: true };
@@ -188,7 +191,7 @@ export const App = () => {
 
     const recommendedRecipe = tempRecommendation
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenRecommenderExplanations, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
   });
 
   const TabPanel = (props) => {
@@ -222,8 +225,20 @@ export const App = () => {
     }
   };
 
+  const renderExplanationTabContent = (tabValue) => {
+    const recipe = GetOpenRecommenderExplanations[0];
+    switch (tabValue) {
+      case 0:
+        return <Food4MeContent recipe={recipe} />;
+      case 1:
+        return <IngredientsContent recipe={recipe} />;
+      case 2:
+        return <Food4MeContent recipe={recipe} />;
+    }
+  };
+
   const switchRenderScreen = () => {
-    let renderScreen;
+    let renderScreen = <div>{isLoading && <CircularProgress />}</div>;
     if (user) {
 
       if (!icfFinished) {
@@ -239,41 +254,57 @@ export const App = () => {
           } else {
 
             if (GetOpenMealDetails == null) {
-              renderScreen = (
-                <>
-                  <div>{isLoading && <CircularProgress />}</div>
-                  <Tabs
-                    className={classes.tabs}
-                    value={value}
-                    onChange={handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="scrollable"
-                    scrollButtons="auto"
-                  >
-                    {" "}
-                    {getCoursesTabs()}{" "}
-                  </Tabs>
-                  {_.map(menu.courses, function (n, i) {
-                    return (
-                      <TabPanel key={i} value={value} index={i}>
-                        <TabHomeScreen recommendedRecipe={recommendedRecipe} recipeURLs={menu.courses[i].recipes} courseName={n.name} />
-                      </TabPanel>
-                    );
-                  })}
-                </>
-              );
-
               if (GetOpenProgress) {
                 renderScreen = <Progress recommendedRecipe={recommendedRecipe} />;
               }
 
-              if (GetOpenSettings) {
+              else if (GetOpenSettings) {
                 renderScreen = <Preferences />;
               }
 
-              if (GetOpenFeedback) {
+              else if (GetOpenFeedback) {
                 renderScreen = <Feedback />;
+              }
+
+              else if (GetOpenRecommenderExplanations) {
+                renderScreen = (
+                  <DetailScreen
+                    recipe={GetOpenRecommenderExplanations[0]}
+                    allergensPresent={GetOpenRecommenderExplanations[1]}
+                    renderTabContent={renderExplanationTabContent}
+                    tabTitles={[i18n.__("general.questionnaire"), i18n.__("general.history"), i18n.__("general.popularity")]}
+                  />
+                );
+              }
+
+              else {
+                renderScreen = (
+                  <>
+                    <div>{isLoading && <CircularProgress />}</div>
+                    <Tabs
+                      className={classes.tabs}
+                      value={value}
+                      onChange={handleChange}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      variant="scrollable"
+                      scrollButtons="auto"
+                    >
+                      {" "}
+                      {getCoursesTabs()}{" "}
+                    </Tabs>
+                    {_.map(menu.courses, function (n, i) {
+                      return (
+                        <TabPanel key={i} value={value} index={i}>
+                          <TabHomeScreen
+                            recommendedRecipe={recommendedRecipe}
+                            recipeURLs={menu.courses[i].recipes}
+                            courseName={n.name} />
+                        </TabPanel>
+                      );
+                    })}
+                  </>
+                );
               }
 
             } else if (GetOpenMealDetails !== null) {
@@ -282,7 +313,7 @@ export const App = () => {
                   recipe={GetOpenMealDetails[0]}
                   allergensPresent={GetOpenMealDetails[1]}
                   renderTabContent={renderMealScreenTabContent}
-                  tabTitles={[i18n.__("general.nutrients"), i18n.__("general.ingredients"),i18n.__("general.allergens"),i18n.__("sustainability.sustainability")]}
+                  tabTitles={[i18n.__("general.nutrients"), i18n.__("general.ingredients"), i18n.__("general.allergens"), i18n.__("sustainability.sustainability")]}
                 />
               );
             }

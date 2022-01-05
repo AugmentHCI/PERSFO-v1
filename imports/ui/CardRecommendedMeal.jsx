@@ -23,6 +23,7 @@ import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { getNbDisliked } from "/imports/api/apiPersfo";
 import { LikeButton } from "./components/LikeButton";
+import { OpenRecommenderExplanations } from "../api/methods";
 
 
 const useStyles = makeStyles(() => ({
@@ -211,6 +212,10 @@ export const CardRecommendedMeal = ({ recipe, handleDetailsClick, allergensPrese
     Meteor.call("recommender.updateRecommendations")
   };
 
+  const handleWhyClick = () => {
+    OpenRecommenderExplanations.set([recipe, allergensPresent])
+  }
+
   return (
     <Card>
       <div style={{ display: "flex" }}>
@@ -267,7 +272,7 @@ export const CardRecommendedMeal = ({ recipe, handleDetailsClick, allergensPrese
         <Button
           size="large"
           color="primary"
-          onClick={() => handleDetailsClick()}
+          onClick={() => handleWhyClick()}
         >
           {i18n.__("general.more_info")}
         </Button>

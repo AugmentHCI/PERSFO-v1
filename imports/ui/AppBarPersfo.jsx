@@ -14,10 +14,10 @@ import { getImage } from "/imports/api/apiPersfo";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings
+  OpenSettings,
+  OpenRecommenderExplanations
 } from "/imports/api/methods.js";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
-import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
 const useStyles = makeStyles(() => ({
   header: {
@@ -70,13 +70,14 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   const [background, setBackground] = useState("none");
 
-  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback } = useTracker(
+  const { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenRecommenderExplanations } = useTracker(
     () => {
       const GetOpenMealDetails = OpenMealDetails.get();
       const GetOpenProgress = OpenProgress.get();
       const GetOpenSettings = OpenSettings.get();
       const GetOpenFeedback = OpenFeedback.get();
-      return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback };
+      const GetOpenRecommenderExplanations = OpenRecommenderExplanations.get();
+      return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenRecommenderExplanations };
     }
   );
 
@@ -108,13 +109,19 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   const closeMealScreen = () => {
     OpenMealDetails.set(null);
+    OpenRecommenderExplanations.set(null);
     setBackground("none");
     Meteor.call("log", componentName, "closeMealScreen", navigator.userAgent);
   };
 
   useEffect(() => {
-    if (GetOpenMealDetails !== null) {
-      let url = getImage(GetOpenMealDetails[0]);
+    if (GetOpenMealDetails !== null || GetOpenRecommenderExplanations !== null) {
+      let url;
+      try {
+        url = getImage(GetOpenMealDetails[0]);
+      } catch (error) {
+        url = getImage(GetOpenRecommenderExplanations[0]);
+      }
       if (url === "/images/Image-not-found.png") {
         url = undefined;
       }
@@ -124,7 +131,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   const switchHeader = () => {
     if (!user) return i18n.__("AppBarPersfo.welcome");
-    if (GetOpenMealDetails !== null) return ""; // no title, meal image is displayed
+    if (GetOpenMealDetails !== null || GetOpenRecommenderExplanations !== null) return ""; // no title, meal image is displayed
 
     if (!icfFinished) return i18n.__("AppBarPersfo.icf");
     if (!surveyFinished) return i18n.__("AppBarPersfo.survey");
@@ -159,7 +166,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
       {
         (() => {
           // Normal header
-          if (user && GetOpenMealDetails == null && icfFinished && surveyFinished) {
+          if (user && GetOpenMealDetails == null && GetOpenRecommenderExplanations == null && icfFinished && surveyFinished) {
             return (
               <>
                 <div className={classes.header}>

@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import React from "react";
 
 
-export const NutrientsBar = ({ title, value, maxValue, unit, color }) => {
+export const NutrientsBar = ({ title, value, maxValue, unit, color, hideMaxValue }) => {
     if (value >= maxValue) {
         maxValue = value;
     }
@@ -21,9 +21,10 @@ export const NutrientsBar = ({ title, value, maxValue, unit, color }) => {
                     {title}
                 </div>
                 <div style={{ color: "#717171", fontSize: "12px" }}>
-                    {value.toLocaleString()}/
+                    {value.toLocaleString()}
+                    {hideMaxValue ? "" : "/"}
                     <span style={{ color: color }}>
-                        {maxValue < 0.001 ? 0 : maxValue.toLocaleString()}
+                        {hideMaxValue ? "" : (maxValue < 0.001 ? 0 : maxValue.toLocaleString())}
                     </span>
                     &nbsp;{String(unit)}
                 </div>

@@ -39,11 +39,11 @@ const componentName = "TabHomeScreen";
 export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => {
   const classes = useStyles();
 
-  const handleInfo = () => {
-    OpenRecommenderExplanations.set(recommendedRecipe)
-    // setToast(true);
-    Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
-  };
+  // const handleInfo = () => {
+  //   OpenRecommenderExplanations.set([recommendedRecipe])
+  //   // setToast(true);
+  //   Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
+  // };
 
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
@@ -78,9 +78,9 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
           <>
             <div className={classes.titleContent}>
               <h1 className={classes.title}>{i18n.__("app.today_recommendation")}</h1>
-              <IconButton onClick={handleInfo}>
+              {/* <IconButton onClick={handleInfo}>
                 <HelpOutlineIcon />
-              </IconButton>
+              </IconButton> */}
             </div>
             <div style={{ padding: "4px" }}>
               <RecipeComponent

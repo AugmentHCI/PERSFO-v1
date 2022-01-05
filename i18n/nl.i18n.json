@@ -26,7 +26,7 @@
         "cancel": "Annuleer",
         "today": "Vandaag",
         "five_days_ago": "5 dagen geleden",
-        "more_info": "Meer informatie",
+        "more_info": "Waarom?",
         "no_data": "Geen data",
         "nutrients": "Nutriënten",
         "allergens": "Allergiën",
@@ -42,7 +42,12 @@
         "i_agree": "Ik ga akkoord",
         "continue": "Verder",
         "back": "Terug",
-        "home": "Maaltijden"
+        "home": "Maaltijden",
+        "questionnaire": "Vragenlijst",
+        "history": "Geschiedenis",
+        "popularity": "Populariteit",
+        "contribution": "bijdrage",
+        "personal_advise": "Persoonlijk advies"
     },
     "errors": {
         "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend",
