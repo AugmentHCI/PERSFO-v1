@@ -75,7 +75,7 @@ export const App = () => {
       return;
     }
     setState(open);
-    Meteor.call("log", componentName, "toggleDrawer", navigator.userAgent );
+    Meteor.call("log", componentName, "toggleDrawer", navigator.userAgent);
   };
 
   // Shopping basket drawer logic
@@ -149,7 +149,7 @@ export const App = () => {
       setLastRecommenderUpdate(now.getTime());
     }
 
-    const earlier = new Date(new Date().setDate(new Date().getDate()-7)).toISOString().substring(0, 10);
+    const earlier = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().substring(0, 10);
     // pick specific date for demo
     // let menu = MenusCollection.findOne({ starting_date: "2021-12-07" });
     // pick menu of today TODO
@@ -171,22 +171,15 @@ export const App = () => {
     let tempRecommendation = null;
     let noMoreRecommendations = false;
     try {
-      const recommendedRecipes = RecommendedRecipes.findOne({
-        userid: Meteor.userId(),
-      }).recommendations;
-      recommendedRecipeId = _.sortBy(
-        recommendedRecipes,
-        r => -r.food4meRanking
-      )[0].id;
+      const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
+      recommendedRecipeId = _.sortBy(recommendedRecipes, r => -r.food4meRanking)[0].id;
     } catch (error) {
       console.log("no recommendations anymore: " + error)
       noMoreRecommendations = true;
     }
 
     if (!noMoreRecommendations) {
-      tempRecommendation = RecipesCollection.findOne({
-        id: recommendedRecipeId,
-      });
+      tempRecommendation = RecipesCollection.findOne({ id: recommendedRecipeId });
     }
 
     const recommendedRecipe = tempRecommendation

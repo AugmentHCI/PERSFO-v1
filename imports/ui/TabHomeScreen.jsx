@@ -6,6 +6,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
 import { getElementID } from "/imports/api/apiPersfo";
 import { RecipeComponent } from './RecipeComponent';
+import { OpenRecommenderExplanations } from "/imports/api/methods.js";
 
 const useStyles = makeStyles((persfoTheme) => ({
   titleContent: {
@@ -39,7 +40,8 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
   const classes = useStyles();
 
   const handleInfo = () => {
-    setToast(true);
+    OpenRecommenderExplanations.set(recommendedRecipe)
+    // setToast(true);
     Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
   };
 
@@ -77,7 +79,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
             <div className={classes.titleContent}>
               <h1 className={classes.title}>{i18n.__("app.today_recommendation")}</h1>
               <IconButton onClick={handleInfo}>
-                <HelpOutlineIcon fontSize="small" />
+                <HelpOutlineIcon />
               </IconButton>
             </div>
             <div style={{ padding: "4px" }}>

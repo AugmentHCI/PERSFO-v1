@@ -1,25 +1,17 @@
-import { Button, LinearProgress, Tab, Tabs } from "@material-ui/core/";
-import { green, red } from "@material-ui/core/colors";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { Button, Tab, Tabs } from "@material-ui/core/";
+import { red } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { OrderButton } from "./components/OrderButton";
-import {
-  calculateNutrientforRecipe,
-  getNutriscoreImage,
-  getEcoImage,
-} from "/imports/api/apiPersfo";
+import { AllergiesContent } from "./tabs/AllergiesContent";
+import { IngredientsContent } from "./tabs/IngredientsContent";
+import { NutrientsContent } from "./tabs/NutrientsContent";
+import { SustainabilityContent } from "./tabs/SustainabilityContent";
+import { getNutriscoreImage } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
-import { capitalizeFirstLetter } from "/imports/api/auxMethods";
-
-const BorderLinearProgress = withStyles((theme) => ({
-  colorPrimary: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  }
-}))(LinearProgress);
 
 const componentName = "MealScreen";
 export const MealScreen = ({ recipe }) => {
@@ -66,9 +58,6 @@ export const MealScreen = ({ recipe }) => {
     nutriscore: {
       height: "32px",
     },
-    ecoscore: {
-      height: "64px",
-    },
     tabFont: {
       fontSize: "10px",
     },
@@ -112,25 +101,6 @@ export const MealScreen = ({ recipe }) => {
       letterSpacing: "0px",
       textTransform: "uppercase",
     },
-    allergenBox: {
-      padding: "8px",
-      border: "1px solid " + green[300],
-      borderRadius: "10px",
-      color: green[300],
-    },
-    ingredientBox: {
-      padding: "8px",
-      border: "1px solid #F57D20",
-      borderRadius: "10px",
-      color: "#F57D20",
-    },
-    activeAllergenBox: {
-      padding: "8px",
-      border: "1px solid " + red[300],
-      background: red[300],
-      borderRadius: "10px",
-      color: "white",
-    },
     gapInBetween: {
       display: "flex",
       flexDirection: "column",
@@ -141,14 +111,10 @@ export const MealScreen = ({ recipe }) => {
 
   const classes = useStyles();
 
-  // Like logic
-  const { liked, nbLikes, userAllergens, nutrientGoals, recipeAllergens, allergensPresent } = useTracker(() => {
+  const { liked, nbLikes, allergensPresent } = useTracker(() => {
     const noDataAvailable = {
       liked: false,
       nbLikes: 0,
-      userAllergens: [],
-      nutrientGoals: {},
-      recipeAllergens: [],
       allergensPresent: false,
     };
     if (!recipe) return { ...noDataAvailable };
@@ -184,17 +150,7 @@ export const MealScreen = ({ recipe }) => {
     });
     const allergensPresent = allergensPresentTmp;
 
-    let nutrientGoals = {};
-    try {
-      const userNutrientGoals = userPreferences.nutrientGoals;
-      const userActiveNutrientGoals = userPreferences.activeNutrientGoals;
-      _.keys(userActiveNutrientGoals).forEach((key) => {
-        if (userActiveNutrientGoals[key]) {
-          nutrientGoals[key] = userNutrientGoals[key] + 0.0000001; // otherwise considered false
-        }
-      });
-    } catch (error) { }
-    return { liked, nbLikes, userAllergens, nutrientGoals, recipeAllergens, allergensPresent };
+    return { liked, nbLikes, allergensPresent };
   });
 
   const handleIncreaseLike = () => {
@@ -212,287 +168,12 @@ export const MealScreen = ({ recipe }) => {
     Meteor.call("log", componentName, "changeTab", navigator.userAgent, newValue);
   };
 
-  const getKcalInfo = () => {
-    try {
-      return recipe.kcal.toFixed(0) + " " + recipe.nutrition_info.kcal.unit;
-    } catch (e) { }
-  };
-
-  const getMPricing = () => {
-    try {
-      return "€" + recipe.current_sell_price.pricing.toFixed(2);
-    } catch (e) { }
-  };
-
-  const NutrientsBar = (props) => {
-    let maxValue = props.maxValue;
-    if (props.value >= props.maxValue) {
-      maxValue = props.value;
-    }
-    const normalise = ((props.value - 0) * 100) / (maxValue - 0);
-    return (
-      <div style={{ padding: "4px", marginBottom: "8px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "2px",
-          }}
-        >
-          <div style={{ color: "#717171", fontSize: "12px" }}>
-            {props.title}
-          </div>
-          <div style={{ color: "#717171", fontSize: "12px" }}>
-            {props.value.toLocaleString()}/
-            <span style={{ color: props.color }}>
-              {props.maxValue < 0.001 ? 0 : maxValue.toLocaleString()}
-            </span>
-            &nbsp;{String(props.unit)}
-          </div>
-        </div>
-        <BorderLinearProgress variant="determinate" value={normalise} />
-      </div>
-    );
-  };
-
-  const NutrientsContent = (props) => {
-    const r = props.recipe.nutrition_info;
-    const recipe = props.recipe;
-    let kcal = calculateNutrientforRecipe(recipe, "kcal");
-    let fat = calculateNutrientforRecipe(recipe, "fat");
-    let sat = calculateNutrientforRecipe(recipe, "saturated_fat");
-    let sug = calculateNutrientforRecipe(recipe, "sugar");
-    let prot = calculateNutrientforRecipe(recipe, "protein");
-    let fibr = calculateNutrientforRecipe(recipe, "fibre");
-    let potss = calculateNutrientforRecipe(recipe, "potassium");
-    let ukcal = "";
-    try {
-      ukcal = r.kcal.unit;
-    } catch (e) { }
-    let ufat = "";
-    try {
-      ufat = r.fat.unit;
-    } catch (e) { }
-    let usat = "";
-    try {
-      usat = r.saturated_fat.unit;
-    } catch (e) { }
-    let usug = "";
-    try {
-      usug = r.sugar.unit;
-    } catch (e) { }
-    let uprot = "";
-    try {
-      uprot = r.protein.unit;
-    } catch (e) { }
-    let ufibr = "";
-    try {
-      ufibr = r.fibre.unit;
-    } catch (e) { }
-    let upotss = "";
-    try {
-      upotss = r.potassium.unit;
-    } catch (e) { }
-
-    let noData = null;
-    if (_.sum([kcal, fat, sat, sug, prot, fibr, potss]) == 0)
-      noData = (
-        <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("general.no_data")}{" "}
-        </p>
-      );
-
-    return (
-      <>
-        <h1 className={classes.subtitle}>
-          {i18n.__("general.nutrients")}
-        </h1>
-        <div
-          style={{
-            overflowY: "scroll",
-            height: componentHeight - 325 - 65 - 30 - 60 + "px",
-          }}
-        >
-          {noData}
-          {kcal == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.energy")}
-              value={kcal}
-              maxValue={
-                nutrientGoals["energy"] ? nutrientGoals["energy"] : 2500
-              }
-              unit={ukcal}
-              color={nutrientGoals["energy"] ? "#F57D20" : undefined}
-            />
-          )}
-          {fat == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.total_fat")}
-              value={fat}
-              maxValue={
-                nutrientGoals["totalFat"] ? nutrientGoals["totalFat"] : 77
-              }
-              color={nutrientGoals["totalFat"] ? "#F57D20" : undefined}
-              unit={ufat}
-            />
-          )}
-          {sat == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.saturated_fats")}
-              value={sat}
-              maxValue={nutrientGoals["satFat"] ? nutrientGoals["satFat"] : 20}
-              color={nutrientGoals["satFat"] ? "#F57D20" : undefined}
-              unit={usat}
-            />
-          )}
-          {sug == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.sugar")}
-              value={sug}
-              maxValue={nutrientGoals["sugar"] ? nutrientGoals["sugar"] : 36}
-              color={nutrientGoals["sugar"] ? "#F57D20" : undefined}
-              unit={usug}
-            />
-          )}
-          {prot == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.proteins")}
-              value={prot}
-              maxValue={
-                nutrientGoals["protein"] ? nutrientGoals["protein"] : 56
-              }
-              color={nutrientGoals["protein"] ? "#F57D20" : undefined}
-              unit={uprot}
-            />
-          )}
-          {fibr == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.fibers")}
-              value={fibr}
-              maxValue={nutrientGoals["fiber"] ? nutrientGoals["fiber"] : 30}
-              color={nutrientGoals["fiber"] ? "#F57D20" : undefined}
-              unit={ufibr}
-            />
-          )}
-          {potss == 0 ? null : (
-            <NutrientsBar
-              title={i18n.__("general.potasium")}
-              value={potss}
-              maxValue={6000}
-              unit={upotss}
-            />
-          )}
-        </div>
-      </>
-    );
-  };
-
-  const AllergiesContent = (props) => {
-    let render = _.map(recipeAllergens, (allergy, i) => {
-      let className = userAllergens.includes(allergy) ? classes.activeAllergenBox : classes.allergenBox;
-      return (
-        <div className={className} key={i}>
-          {capitalizeFirstLetter(allergy.replace(/_/g, " "))}
-        </div>
-      );
-    });
-
-    if (_.isEmpty(recipeAllergens))
-      render = (
-        <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("general.no_data")}{" "}
-        </p>
-      );
-
-    return (
-      <>
-        <h1 className={classes.subtitle}>Allergens</h1>
-        <div style={{ overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px" }}>
-          <div
-            style={{
-              display: "flex",
-              columnGap: "8px",
-              flexWrap: "wrap",
-              rowGap: "8px",
-            }}
-          >
-            {render}
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  const IngredientContent = (props) => {
-    let tempIngredients = [];
-    if (props.recipe.cleanedIngredients) {
-      tempIngredients = props.recipe.cleanedIngredients;
-    }
-    const ingredients = tempIngredients;
-    let render = _.map(ingredients, function (a, i) {
-      return (
-        <div className={classes.ingredientBox} key={i}>
-          {a}
-        </div>
-      );
-    });
-    if (_.isEmpty(ingredients) || ingredients[0] === "")
-      render = (
-        <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-          {" "}{i18n.__("errors.no_ingredients")}{" "}
-        </p>
-      );
-    return (
-      <>
-        <h1 className={classes.subtitle}>{" "}{i18n.__("general.ingredients")}{" "}</h1>
-        <div style={{
-          overflowY: "scroll",
-          height: componentHeight - 325 - 65 - 30 - 60 + "px"
-        }}>
-          <div
-            style={{
-              display: "flex",
-              columnGap: "8px",
-              flexWrap: "wrap",
-              rowGap: "8px",
-            }}
-          >
-            {render}
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  const SustainabilityContent = (props) => {
-    return (
-      <>
-        <h1 className={classes.subtitle}>{i18n.__("sustainability.sustainability")}</h1>
-        <div style={{
-          overflowY: "scroll", height: componentHeight - 325 - 65 - 30 - 60 + "px",
-        }}>
-          <h1 className={classes.subtitle}>{i18n.__("sustainability.labels")}</h1>
-          <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            {" "}{i18n.__("general.no_data")}{" "}
-          </p>
-          <h1 className={classes.subtitle}>{i18n.__("sustainability.co2")}</h1>
-          <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-            <img
-                className={classes.ecoscore}
-                src={getEcoImage(recipe)}
-              />
-          </p>
-        </div>
-      </>
-    );
-  };
-
   const renderTabContent = (tabValue) => {
     switch (tabValue) {
       case 0:
         return <NutrientsContent recipe={recipe} />;
       case 1:
-        return <IngredientContent recipe={recipe} />;
+        return <IngredientsContent recipe={recipe} />;
       case 2:
         return <AllergiesContent recipe={recipe} />;
       case 3:
@@ -500,7 +181,7 @@ export const MealScreen = ({ recipe }) => {
     }
   };
 
-  if(recipe) {
+  if (recipe) {
     return (
       <div className={classes.gapInBetween}>
         <div className={classes.mealTitleCard}>
@@ -546,11 +227,10 @@ export const MealScreen = ({ recipe }) => {
                 />
                 <span className={classes.heartButtonText}>{nbLikes}</span>
               </Button>
-              <span className={classes.kcal}>{getKcalInfo()}</span>
-              <span className={classes.pricing}>{getMPricing()}</span>
+              <span className={classes.pricing}>{"€" + recipe.current_sell_price?.pricing?.toFixed(2)}</span>
             </div>
           </div>
-  
+
           <div>
             <Tabs
               value={tabValue}
@@ -580,7 +260,9 @@ export const MealScreen = ({ recipe }) => {
             </Tabs>
           </div>
         </div>
-        <div className={classes.tabContent}>{renderTabContent(tabValue)}</div>
+        <div className={classes.tabContent}>
+          {renderTabContent(tabValue)}
+        </div>
         <OrderButton recipe={recipe} allergensPresent={allergensPresent} floating={true}></OrderButton>
       </div>
     )
@@ -588,5 +270,5 @@ export const MealScreen = ({ recipe }) => {
     // no recipe loaded yet.
     return null;
   }
-  
+
 };
