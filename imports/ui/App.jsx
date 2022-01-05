@@ -231,7 +231,7 @@ export const App = () => {
                     indicatorColor="primary"
                     textColor="primary"
                     variant="scrollable"
-                    scrollButtons="on"
+                    scrollButtons="auto"
                   >
                     {" "}
                     {getCoursesTabs()}{" "}

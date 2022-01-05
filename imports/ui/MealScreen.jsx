@@ -64,15 +64,6 @@ export const MealScreen = ({ recipe, allergensPresent }) => {
       fontFamily: "sans-serif",
       fontSize: "32px",
     },
-    heartButton: {
-      overflow: "visible",
-      marginRight: "4px",
-    },
-    heartButtonText: {
-      color: "#717171",
-      fontFamily: "sans-serif",
-      fontSize: "14px",
-    },
     tabContent: {
       height: componentHeight - 325 - 65 - heightBuffer + "px",
       background: "white",
@@ -159,19 +150,19 @@ export const MealScreen = ({ recipe, allergensPresent }) => {
               centered={true}
             >
               <Tab
-                key={"key1"}
+                key={"mealscreen_tab_nutrients"}
                 label={<span className={classes.tabFont}>{i18n.__("general.nutrients")}</span>}
               />
               <Tab
-                key={"key2"}
+                key={"mealscreen_tab_ingredients"}
                 label={<span className={classes.tabFont}>{i18n.__("general.ingredients")}</span>}
               />
               <Tab
-                key={"key3"}
+                key={"mealscreen_tab_allergens"}
                 label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>{i18n.__("general.allergens")}</span>}
               />
               <Tab
-                key={"key4"}
+                key={"mealscreen_tab_sustainability"}
                 label={<span className={classes.tabFont}>{i18n.__("sustainability.sustainability")}</span>}
               />
             </Tabs>
