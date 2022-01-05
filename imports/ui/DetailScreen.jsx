@@ -5,14 +5,10 @@ import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
 import React, { useState } from "react";
 import { LikeButton } from "./components/LikeButton";
 import { OrderButton } from "./components/OrderButton";
-import { AllergiesContent } from "./tabs/AllergiesContent";
-import { IngredientsContent } from "./tabs/IngredientsContent";
-import { NutrientsContent } from "./tabs/NutrientsContent";
-import { SustainabilityContent } from "./tabs/SustainabilityContent";
 import { getNutriscoreImage } from "/imports/api/apiPersfo";
 
-const componentName = "MealScreen";
-export const MealScreen = ({ recipe, allergensPresent }) => {
+const componentName = "DetailScreen";
+export const DetailScreen = ({ recipe, allergensPresent, renderTabContent, tabTitles }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
   const [heightBuffer, setHeightBuffer] = useState(window.innerHeight >= 640 ? 60 : 0);
 
@@ -89,19 +85,6 @@ export const MealScreen = ({ recipe, allergensPresent }) => {
     Meteor.call("log", componentName, "changeTab", navigator.userAgent, newValue);
   };
 
-  const renderTabContent = (tabValue) => {
-    switch (tabValue) {
-      case 0:
-        return <NutrientsContent recipe={recipe} />;
-      case 1:
-        return <IngredientsContent recipe={recipe} />;
-      case 2:
-        return <AllergiesContent recipe={recipe} />;
-      case 3:
-        return <SustainabilityContent recipe={recipe} />;
-    }
-  };
-
   if (recipe) {
     return (
       <div className={classes.gapInBetween}>
@@ -149,22 +132,12 @@ export const MealScreen = ({ recipe, allergensPresent }) => {
               scrollButtons="auto"
               centered={true}
             >
-              <Tab
-                key={"mealscreen_tab_nutrients"}
-                label={<span className={classes.tabFont}>{i18n.__("general.nutrients")}</span>}
-              />
-              <Tab
-                key={"mealscreen_tab_ingredients"}
-                label={<span className={classes.tabFont}>{i18n.__("general.ingredients")}</span>}
-              />
-              <Tab
-                key={"mealscreen_tab_allergens"}
-                label={<span className={classes.tabFont} style={allergensPresent ? { color: red[300] } : {}}>{i18n.__("general.allergens")}</span>}
-              />
-              <Tab
-                key={"mealscreen_tab_sustainability"}
-                label={<span className={classes.tabFont}>{i18n.__("sustainability.sustainability")}</span>}
-              />
+              {_.map(tabTitles, (title, i) => {
+                return (<Tab
+                  key={title + "-" + i}
+                  label={<span className={classes.tabFont}>{title}</span>}
+                />)
+              })}
             </Tabs>
           </div>
         </div>
@@ -175,8 +148,6 @@ export const MealScreen = ({ recipe, allergensPresent }) => {
       </div>
     )
   } else {
-    // no recipe loaded yet.
-    return null;
+    return null; // no recipe loaded yet.
   }
-
 };

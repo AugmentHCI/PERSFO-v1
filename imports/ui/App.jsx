@@ -8,7 +8,7 @@ import { AppBarPersfo } from "./AppBarPersfo";
 import { AuthenticationScreen } from "./AuthenticationScreen";
 import { Done } from "./Done";
 import { Feedback } from "./Feedback";
-import { MealScreen } from "./MealScreen";
+import { DetailScreen } from "./DetailScreen";
 import { Onboarding } from "./Onboarding";
 import { Preferences } from "./Preferences";
 import { Progress } from "./Progress";
@@ -24,6 +24,10 @@ import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+import { AllergiesContent } from "./tabs/AllergiesContent";
+import { IngredientsContent } from "./tabs/IngredientsContent";
+import { NutrientsContent } from "./tabs/NutrientsContent";
+import { SustainabilityContent } from "./tabs/SustainabilityContent";
 
 const persfoTheme = createTheme({
   palette: {
@@ -204,6 +208,20 @@ export const App = () => {
     }
   };
 
+  const renderMealScreenTabContent = (tabValue) => {
+    const recipe = GetOpenMealDetails[0];
+    switch (tabValue) {
+      case 0:
+        return <NutrientsContent recipe={recipe} />;
+      case 1:
+        return <IngredientsContent recipe={recipe} />;
+      case 2:
+        return <AllergiesContent recipe={recipe} />;
+      case 3:
+        return <SustainabilityContent recipe={recipe} />;
+    }
+  };
+
   const switchRenderScreen = () => {
     let renderScreen;
     if (user) {
@@ -260,9 +278,11 @@ export const App = () => {
 
             } else if (GetOpenMealDetails !== null) {
               renderScreen = (
-                <MealScreen
-                  recipe={RecipesCollection.findOne({ id: GetOpenMealDetails[0] })}
+                <DetailScreen
+                  recipe={GetOpenMealDetails[0]}
                   allergensPresent={GetOpenMealDetails[1]}
+                  renderTabContent={renderMealScreenTabContent}
+                  tabTitles={[i18n.__("general.nutrients"), i18n.__("general.ingredients"),i18n.__("general.allergens"),i18n.__("sustainability.sustainability")]}
                 />
               );
             }
@@ -289,7 +309,6 @@ export const App = () => {
         doneForToday={doneForToday} />
 
       <div className="main">{switchRenderScreen()}</div>
-
     </ThemeProvider>
   );
 };

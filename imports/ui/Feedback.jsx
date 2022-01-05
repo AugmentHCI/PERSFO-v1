@@ -7,7 +7,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   title: {
     fontSize: "13px",
     fontWeight: 600,

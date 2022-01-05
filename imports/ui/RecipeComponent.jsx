@@ -65,8 +65,8 @@ export const RecipeComponent = (({ recipeId, type }) => {
 
     // Detail logic
     const handleDetailsClick = () => {
-        OpenMealDetails.set([recipeId, allergensPresent]);
-        Meteor.call("log", componentName, "handleDetailsClick", navigator.userAgent, recipeId);
+        OpenMealDetails.set([recipe, allergensPresent]);
+        Meteor.call("log", componentName, "handleDetailsClick", navigator.userAgent, recipe.id);
     };
 
     const renderSwitch = (type) => {

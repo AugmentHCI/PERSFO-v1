@@ -6,7 +6,7 @@ import { getNutriscore } from "../api/apiPersfo";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   letter: {
     font: "11px roboto",
     fontWeight: 100,

@@ -114,7 +114,7 @@ export const AppBarPersfo = ({ drawerOpen, toggleDrawer, shoppingBasketdrawerOpe
 
   useEffect(() => {
     if (GetOpenMealDetails !== null) {
-      let url = getImage(RecipesCollection.findOne({ id: GetOpenMealDetails[0] }));
+      let url = getImage(GetOpenMealDetails[0]);
       if (url === "/images/Image-not-found.png") {
         url = undefined;
       }
