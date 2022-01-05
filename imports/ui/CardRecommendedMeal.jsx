@@ -22,6 +22,7 @@ import { OrderButton } from "./components/OrderButton";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
 import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 import { getNbDisliked } from "/imports/api/apiPersfo";
+import { LikeButton } from "./components/LikeButton";
 
 
 const useStyles = makeStyles(() => ({
@@ -114,7 +115,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const componentName = "CardRecommendedMeal";
-export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent, dietaryConflict }) => {
+export const CardRecommendedMeal = ({ recipe, handleDetailsClick, allergensPresent, dietaryConflict }) => {
   const classes = useStyles();
 
   const { ingredients, thumbsDown, thumbsUp } = useTracker(() => {
@@ -262,19 +263,7 @@ export const CardRecommendedMeal = ({ recipe, handleIncreaseLike, handleDetailsC
         </CardActions>
       </div>
       <CardActions className={classes.cardActions}>
-        <Button
-          size="large"
-          onClick={() => handleIncreaseLike()}
-          color={"primary"}
-          style={
-            liked
-              ? { backgroundColor: red[100], borderRadius: "14px" }
-              : undefined
-          }
-        >
-          <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
-          <span>{nbLikes}</span>
-        </Button>
+        <LikeButton recipe={recipe}></LikeButton>
         <Button
           size="large"
           color="primary"

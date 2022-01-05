@@ -1,20 +1,18 @@
-import { Button, Tab, Tabs } from "@material-ui/core/";
+import { Tab, Tabs } from "@material-ui/core/";
 import { red } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import WarningRoundedIcon from '@material-ui/icons/WarningRounded';
-import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
+import { LikeButton } from "./components/LikeButton";
 import { OrderButton } from "./components/OrderButton";
 import { AllergiesContent } from "./tabs/AllergiesContent";
 import { IngredientsContent } from "./tabs/IngredientsContent";
 import { NutrientsContent } from "./tabs/NutrientsContent";
 import { SustainabilityContent } from "./tabs/SustainabilityContent";
 import { getNutriscoreImage } from "/imports/api/apiPersfo";
-import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 
 const componentName = "MealScreen";
-export const MealScreen = ({ recipe }) => {
+export const MealScreen = ({ recipe, allergensPresent }) => {
   const [componentHeight, setComponentHeight] = useState(window.innerHeight);
   const [heightBuffer, setHeightBuffer] = useState(window.innerHeight >= 640 ? 60 : 0);
 
@@ -61,14 +59,6 @@ export const MealScreen = ({ recipe }) => {
     tabFont: {
       fontSize: "10px",
     },
-    kcal: {
-      fontFamily: "sans-serif",
-      fontSize: "14px",
-      color: "#717171",
-      padding: "6px 8px",
-      display: "flex",
-      alignItems: "center",
-    },
     pricing: {
       color: "#F57D20",
       fontFamily: "sans-serif",
@@ -90,17 +80,6 @@ export const MealScreen = ({ recipe }) => {
       fontSize: "14px",
       fontFamily: "sans-serif",
     },
-    subtitle: {
-      color: "#717171",
-      width: "100%",
-      display: "flex",
-      fontSize: "12px",
-      alignItems: "center",
-      fontWeight: 600,
-      lineHeight: 1,
-      letterSpacing: "0px",
-      textTransform: "uppercase",
-    },
     gapInBetween: {
       display: "flex",
       flexDirection: "column",
@@ -110,55 +89,6 @@ export const MealScreen = ({ recipe }) => {
   }));
 
   const classes = useStyles();
-
-  const { liked, nbLikes, allergensPresent } = useTracker(() => {
-    const noDataAvailable = {
-      liked: false,
-      nbLikes: 0,
-      allergensPresent: false,
-    };
-    if (!recipe) return { ...noDataAvailable };
-    const handler = Meteor.subscribe("userpreferences");
-    if (!Meteor.user() || !handler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
-    }
-    const nbLikes = recipe?.nbLikes ? recipe.nbLikes : 0;
-    const liked =
-      UserPreferences.find({
-        userid: Meteor.userId(),
-        likedRecipes: { $in: [recipe.id] },
-      }).fetch().length > 0;
-
-    const userPreferences = UserPreferences.findOne({
-      userid: Meteor.userId(),
-    });
-
-    const userAllergens = userPreferences?.allergens ? _.map(userPreferences?.allergens, a => a.allergen) : [];
-
-    const recipeAllergens = _.without(
-      _.map(_.toPairs(recipe.allergens), (n) => {
-        if (n[1] == 1) return n[0];
-      }),
-      undefined
-    ).sort();
-
-    let allergensPresentTmp = false;
-    userAllergens.forEach(userAllergy => {
-      if (recipeAllergens.includes(userAllergy)) {
-        allergensPresentTmp = true;
-      }
-    });
-    const allergensPresent = allergensPresentTmp;
-
-    return { liked, nbLikes, allergensPresent };
-  });
-
-  const handleIncreaseLike = () => {
-    if (recipe) {
-      Meteor.call("recipes.handleLike", recipe.id);
-      Meteor.call("log", componentName, "handleIncreaseLike", navigator.userAgent, liked);
-    }
-  };
 
   // tab logic
   const [tabValue, setTabValue] = useState(0);
@@ -213,20 +143,7 @@ export const MealScreen = ({ recipe }) => {
                 alignItems: "flex-end",
               }}
             >
-              <Button
-                onClick={() => handleIncreaseLike()}
-                style={
-                  liked
-                    ? { backgroundColor: red[100], borderRadius: "14px" }
-                    : undefined
-                }
-              >
-                <FavoriteIcon
-                  className={classes.heartButton}
-                  style={{ color: red[300] }}
-                />
-                <span className={classes.heartButtonText}>{nbLikes}</span>
-              </Button>
+              <LikeButton recipe={recipe}></LikeButton>
               <span className={classes.pricing}>{"€" + recipe.current_sell_price?.pricing?.toFixed(2)}</span>
             </div>
           </div>

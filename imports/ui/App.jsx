@@ -261,7 +261,8 @@ export const App = () => {
             } else if (GetOpenMealDetails !== null) {
               renderScreen = (
                 <MealScreen
-                  recipe={RecipesCollection.findOne({ id: GetOpenMealDetails })}
+                  recipe={RecipesCollection.findOne({ id: GetOpenMealDetails[0] })}
+                  allergensPresent={GetOpenMealDetails[1]}
                 />
               );
             }

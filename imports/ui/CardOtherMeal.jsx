@@ -13,8 +13,9 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import React from "react";
 import { OrderButton } from "./components/OrderButton";
 import { getImage, getNutriscoreImage } from "/imports/api/apiPersfo";
+import { LikeButton } from "./components/LikeButton";
 
-const useStyles = makeStyles((persfoTheme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     minWidth: "140px",
     maxWidth: "140px",
@@ -83,7 +84,7 @@ const useStyles = makeStyles((persfoTheme) => ({
 }));
 
 const componentName = "CardOtherMeal";
-export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, liked, nbLikes, allergensPresent, dietaryConflict }) => {
+export const CardOtherMeal = ({ recipe, handleDetailsClick, allergensPresent, dietaryConflict }) => {
   const classes = useStyles();
 
   return (
@@ -112,19 +113,7 @@ export const CardOtherMeal = ({ recipe, handleIncreaseLike, handleDetailsClick, 
       </CardActionArea>
 
       <CardActions className={classes.cardActions}>
-        <Button
-          size="large"
-          onClick={() => handleIncreaseLike()}
-          color="primary"
-          style={
-            liked
-              ? { backgroundColor: red[100], borderRadius: "14px" }
-              : undefined
-          }
-        >
-          <FavoriteIcon style={{ color: red[300] }} /> &nbsp;{" "}
-          <span>{nbLikes}</span>
-        </Button>
+        <LikeButton recipe={recipe}></LikeButton>
         <OrderButton recipe={recipe} allergensPresent={allergensPresent} dietaryConflict={dietaryConflict}></OrderButton>
       </CardActions>
     </Card >

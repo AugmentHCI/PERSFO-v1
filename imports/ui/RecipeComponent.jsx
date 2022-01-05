@@ -9,20 +9,9 @@ import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
 const componentName = "RecipeComponent";
 export const RecipeComponent = (({ recipeId, type }) => {
 
-    // Like logic
-    const handleIncreaseLike = () => {
-        if (recipe) {
-            Meteor.call("recipes.handleLike", recipe.id);
-            Meteor.call("log", componentName, "handleIncreaseLike", navigator.userAgent, recipe.id);
-        }
-    };
-
-    // Like logic
-    const { recipe, liked, nbLikes, allergensPresent, dietaryConflict } = useTracker(() => {
+    const { recipe, allergensPresent, dietaryConflict } = useTracker(() => {
         const noDataAvailable = {
             recipe: {},
-            liked: false,
-            nbLikes: 0,
             allergensPresent: false,
             dietaryConflict: false,
         };
@@ -33,13 +22,6 @@ export const RecipeComponent = (({ recipeId, type }) => {
             return { ...noDataAvailable, isLoading: true };
         }
         const recipe = RecipesCollection.find({ id: recipeId }).fetch()[0];
-
-        const nbLikes = recipe.nbLikes ? recipe.nbLikes : 0;
-        const liked =
-            UserPreferences.find({
-                userid: Meteor.userId(),
-                likedRecipes: { $in: [recipe.id] },
-            }).fetch().length > 0;
 
         const userPreferences = UserPreferences.findOne({
             userid: Meteor.userId(),
@@ -78,12 +60,12 @@ export const RecipeComponent = (({ recipeId, type }) => {
             }
         });
         const dietaryConflict = dietariesPresentTmp;
-        return { recipe, liked, nbLikes, allergensPresent, dietaryConflict };
+        return { recipe, allergensPresent, dietaryConflict };
     });
 
     // Detail logic
     const handleDetailsClick = () => {
-        OpenMealDetails.set(recipeId);
+        OpenMealDetails.set([recipeId, allergensPresent]);
         Meteor.call("log", componentName, "handleDetailsClick", navigator.userAgent, recipeId);
     };
 
@@ -92,20 +74,14 @@ export const RecipeComponent = (({ recipeId, type }) => {
             case "other":
                 return <CardOtherMeal
                     recipe={recipe}
-                    handleIncreaseLike={handleIncreaseLike}
                     handleDetailsClick={handleDetailsClick}
-                    liked={liked}
-                    nbLikes={nbLikes}
                     allergensPresent={allergensPresent}
                     dietaryConflict={dietaryConflict}
                 ></CardOtherMeal>
             case "recommended":
                 return <CardRecommendedMeal
                     recipe={recipe}
-                    handleIncreaseLike={handleIncreaseLike}
                     handleDetailsClick={handleDetailsClick}
-                    liked={liked}
-                    nbLikes={nbLikes}
                     allergensPresent={allergensPresent}
                     dietaryConflict={dietaryConflict}
                 ></CardRecommendedMeal>
