@@ -29,6 +29,7 @@ import { IngredientsContent } from "./tabs/IngredientsContent";
 import { NutrientsContent } from "./tabs/NutrientsContent";
 import { SustainabilityContent } from "./tabs/SustainabilityContent";
 import { Food4MeContent } from "./tabs/Food4MeContent";
+import { PopularityContent } from "./tabs/PopularityContent";
 
 const persfoTheme = createTheme({
   palette: {
@@ -233,7 +234,7 @@ export const App = () => {
       case 1:
         return <IngredientsContent recipe={recipe} />;
       case 2:
-        return <Food4MeContent recipe={recipe} />;
+        return <PopularityContent recipe={recipe} />;
     }
   };
 
