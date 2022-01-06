@@ -48,7 +48,8 @@
         "popularity": "Populariteit",
         "contribution": "bijdrage",
         "personal_advise": "Persoonlijk advies",
-        "and": "en"
+        "and": "en",
+        "popularity_explanation": "De meest populaire maaltijden zijn niet altijd de meest gezonde maaltijden. Daarom wordt de populariteit van een maaltijd maar voor 10% in rekening gebracht."
     },
     "errors": {
         "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend",

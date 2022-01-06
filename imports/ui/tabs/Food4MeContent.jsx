@@ -1,13 +1,11 @@
-import { makeStyles } from "@material-ui/core/styles";
-import React, { useState } from "react";
-import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
-import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
-import { useTracker } from "meteor/react-meteor-data";
 import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-
+import { useTracker } from "meteor/react-meteor-data";
+import React, { useState } from "react";
+import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
+import { ExplanationSnackbar } from "/imports/ui/components/ExplanationSnackbar";
+import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
 
 const componentName = "Food4MeContent";
 export const Food4MeContent = ({ recipe }) => {
@@ -65,9 +63,19 @@ export const Food4MeContent = ({ recipe }) => {
         Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
     };
 
-    // Info message
-    function Alert(props) {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    const getListNutrients = (explanations) => {
+        let combined = _.map(explanations, (e => i18n.__("food4me." + e.food4me)));
+        let result = "";
+        for (let i = 0; i < combined.length; i++) {
+            if (i !== combined.length - 1) {
+                result += combined[i] + ", ";
+            } else if (i == 0) {
+                result += combined[i];
+            } else {
+                result += i18n.__("general.and") + " " + combined[i];
+            }
+        }
+        return result;
     }
 
     return (
@@ -124,30 +132,7 @@ export const Food4MeContent = ({ recipe }) => {
                     <></>
                 }
             </div>
-            <Snackbar
-                open={toastShown}
-                autoHideDuration={8000}
-                onClose={() => setToast(false)}
-            >
-                <Alert onClose={() => setToast(false)} severity="info">
-                    {i18n.__("food4me.explanation")}
-                </Alert>
-            </Snackbar>
+            <ExplanationSnackbar toastShown={toastShown} setToast={setToast} text={i18n.__("food4me.explanation")}></ExplanationSnackbar>
         </>
     );
 };
-
-function getListNutrients(explanations) {
-    let combined = _.map(explanations, (e => i18n.__("food4me." + e.food4me)));
-    let result = "";
-    for (let i = 0; i < combined.length; i++) {
-        if (i !== combined.length - 1) {
-            result += combined[i] + ", ";
-        } else if (i == 0) {
-            result += combined[i];
-        } else {
-            result += i18n.__("general.and") + " " + combined[i];
-        }
-    }
-    return result;
-}
