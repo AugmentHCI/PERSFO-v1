@@ -26,7 +26,7 @@
         "cancel": "Annuleer",
         "today": "Vandaag",
         "five_days_ago": "5 dagen geleden",
-        "more_info": "Waarom?",
+        "more_info": "Waarom",
         "no_data": "Geen data",
         "nutrients": "Nutriënten",
         "allergens": "Allergiën",
@@ -47,7 +47,8 @@
         "history": "Geschiedenis",
         "popularity": "Populariteit",
         "contribution": "bijdrage",
-        "personal_advise": "Persoonlijk advies"
+        "personal_advise": "Persoonlijk advies",
+        "and": "en"
     },
     "errors": {
         "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend",
@@ -142,5 +143,19 @@
         "confirm": "Bevestig uw keuzes",
         "added": "Toegevoegd aan uw winkelmandje",
         "warning": "OPGEPAST: deze maaltijd voeldoet niet aan uw instellingen!"
+    },
+    "food4me": {
+        "fiber": "Vezels",
+        "VitaminA": "Vitamine A",
+        "VitaminB12": "Vitamine B12",
+        "VitaminC": "Vitamine C",
+        "UnsaturatedFat.MonoUnsaturatedFat": "Enkelvoudig onverzadigd vet",
+        "UnsaturatedFat.PolyUnsaturatedFat": "Meervoudig onverzadigd vet",
+        "Protein": "Eiwitten",
+        "TotalFat": "Vetten",
+        "Calcium": "Calcium",
+        "Iron": "Ijzer",
+        "SaturatedFats": "Verzadigd vet",
+        "explanation": "Op basis van de 'Food Frequency Vragenlijst' konden we een persoonlijk plan opstellen. Jouw persoonlijke aanbevelingen tellen voor 65% mee bij het bepalen van je aanbevolen maaltijd."
     }
 }

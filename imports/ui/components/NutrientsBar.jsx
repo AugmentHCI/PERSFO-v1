@@ -21,7 +21,7 @@ export const NutrientsBar = ({ title, value, maxValue, unit, color, hideMaxValue
                     {title}
                 </div>
                 <div style={{ color: "#717171", fontSize: "12px" }}>
-                    {value.toLocaleString()}
+                    {hideMaxValue ? (value * 100).toFixed(1) : value.toLocaleString()}
                     {hideMaxValue ? "" : "/"}
                     <span style={{ color: color }}>
                         {hideMaxValue ? "" : (maxValue < 0.001 ? 0 : maxValue.toLocaleString())}

@@ -3,7 +3,13 @@ import React, { useState } from "react";
 import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { useTracker } from "meteor/react-meteor-data";
+import IconButton from "@material-ui/core/IconButton";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
+
+const componentName = "Food4MeContent";
 export const Food4MeContent = ({ recipe }) => {
 
     const [componentHeight, setComponentHeight] = useState(window.innerHeight);
@@ -19,15 +25,21 @@ export const Food4MeContent = ({ recipe }) => {
             fontSize: "12px",
             alignItems: "center",
             fontWeight: 600,
-            lineHeight: 1,
             letterSpacing: "0px",
             textTransform: "uppercase",
+            marginBottom: "-15px",
+            marginTop: "-5px",
+        },
+        auxiliaryText: {
+            color: "#afafaf",
+            fontSize: "11px",
+            padding: "8px"
         },
     }));
 
     const classes = useStyles();
 
-    const { lowExplanations,highExplanations, totalValue } = useTracker(() => {
+    const { lowExplanations, highExplanations, totalValue } = useTracker(() => {
         const noDataAvailable = { lowExplanations: [], highExplanations: [] };
         const recommendationHandler = Meteor.subscribe("recommendedrecipes");
         if (!recipe || !Meteor.user() || !recommendationHandler.ready()) {
@@ -43,46 +55,99 @@ export const Food4MeContent = ({ recipe }) => {
         const lowExplanations = _.filter(explanations, e => e.rating == "LOW");
         const highExplanations = _.filter(explanations, e => e.rating == "HIGH");
 
-        return { lowExplanations,highExplanations, totalValue };
+        return { lowExplanations, highExplanations, totalValue };
     });
+
+    const [toastShown, setToast] = useState(false);
+
+    const handleInfo = () => {
+        setToast(true);
+        Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
+    };
+
+    // Info message
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
 
     return (
         <>
-            <h1 className={classes.subtitle}>Persoonlijk advies</h1>
+            <h1 className={classes.subtitle}>
+                {i18n.__("general.personal_advise") + " (65%)"}
+                <IconButton onClick={handleInfo}>
+                    <HelpOutlineIcon />
+                </IconButton>
+            </h1>
             <div style={{
                 overflowY: "scroll",
                 height: componentHeight - 325 - 65 - 30 - 60 + "px",
             }}>
-                <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-                    Je wordt aangeraden om meer {_.map(lowExplanations, (e => e.food4me + " "))} te nuttigen. Deze maaltijd is rijk aan:
-                </p>
-                {_.map(lowExplanations, (explanation) => {
-                    return (<NutrientsBar
-                        key={explanation.food4me + "-key"}
-                        title={explanation.food4me}
-                        value={(Math.abs(explanation.value)/totalValue)}
-                        maxValue={1}
-                        hideMaxValue={true}
-                        color={"#F57D20"}
-                        unit={"(bijdrage)"}
-                    />)
-                })}
-                <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
-                    Je krijg al veel {_.map(highExplanations, (e => e.food4me + " "))} binnen, deze maaltijd is daarom arm aan:
-                </p>
-                {_.map(highExplanations, (explanation) => {
-                    return (<NutrientsBar
-                        key={explanation.food4me + "-key"}
-                        title={explanation.food4me}
-                        value={Math.abs(explanation.value)/totalValue}
-                        maxValue={1}
-                        hideMaxValue={true}
-                        color={"#F57D20"}
-                        unit={"(bijdrage)"}
-                    />)
-                })}
+                {lowExplanations.length > 0 ?
+                    <>
+                        <p className={classes.auxiliaryText}>
+                            Je wordt aangeraden om meer {getListNutrients(lowExplanations)} te nuttigen. Deze maaltijd is rijk aan:
+                        </p>
+                        {_.map(lowExplanations, (explanation) => {
+                            return (
+                                <NutrientsBar
+                                    key={explanation.food4me + "-key"}
+                                    title={i18n.__("food4me." + explanation.food4me)}
+                                    value={(Math.abs(explanation.value) / totalValue)}
+                                    maxValue={1}
+                                    hideMaxValue={true}
+                                    color={"#F57D20"}
+                                    unit={"%"}
+                                />
+                            )
+                        })}</> :
+                    <></>
+                }
 
+                {highExplanations.length > 0 ?
+                    <>
+                        <p className={classes.auxiliaryText}>
+                            Je krijg al veel {getListNutrients(highExplanations)} binnen, deze maaltijd is daarom arm aan:
+                        </p>
+                        {_.map(highExplanations, (explanation) => {
+                            return (
+                                <NutrientsBar
+                                    key={explanation.food4me + "-key"}
+                                    title={i18n.__("food4me." + explanation.food4me)}
+                                    value={Math.abs(explanation.value) / totalValue}
+                                    maxValue={1}
+                                    hideMaxValue={true}
+                                    color={"#F57D20"}
+                                    unit={"%"}
+                                />
+                            )
+                        })}</> :
+                    <></>
+                }
             </div>
+            <Snackbar
+                open={toastShown}
+                autoHideDuration={8000}
+                onClose={() => setToast(false)}
+            >
+                <Alert onClose={() => setToast(false)} severity="info">
+                    {i18n.__("food4me.explanation")}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
+
+function getListNutrients(explanations) {
+    let combined = _.map(explanations, (e => i18n.__("food4me." + e.food4me)));
+    let result = "";
+    for (let i = 0; i < combined.length; i++) {
+        if (i !== combined.length - 1) {
+            result += combined[i] + ", ";
+        } else if (i == 0) {
+            result += combined[i];
+        } else {
+            result += i18n.__("general.and") + " " + combined[i];
+        }
+    }
+    return result;
+}

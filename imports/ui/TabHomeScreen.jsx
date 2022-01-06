@@ -1,12 +1,10 @@
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MuiAlert from "@material-ui/lab/Alert";
 import React, { useState } from "react";
-import { getElementID } from "/imports/api/apiPersfo";
 import { RecipeComponent } from './RecipeComponent';
-import { OpenRecommenderExplanations } from "/imports/api/methods.js";
+import { getElementID } from "/imports/api/apiPersfo";
 
 const useStyles = makeStyles((persfoTheme) => ({
   titleContent: {
