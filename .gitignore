@@ -2,3 +2,6 @@ app/node_modules/
 private/
 python-app/.env
 python-app/.idea/
+Dockerfile
+docker-compose.yml
+python-app/.env

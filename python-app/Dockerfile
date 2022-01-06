@@ -11,13 +11,13 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-WORKDIR /recommender
-COPY . /recommender
+WORKDIR /python-app
+COPY . /python-app
 
 # Creates a non-root user with an explicit UID and adds permission to access the /recommender folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /recommender
+RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /python-app
 USER appuser
 
 # CMD ["uvicorn", "api:app", "--host", "0.0.0.0"]
-CMD ["gunicorn", "api:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "api:app", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]

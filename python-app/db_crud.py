@@ -1,46 +1,95 @@
 import pymongo
-from bson import ObjectId
 from decouple import config
-from icecream import ic
-import json
 
 myclient = pymongo.MongoClient(config("MONGO_URI"))
-mydb = myclient["pernug"]
+mydb = myclient["meteor"]
 recipes_col = mydb["recipes"]
-users_col = mydb["users"]
-
-
-def populate_db_with_recipes():
-    # If cold start
-    print(">>Inserting recipes to db...")
-    if recipes_col.estimated_document_count() == 0:
-        # Open JSON file
-        with open("./data/recipes.json") as f:
-            # Returns JSON object as a dictionary
-            recipes_dict = json.load(f)
-            # Iterate through the json list
-            for i in recipes_dict["recipes"]:
-                recipes_col.insert_one(i)
-                print(i)
-        print("...done")
-    else:
-        print("...collection already has data")
+orders_col = mydb["orders"]
+userpreferences_col = mydb["userpreferences"]
 
 
 def get_all_recipes() -> list:
-    cursor = recipes_col.find({}, {'_id': False})
+    cursor = recipes_col.find({}, {
+        "id": 1,
+        "cleanedIngredients": 1,
+        "_id": False
+    })
 
-    return list(cursor)
+    try:
+        return list(cursor)
+    finally:
+        myclient.close()
 
 
-def get_user_preference(user_id: str) -> dict:
-    cursor = users_col.find_one(
+def get_users_preference() -> dict:
+    pipeline = [
         {
-            "_id": user_id
+            u"$project": {
+                u"_id": 0,
+                u"orders": u"$$ROOT"
+            }
         },
         {
-            "likedIngredients": 1,
-            '_id': False
+            u"$lookup": {
+                u"localField": u"orders.recipeId",
+                u"from": u"recipes",
+                u"foreignField": u"id",
+                u"as": u"recipes"
+            }
+        },
+        {
+            u"$unwind": {
+                u"path": u"$recipes",
+                u"preserveNullAndEmptyArrays": False
+            }
+        },
+        {
+            u"$match": {
+                u"orders.confirmed": True
+            }
+        },
+        {
+            u"$project": {
+                u"orders.userid": u"$orders.userid",
+                u"orders.recipeId": u"$orders.recipeId",
+                u"recipes.cleanedIngredients": u"$recipes.cleanedIngredients",
+                u"_id": 0
+            }
         }
+    ]
+
+    cursor = orders_col.aggregate(
+        pipeline,
+        allowDiskUse=True
     )
-    return cursor
+    try:
+        recipes_of_users = {}
+
+        for doc in cursor:
+            user_id = doc["orders"]["userid"]
+            if user_id not in recipes_of_users:
+                # recipes_of_users[user_id] = []
+                recipes_of_users[user_id] = doc["recipes"]["cleanedIngredients"]
+            else:
+                unique = list(set(recipes_of_users[user_id] + doc["recipes"]["cleanedIngredients"]))
+                recipes_of_users[user_id] = unique
+            # recipes_of_users[user_id].append({
+            #     "id": doc["orders"]["recipeId"],
+            #     "cleanedIngredients": doc["recipes"]["cleanedIngredients"]
+            # })
+
+        return recipes_of_users
+    finally:
+        myclient.close()
+
+
+def insert_recommendations(user_id: str, data_for_db: dict) -> int:
+    result = userpreferences_col.update_many(
+        {'userid': user_id},
+        {"$set": data_for_db})
+    return result.modified_count
+
+
+if __name__ == "__main__":
+    print(get_users_preference())
+    # pass

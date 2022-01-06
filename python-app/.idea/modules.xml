@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../recommender/.idea/recommender.iml" filepath="$PROJECT_DIR$/../recommender/.idea/recommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../recommender/.idea/python-app.iml" filepath="$PROJECT_DIR$/../recommender/.idea/python-app.iml" />
     </modules>
   </component>
 </project>
