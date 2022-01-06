@@ -4,9 +4,9 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { useTracker } from "meteor/react-meteor-data";
 import React, { useState } from "react";
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
+import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { ExplanationSnackbar } from "/imports/ui/components/ExplanationSnackbar";
-import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
 
 const componentName = "PopularityContent";
@@ -48,8 +48,9 @@ export const PopularityContent = ({ recipe }) => {
         const noDataAvailable = { nbOrders: 0, nblikedRanking: 0, filteredIngredients: [], totalValue: 0 };
         const recommendationHandler = Meteor.subscribe("recommendedrecipes");
         const orderHandler = Meteor.subscribe("orders");
+        const recipeHandler = Meteor.subscribe("recipes");
 
-        if (!recipe || !Meteor.user() || !recommendationHandler.ready() || !orderHandler.ready()) {
+        if (!recipe || !Meteor.user() || !recommendationHandler.ready() || !orderHandler.ready() || !recipeHandler.ready()) {
             return { ...noDataAvailable, isLoading: true };
         }
 
