@@ -1,0 +1,7 @@
+app/node_modules/
+private/
+python-app/.env
+python-app/.idea/
+python-app/__pycache__
+Dockerfile
+docker-compose.yml

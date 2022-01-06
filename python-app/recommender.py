@@ -1,34 +1,35 @@
 import db_crud
-import pandas as pd
+from pandas import DataFrame, options
+import datetime
+options.mode.chained_assignment = None
+from collections import Counter
 from icecream import ic
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-pd.options.mode.chained_assignment = None
 
-
-def binarize_ingredients(df: pd.DataFrame) -> pd.DataFrame:
+def binarize_ingredients(df: DataFrame) -> DataFrame:
     mlb = MultiLabelBinarizer()
-    df = df.join(pd.DataFrame(mlb.fit_transform(df.pop('cleanedIngredients')),
-                              columns=mlb.classes_,
-                              index=df.index))
+    df = df.join(DataFrame(mlb.fit_transform(df.pop('cleanedIngredients')),
+                           columns=mlb.classes_,
+                           index=df.index))
     return df
 
 
-def recipes_col_to_df() -> pd.DataFrame:
+def recipes_col_to_df() -> DataFrame:
     recipes = db_crud.get_all_recipes()
-    df = pd.DataFrame.from_dict(recipes)
+    df = DataFrame.from_dict(recipes)
     df = binarize_ingredients(df)
     return df
 
 
-def recipes_of_users_to_df(preferences_of_a_user: list) -> pd.DataFrame:
-    df = pd.DataFrame.from_dict(preferences_of_a_user)
+def recipes_of_user_to_df(preferences_of_a_user: list) -> DataFrame:
+    df = DataFrame.from_dict(preferences_of_a_user)
     df = binarize_ingredients(df)
     return df
 
 
-def recipe_cosine_similarity(df: pd.DataFrame, df_X: pd.DataFrame, df_Y: pd.DataFrame, num: int) -> list:
+def recipe_cosine_similarity(df: DataFrame, df_X: DataFrame, df_Y: DataFrame, num: int) -> list:
     suggested_recipes = []
 
     # Compute the cosine similarity between X (seed) and Y using sklearn
@@ -112,7 +113,7 @@ def suggest_user_recipes(current_user_id: str, num: int) -> dict:
     return suggested_recipes
 
 
-# def orders_col_to_df() -> pd.DataFrame:
+# def orders_col_to_df() -> DataFrame:
 #     data = db_crud.get_all_recipes()
 #     data_flat = []
 #
@@ -130,22 +131,47 @@ def suggest_user_recipes(current_user_id: str, num: int) -> dict:
 #     df = json_normalize(data_flat)
 #
 #     mlb = MultiLabelBinarizer()
-#     df = df.join(pd.DataFrame(mlb.fit_transform(df.pop('ingredients')),
+#     df = df.join(DataFrame(mlb.fit_transform(df.pop('ingredients')),
 #                               columns=mlb.classes_,
 #                               index=df.index))
 #
 #     return df
 
+def remove_ingredients(the_list: list, ingredients_to_remove: list):
+    final_list = list(set(the_list) - set(ingredients_to_remove))
+    # for ing_to_remove in ingredients_to_remove:
+    #     for ingredient in the_list:
+    #         print(ing_to_remove, ingredient)
+    #         if ingredient == ing_to_remove:
+    #             the_list.remove(ingredient)
+        # result = [ingredient for ingredient in the_list if ingredient != ing_to_remove]
+    return final_list
 
-def calculate_all_user_recipes(num: int):
-    updated_count = 0
+
+def get_the_topk_ingredients(ingredients_of_user:list, topk_features: list):
+    # Select some most common ingredients
+    ingredients_of_user = Counter(ingredients_of_user).most_common(topk_features)
+
+    # Get the list of features back from list of tuple
+    return [a_tuple[0] for a_tuple in ingredients_of_user]
+
+
+def calculate_all_user_recipes(num: int, topk_features: int, ingredients_to_remove: list, save_to_db: bool):
+    output = []
     # Load all the recipes from db
     df_recipes = recipes_col_to_df()
 
     # Load the recipes ordered by users
     preferences_of_users = db_crud.get_users_preference()
+
     for user_id in preferences_of_users:
-        ingredients_of_user = preferences_of_users[user_id]
+        ingredients_of_user = preferences_of_users[user_id].copy()
+
+        # Remove given ingredients from the list
+        ingredients_of_user = remove_ingredients(ingredients_of_user, ingredients_to_remove)
+
+        # Select some most common ingredients
+        ingredients_of_user = get_the_topk_ingredients(ingredients_of_user, topk_features)
 
         # Create Y dataframe with the columns (ingredients) of interest
         df_Y = df_recipes[ingredients_of_user]
@@ -157,19 +183,28 @@ def calculate_all_user_recipes(num: int):
 
         suggested_recipes = recipe_cosine_similarity(df_recipes, df_X, df_Y, num)
 
+        all_ingredients_from_orders = dict(Counter(preferences_of_users[user_id]))
+
         data_for_db = {
             "orderBasedRecommendations": suggested_recipes,
-            "ingredientsFromOrders": ingredients_of_user
+            "ingredientsFromOrders": all_ingredients_from_orders,
+            "recommenderMetaData": {
+                "timestamp": datetime.datetime.utcnow(),
+                "numOfRecommendationsRequested": num,
+                "topkIngredientsRequested": f"{topk_features} out of {len(all_ingredients_from_orders)}",
+                "ingredientsExcluded": ingredients_to_remove,
+                "ingredientsUsed": ingredients_of_user
+            }
         }
 
-        updated_count = updated_count + db_crud.insert_recommendations(user_id, data_for_db)
+        # Update the db
+        if save_to_db:
+            db_crud.insert_recommendations(user_id, data_for_db)
 
-    return {
-        "success": {
-            "total_updated_documents_in_db": updated_count
-        }
-    }
+        data_for_db["userid"] = user_id
+        output.append(data_for_db)
+    return output
 
 
 if __name__ == "__main__":
-    print(calculate_all_user_recipes(10))
+    print(calculate_all_user_recipes(10, 5, ["Koolzaadolie", "Water", "Gejodeerdzout", "Knoflook", "Aardappel", "Kervel", "Koolzaadolie", "Gejodeerdzout", "Knoflook", "Water", "Champignon", "Knolselderij", "Aardappel", "Roommelk", "Koolzaadolie", "Gejodeerdzout", "Knoflook"]))

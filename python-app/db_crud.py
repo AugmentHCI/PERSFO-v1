@@ -1,9 +1,9 @@
-import pymongo
+from pymongo import MongoClient
 from decouple import config
 
 MONGO_URI = config('MONGO_URI', default='mongodb://mongo:27017/meteor')
 
-myclient = pymongo.MongoClient(MONGO_URI)
+myclient = MongoClient(MONGO_URI)
 mydb = myclient["meteor"]
 recipes_col = mydb["recipes"]
 orders_col = mydb["orders"]
@@ -65,22 +65,22 @@ def get_users_preference() -> dict:
         allowDiskUse=True
     )
     try:
-        recipes_of_users = {}
+        prefs_of_users = {}
 
         for doc in cursor:
             user_id = doc["orders"]["userid"]
-            if user_id not in recipes_of_users:
+            if user_id not in prefs_of_users:
                 # recipes_of_users[user_id] = []
-                recipes_of_users[user_id] = doc["recipes"]["cleanedIngredients"]
+                prefs_of_users[user_id] = doc["recipes"]["cleanedIngredients"]
             else:
-                unique = list(set(recipes_of_users[user_id] + doc["recipes"]["cleanedIngredients"]))
-                recipes_of_users[user_id] = unique
+                prefs_of_users[user_id] += doc["recipes"]["cleanedIngredients"]
+                # unique = list(set(recipes_of_users[user_id] + doc["recipes"]["cleanedIngredients"]))
+                # recipes_of_users[user_id] = unique
             # recipes_of_users[user_id].append({
             #     "id": doc["orders"]["recipeId"],
             #     "cleanedIngredients": doc["recipes"]["cleanedIngredients"]
             # })
-
-        return recipes_of_users
+        return prefs_of_users
     finally:
         myclient.close()
 
@@ -93,5 +93,5 @@ def insert_recommendations(user_id: str, data_for_db: dict) -> int:
 
 
 if __name__ == "__main__":
-    # print(get_users_preference())
-    pass
+    print(get_users_preference()["aSdiyJh9EgatGLr3M"])
+    # pass

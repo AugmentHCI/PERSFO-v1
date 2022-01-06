@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from db_status import get_db_status
 from recommender import calculate_all_user_recipes
 
 
@@ -12,7 +13,10 @@ class SimilarRecipesParameters(BaseModel):
 
 
 class UserRecipesParameters(BaseModel):
-    num_recipes: Optional[int] = 10
+    num_recipes: int = 10
+    topk_ingredients: int = 5
+    ingredients_to_remove: list = []
+    save_to_db: bool = True
 
 
 app = FastAPI()
@@ -20,8 +24,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"status": "API is alive and well"}
-
+    return get_db_status()#{"status": "API is alive and well"}
 
 # @app.get("/all-recipes")
 # async def get_all_recipes():
@@ -49,7 +52,11 @@ async def root():
 async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters):
     try:
         output = calculate_all_user_recipes(
-            user_recipes_parameters.num_recipes)
+            user_recipes_parameters.num_recipes,
+            user_recipes_parameters.topk_ingredients,
+            user_recipes_parameters.ingredients_to_remove,
+            user_recipes_parameters.save_to_db
+        )
     except Exception as e:
         return {
             "error": {
