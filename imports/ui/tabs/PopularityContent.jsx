@@ -59,10 +59,10 @@ export const PopularityContent = ({ recipe }) => {
         const recommendationIngredients = recommendation.cleanedIngredients;
         const nblikedRanking = recommendation.nblikedRanking;
 
-        const nbOrders = OrdersCollection.find({ recipeId: recipe.id, userid: { $ne: Meteor.userId() } }).fetch().length;
+        const allOrders = OrdersCollection.find({ recipeId: recipe.id, userid: { $ne: Meteor.userId() } }).fetch()
+        const nbOrders = allOrders.length;
 
         let popularIngredients = {};
-        const allOrders = OrdersCollection.find({}).fetch();
         allOrders.forEach(order => {
             let ingredients = RecipesCollection.findOne({ id: order.recipeId })?.cleanedIngredients;
             ingredients.forEach((ingredient) => {
