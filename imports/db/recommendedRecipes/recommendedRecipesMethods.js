@@ -140,7 +140,7 @@ Meteor.methods({
             });
 
             todaysRecipes[i].dislikedIngredientsRanking = dislikedIngredients.length !== 0 ? 1 - (getNbDisliked(recipe, dislikedIngredients) / dislikedIngredients.length) : 0;
-            todaysRecipes[i].nblikedRanking = recipe.nbLikes / nbLikedMax;
+            todaysRecipes[i].nblikedRanking = nbLikedMax ? recipe.nbLikes / nbLikedMax : 0;
             todaysRecipes[i].nutriscoreRanking = getNutriscoreRankingValue(recipe);
             todaysRecipes[i].food4meRanking = totalfood4meRankingScore;
             todaysRecipes[i].ordersRanking = OrdersCollection.find({ recipeId: recipe.id }).fetch().length / nbOrderedMax; // TODO make smarter, use Nyi Nyi's ranking score

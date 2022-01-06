@@ -34,6 +34,7 @@ export const PopularityContent = ({ recipe }) => {
         }
 
         const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
+        console.log(_.sortBy(recommendedRecipes, r => -r.pop)[0]);
         const nblikedRanking = _.sortBy(recommendedRecipes, r => -r.pop)[0].nblikedRanking
 
         return { nblikedRanking };
