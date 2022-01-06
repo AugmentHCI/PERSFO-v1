@@ -48,7 +48,8 @@ async def root():
 @app.post("/cal-all-user-recipes/")
 async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters):
     try:
-        output = calculate_all_user_recipes(user_recipes_parameters.num_recipes)
+        output = calculate_all_user_recipes(
+            user_recipes_parameters.num_recipes)
     except Exception as e:
         return {
             "error": {

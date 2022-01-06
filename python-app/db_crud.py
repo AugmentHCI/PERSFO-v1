@@ -1,7 +1,9 @@
 import pymongo
 from decouple import config
 
-myclient = pymongo.MongoClient(config("MONGO_URI"))
+MONGO_URI = config('MONGO_URI', default='mongodb://mongo:27017/meteor')
+
+myclient = pymongo.MongoClient(MONGO_URI)
 mydb = myclient["meteor"]
 recipes_col = mydb["recipes"]
 orders_col = mydb["orders"]
@@ -91,5 +93,5 @@ def insert_recommendations(user_id: str, data_for_db: dict) -> int:
 
 
 if __name__ == "__main__":
-    print(get_users_preference())
-    # pass
+    # print(get_users_preference())
+    pass
