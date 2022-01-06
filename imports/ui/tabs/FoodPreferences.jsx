@@ -75,7 +75,6 @@ export const FoodPreferencesContext = ({ recipe }) => {
         let totalValue = 0;
         filteredIngredients.forEach(e => totalValue += Math.abs(e.value));
 
-        console.log(totalValue)
         return { filteredIngredients, favoriteIngredients, totalValue };
     });
 
