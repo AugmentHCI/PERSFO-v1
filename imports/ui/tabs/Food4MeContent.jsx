@@ -114,7 +114,7 @@ export const Food4MeContent = ({ recipe }) => {
                 {highExplanations.length > 0 ?
                     <>
                         <p className={classes.auxiliaryText}>
-                            Je krijg al veel {getListNutrients(highExplanations)} binnen, deze maaltijd is daarom arm aan:
+                            Je krijgt al veel {getListNutrients(highExplanations)} binnen, deze maaltijd is daarom arm aan:
                         </p>
                         {_.map(highExplanations, (explanation) => {
                             return (
