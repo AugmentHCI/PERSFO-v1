@@ -45,11 +45,13 @@
         "home": "Maaltijden",
         "questionnaire": "Vragenlijst",
         "history": "Geschiedenis",
+        "preferences": "Voorkeuren",
         "popularity": "Populariteit",
         "contribution": "bijdrage",
         "personal_advise": "Persoonlijk advies",
         "and": "en",
-        "popularity_explanation": "De meest populaire maaltijden zijn niet altijd de meest gezonde maaltijden. Daarom wordt de populariteit van een maaltijd maar voor 10% in rekening gebracht."
+        "popularity_explanation": "De meest populaire maaltijden zijn niet altijd de meest gezonde maaltijden. Daarom wordt de populariteit van een maaltijd maar voor 10% in rekening gebracht.",
+        "preferences_explanation": "Op basis van je eerder gekozen maaltijden, proberen we gelijkaardige recepten te zoeken."
     },
     "errors": {
         "no_ingredients": "Er zijn voor deze maaltijd nog geen ingrediënten gekend",

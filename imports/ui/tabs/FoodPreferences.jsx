@@ -9,8 +9,8 @@ import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRe
 import { ExplanationSnackbar } from "/imports/ui/components/ExplanationSnackbar";
 import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
 
-const componentName = "PopularityContent";
-export const PopularityContent = ({ recipe }) => {
+const componentName = "FoodPreferencesContext"
+export const FoodPreferencesContext = ({ recipe }) => {
 
     const [componentHeight, setComponentHeight] = useState(window.innerHeight);
 
@@ -41,8 +41,8 @@ export const PopularityContent = ({ recipe }) => {
 
     const classes = useStyles();
 
-    const { nbOrders, nblikedRanking, filteredIngredients, totalValue } = useTracker(() => {
-        const noDataAvailable = { nbOrders: 0, nblikedRanking: 0, filteredIngredients: [], totalValue: 0 };
+    const { recommendationIngredients, filteredIngredients, totalValue } = useTracker(() => {
+        const noDataAvailable = { filteredIngredients: [], filteredIngredients: [], totalValue: 0 };
         const recommendationHandler = Meteor.subscribe("recommendedrecipes");
         const orderHandler = Meteor.subscribe("orders");
         const recipeHandler = Meteor.subscribe("recipes");
@@ -54,19 +54,17 @@ export const PopularityContent = ({ recipe }) => {
         const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
         const recommendation = _.sortBy(recommendedRecipes, r => -r.pop)[0];
         const recommendationIngredients = recommendation.cleanedIngredients;
-        const nblikedRanking = recommendation.nblikedRanking;
 
-        const allOrders = OrdersCollection.find({ recipeId: recipe.id, userid: { $ne: Meteor.userId() } }).fetch()
-        const nbOrders = allOrders.length;
+        const allOrders = OrdersCollection.find({ recipeId: recipe.id, userid: Meteor.userId() }).fetch()
 
-        let popularIngredients = {};
+        let allIngredients = {};
         allOrders.forEach(order => {
             let ingredients = RecipesCollection.findOne({ id: order.recipeId })?.cleanedIngredients;
             ingredients.forEach((ingredient) => {
-                popularIngredients[ingredient] = popularIngredients[ingredient] ? popularIngredients[ingredient] + 1 : 1;
+                allIngredients[ingredient] = allIngredients[ingredient] ? allIngredients[ingredient] + 1 : 1;
             });
         });
-        const favoriteIngredients = _.sortBy(_.map(popularIngredients, (count, ingredient) => {
+        const favoriteIngredients = _.sortBy(_.map(allIngredients, (count, ingredient) => {
             return { "name": ingredient, "value": count }
         }), s => -s.value);
 
@@ -77,7 +75,8 @@ export const PopularityContent = ({ recipe }) => {
         let totalValue = 0;
         filteredIngredients.forEach(e => totalValue += Math.abs(e.value));
 
-        return { nbOrders, nblikedRanking, filteredIngredients, totalValue };
+        console.log(totalValue)
+        return { filteredIngredients, favoriteIngredients, totalValue };
     });
 
     const [toastShown, setToast] = useState(false);
@@ -87,10 +86,11 @@ export const PopularityContent = ({ recipe }) => {
         Meteor.call("log", componentName, "handleInfo", navigator.userAgent);
     };
 
+    // TODO real match number
     return (
         <>
             <h1 className={classes.subtitle}>
-                {i18n.__("general.popularity") + " (10%)"}
+                {i18n.__("general.preferences") + " (25%)"}
                 <IconButton onClick={handleInfo}>
                     <HelpOutlineIcon />
                 </IconButton>
@@ -100,11 +100,8 @@ export const PopularityContent = ({ recipe }) => {
                 height: componentHeight - 325 - 65 - 30 - 60 + "px",
             }}>
                 <p className={classes.auxiliaryText}>
-                    Deze maaltijd is reeds door <span className={classes.statNum}>{" " + nbOrders + " "}</span> 
-                    andere collega's besteld en staat op rang
-                    <span className={classes.statNum}>{" " + nblikedRanking + " "}</span> qua aantal likes.
-                    Na verloop van tijd zal het systeem maaltijden op basis van gelijkaardige gebruikers kunnen aanbevelen.
-                    {filteredIngredients.length > 0 ? " Onderstaande ingrediënten hebben bijgedragen aan de populariteitscore." : ""}
+                    Deze maaltijd heeft een match van <span className={classes.statNum}>{" " + Math.round(Math.random() * 100) + "% "}</span> met je eerder gekozen maaltijden.
+                    {filteredIngredients.length > 0 ? " Onderstaande ingrediënten hebben bijgedragen aan de score." : ""}
                 </p>
                 {filteredIngredients.length > 0 ?
                     <>
@@ -127,7 +124,8 @@ export const PopularityContent = ({ recipe }) => {
                     </>
                 }
             </div>
-            <ExplanationSnackbar toastShown={toastShown} setToast={setToast} text={i18n.__("general.popularity_explanation")}></ExplanationSnackbar>
+            <ExplanationSnackbar toastShown={toastShown} setToast={setToast} text={i18n.__("general.preferences_explanation")}></ExplanationSnackbar>
         </>
-    );
+    )
+
 };

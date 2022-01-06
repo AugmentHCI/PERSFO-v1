@@ -38,13 +38,7 @@ export const IngredientsContent = ({ recipe }) => {
         tempIngredients = recipe.cleanedIngredients;
     }
     const ingredients = tempIngredients;
-    let render = _.map(ingredients, function (a, i) {
-        return (
-            <div className={classes.ingredientBox} key={i}>
-                {a}
-            </div>
-        );
-    });
+
     if (_.isEmpty(ingredients) || ingredients[0] === "")
         render = (
             <p style={{ color: "#afafaf", fontSize: "11px", padding: "8px" }}>
@@ -66,7 +60,13 @@ export const IngredientsContent = ({ recipe }) => {
                         rowGap: "8px",
                     }}
                 >
-                    {render}
+                    {_.map(ingredients, function (a, i) {
+                        return (
+                            <div className={classes.ingredientBox} key={i}>
+                                {a}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </>

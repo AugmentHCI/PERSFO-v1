@@ -30,6 +30,7 @@ import { NutrientsContent } from "./tabs/NutrientsContent";
 import { SustainabilityContent } from "./tabs/SustainabilityContent";
 import { Food4MeContent } from "./tabs/Food4MeContent";
 import { PopularityContent } from "./tabs/PopularityContent";
+import { FoodPreferencesContext } from "./tabs/FoodPreferences";
 
 const persfoTheme = createTheme({
   palette: {
@@ -232,7 +233,7 @@ export const App = () => {
       case 0:
         return <Food4MeContent recipe={recipe} />;
       case 1:
-        return <IngredientsContent recipe={recipe} />;
+        return <FoodPreferencesContext recipe={recipe} />;
       case 2:
         return <PopularityContent recipe={recipe} />;
     }
@@ -273,7 +274,7 @@ export const App = () => {
                     recipe={GetOpenRecommenderExplanations[0]}
                     allergensPresent={GetOpenRecommenderExplanations[1]}
                     renderTabContent={renderExplanationTabContent}
-                    tabTitles={[i18n.__("general.questionnaire"), i18n.__("general.history"), i18n.__("general.popularity")]}
+                    tabTitles={[i18n.__("general.questionnaire"), i18n.__("general.preferences"), i18n.__("general.popularity")]}
                   />
                 );
               }
