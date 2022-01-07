@@ -5,6 +5,12 @@ from pydantic import BaseModel
 
 from db_status import get_db_status
 from recommender import calculate_all_user_recipes
+from fastapi_utils.tasks import repeat_every
+import logging
+
+logging.basicConfig(filename='app.log', filemode='w', format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 
 class SimilarRecipesParameters(BaseModel):
@@ -24,7 +30,47 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return get_db_status()#{"status": "API is alive and well"}
+    return get_db_status()
+
+
+# Run recommendations on API startup and every 24 hours
+@app.on_event("startup")
+@repeat_every(seconds=24 * 60 * 60)  # 24 hours
+def periodic():
+    try:
+        output = calculate_all_user_recipes(
+            num=10,
+            topk_features=5,
+            ingredients_to_remove=[
+                "Water", "Gejodeerd zout", "Gejodeerdzout", "Zout", "Peper", "Witte peper", "Wittepeper",
+                "Maïszetmeel", "Specerij", "Saus", "Kruidenmix", "Kruiden", "Suiker", "Kristalsuiker",
+                "Olijfolie", "Boter", "Vetstof", "Smaakmaker", "Stabilisatoren"
+            ],
+            save_to_db=True
+        )
+    except Exception as e:
+        logging.error(e, exc_info=True)
+
+
+@app.post("/cal-all-user-recipes/")
+async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters):
+    try:
+        output = calculate_all_user_recipes(
+            user_recipes_parameters.num_recipes,
+            user_recipes_parameters.topk_ingredients,
+            user_recipes_parameters.ingredients_to_remove,
+            user_recipes_parameters.save_to_db
+        )
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        return {
+            "error": {
+                "message": "An error occurred while calculating user recipes.",
+                "type": str(e)
+            }
+        }
+    else:
+        return output
 
 # @app.get("/all-recipes")
 # async def get_all_recipes():
@@ -46,23 +92,3 @@ async def root():
 #         }
 #     else:
 #         return suggested_recipes
-
-
-@app.post("/cal-all-user-recipes/")
-async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters):
-    try:
-        output = calculate_all_user_recipes(
-            user_recipes_parameters.num_recipes,
-            user_recipes_parameters.topk_ingredients,
-            user_recipes_parameters.ingredients_to_remove,
-            user_recipes_parameters.save_to_db
-        )
-    except Exception as e:
-        return {
-            "error": {
-                "message": "An error occurred while calculating user recipes.",
-                "type": str(e)
-            }
-        }
-    else:
-        return output

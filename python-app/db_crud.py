@@ -87,8 +87,9 @@ def get_users_preference() -> dict:
 
 def insert_recommendations(user_id: str, data_for_db: dict) -> int:
     result = userpreferences_col.update_many(
-        {'userid': user_id},
-        {"$set": data_for_db})
+        filter={'userid': user_id},
+        update={"$set": data_for_db}
+    )
     return result.modified_count
 
 

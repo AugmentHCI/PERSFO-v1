@@ -199,7 +199,8 @@ def calculate_all_user_recipes(num: int, topk_features: int, ingredients_to_remo
 
         # Update the db
         if save_to_db:
-            db_crud.insert_recommendations(user_id, data_for_db)
+            db_update_return = db_crud.insert_recommendations(user_id, data_for_db)
+            data_for_db["db_modified_count"] = db_update_return
 
         data_for_db["userid"] = user_id
         output.append(data_for_db)
