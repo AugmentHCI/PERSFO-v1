@@ -21,7 +21,11 @@ class SimilarRecipesParameters(BaseModel):
 class UserRecipesParameters(BaseModel):
     num_recipes: int = 10
     topk_ingredients: int = 5
-    ingredients_to_remove: list = []
+    ingredients_to_remove: list = [
+                "Water", "Gejodeerd zout", "Gejodeerdzout", "Zout", "Peper", "Witte peper", "Wittepeper",
+                "Maïszetmeel", "Specerij", "Saus", "Kruidenmix", "Kruiden", "Suiker", "Kristalsuiker",
+                "Olijfolie", "Boter", "Vetstof", "Smaakmaker", "Stabilisatoren"
+            ]
     save_to_db: bool = True
 
 
@@ -37,16 +41,13 @@ async def root():
 @app.on_event("startup")
 @repeat_every(seconds=24 * 60 * 60)  # 24 hours
 def periodic():
+    user_recipes_parameters = UserRecipesParameters()
     try:
         output = calculate_all_user_recipes(
-            num=10,
-            topk_features=5,
-            ingredients_to_remove=[
-                "Water", "Gejodeerd zout", "Gejodeerdzout", "Zout", "Peper", "Witte peper", "Wittepeper",
-                "Maïszetmeel", "Specerij", "Saus", "Kruidenmix", "Kruiden", "Suiker", "Kristalsuiker",
-                "Olijfolie", "Boter", "Vetstof", "Smaakmaker", "Stabilisatoren"
-            ],
-            save_to_db=True
+            user_recipes_parameters.num_recipes,
+            user_recipes_parameters.topk_ingredients,
+            user_recipes_parameters.ingredients_to_remove,
+            user_recipes_parameters.save_to_db
         )
     except Exception as e:
         logging.error(e, exc_info=True)
