@@ -94,19 +94,22 @@ Meteor.methods({
         });
 
         // calculate min and max nutritional values
-        let fiber = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "fibre", quisperName: "Fiber", quisperRating: "Rating_Total" };
-        let vitamineA = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_a", quisperName: "VitaminA", quisperRating: "Rating_Total" };
-        let vitamineB12 = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_b12", quisperName: "VitaminB12", quisperRating: "Rating_Total" };
-        let vitamineC = { min: 9999, max: 0, low: 2, high: -0.3, neutral: 0, apicName: "vitamin_c", quisperName: "VitaminC", quisperRating: "Rating_Total" };
-        let monoUnsaturatedFat = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "mono_unsaturated_fat", quisperName: "UnsaturatedFat.MonoUnsaturatedFat", quisperRating: "Rating_Total" };
-        let polyUnsaturatedFat = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "poly_unsaturated_fat", quisperName: "UnsaturatedFat.PolyUnsaturatedFat", quisperRating: "Rating_Total" };
-        let protein = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "protein", quisperName: "Protein", quisperRating: "Rating_Total" };
-        let totalFat = { min: 9999, max: 0, low: 2, high: -1, neutral: 0, apicName: "fat", quisperName: "TotalFat", quisperRating: "Rating_Total" };
-        let calcium = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "calcium", quisperName: "Calcium", quisperRating: "Rating_Total" };;
-        let iron = { min: 9999, max: 0, low: 5, high: -0.5, neutral: 0, apicName: "iron", quisperName: "Iron", quisperRating: "Rating_Total" };
-        let saturatedFats = { min: 9999, max: 0, low: 1, high: -1, neutral: 0, apicName: "saturated_fat", quisperName: "SaturatedFats", quisperRating: "Rating" };
+        // average and nonZeroCount needed so recipes with, for example, Vitamine C values do not get too much weight.
+        let fiber = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 5, high: 0, neutral: 0, apicName: "fibre", quisperName: "Fiber", quisperRating: "Rating_Total" };
+        let vitamineA = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 2, high: 0, neutral: 0, apicName: "vitamin_a", quisperName: "VitaminA", quisperRating: "Rating_Total" };
+        let vitamineB12 = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 3, high: 0, neutral: 0, apicName: "vitamin_b12", quisperName: "VitaminB12", quisperRating: "Rating_Total" };
+        let vitamineC = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 5, high: 0, neutral: 0, apicName: "vitamin_c", quisperName: "VitaminC", quisperRating: "Rating_Total" };
+        let monoUnsaturatedFat = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 1, high: 0, neutral: 0, apicName: "mono_unsaturated_fat", quisperName: "UnsaturatedFat.MonoUnsaturatedFat", quisperRating: "Rating_Total" };
+        let polyUnsaturatedFat = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 3, high: -0.5, neutral: 0, apicName: "poly_unsaturated_fat", quisperName: "UnsaturatedFat.PolyUnsaturatedFat", quisperRating: "Rating_Total" };
+        let protein = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 3, high: -0.3, neutral: 0, apicName: "protein", quisperName: "Protein", quisperRating: "Rating_Total" };
+        let totalFat = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 1, high: -1, neutral: 0, apicName: "fat", quisperName: "TotalFat", quisperRating: "Rating_Total" };
+        let calcium = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 5, high: 0, neutral: 0, apicName: "calcium", quisperName: "Calcium", quisperRating: "Rating_Total" };;
+        let iron = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 2, high: 0, neutral: 0, apicName: "iron", quisperName: "Iron", quisperRating: "Rating_Total" };
+        let saturatedFats = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 0, high: -1, neutral: 0, apicName: "saturated_fat", quisperName: "SaturatedFats", quisperRating: "Rating" };
+        let carbohydrate = { min: 9999, max: 0, average: 0, nonZeroCount: 0, low: 3, high: -0.5, neutral: 0, apicName: "carbohydrate", quisperName: "Carbohydrate", quisperRating: "Rating" };
 
-        const nutrients = [fiber, vitamineA, vitamineB12, vitamineC, monoUnsaturatedFat, polyUnsaturatedFat, protein, totalFat, calcium, iron, saturatedFats]
+
+        const nutrients = [fiber, vitamineA, vitamineB12, vitamineC, monoUnsaturatedFat, polyUnsaturatedFat, protein, totalFat, calcium, iron, saturatedFats, carbohydrate]
 
         let nbOrderedMax = 0;
 
@@ -116,9 +119,17 @@ Meteor.methods({
                 const value = calculateNutrientforRecipe(recipe, nutrient["apicName"])
                 nutrient["min"] = nutrient["min"] < value ? nutrient["min"] : value;
                 nutrient["max"] = nutrient["max"] > value ? nutrient["max"] : value;
+                if(value !== 0) {
+                    nutrient["average"] = value;
+                    nutrient["nonZeroCount"] = nutrient["nonZeroCount"] + 1;
+                }
             });
             const nbOrders = OrdersCollection.find({ recipeId: recipe.id }).fetch().length;
             nbOrderedMax = nbOrders < nbOrderedMax ? nbOrderedMax : nbOrders;
+        });
+
+        nutrients.forEach(nutrient => {
+            nutrient["average"] = nutrient["average"] / nutrient["nonZeroCount"];
         });
 
         // sort recipe by dislikedingredient first, then by decent nutriscore
@@ -165,6 +176,9 @@ Meteor.methods({
                 rating = food4me[splittedQuisperName[0]][splittedQuisperName[1]][ranges.quisperRating]
             }
             let normalizedNutrient = (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
+            if(normalizedNutrient == 0) {
+                normalizedNutrient = ranges["average"];
+            }
             let score = { value: 0, food4me: ranges.quisperName, rating: rating, normalizedNutrient: normalizedNutrient }
             switch (rating) {
                 case "LOW":
