@@ -6,7 +6,6 @@ const language = "nl-NL"
 const url = "https://quisper.onsafecape.gr/FFQ/questionnaire?lang=";
 const food4meURL = "https://api.quisper.eu/ffq-personalised-nutrition-advice/beta/ffq-food4me-l1/1";
 
-
 var fs = require("fs");
 
 export function initFFQ() {
