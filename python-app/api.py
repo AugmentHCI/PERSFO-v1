@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from db_status import get_db_status
-from recommender import calculate_all_user_recipes
+from recommender import content_based_recommendation
 from fastapi_utils.tasks import repeat_every
 import logging
 
@@ -37,13 +37,19 @@ async def root():
     return get_db_status()
 
 
+# @app.get("/all-recipes")
+# async def get_all_recipes():
+#     data = db_crud.get_all_recipes()
+#     return {"recipes": data}
+
+
 # Run recommendations on API startup and every 24 hours
 @app.on_event("startup")
 @repeat_every(seconds=24 * 60 * 60)  # 24 hours
 def periodic():
     user_recipes_parameters = UserRecipesParameters()
     try:
-        output = calculate_all_user_recipes(
+        output = content_based_recommendation(
             user_recipes_parameters.num_recipes,
             user_recipes_parameters.topk_ingredients,
             user_recipes_parameters.ingredients_to_remove,
@@ -54,9 +60,9 @@ def periodic():
 
 
 @app.post("/cal-all-user-recipes/")
-async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters):
+async def get_content_based_recommendation(user_recipes_parameters: UserRecipesParameters):
     try:
-        output = calculate_all_user_recipes(
+        output = content_based_recommendation(
             user_recipes_parameters.num_recipes,
             user_recipes_parameters.topk_ingredients,
             user_recipes_parameters.ingredients_to_remove,
@@ -72,24 +78,3 @@ async def calculate_users_recipes(user_recipes_parameters: UserRecipesParameters
         }
     else:
         return output
-
-# @app.get("/all-recipes")
-# async def get_all_recipes():
-#     data = db_crud.get_all_recipes()
-#     return {"recipes": data}
-
-
-# @app.post("/similar-recipes/")
-# async def similar_recipes(similar_recipes_parameters: SimilarRecipesParameters):
-#     try:
-#         suggested_recipes = suggest_similar_recipes(similar_recipes_parameters.recipe_name,
-#                                                     similar_recipes_parameters.num_recipes)
-#     except Exception as e:
-#         return {
-#             "error": {
-#                 "message": "An error occurred while calculating similar recipes.",
-#                 "type": str(e)
-#             }
-#         }
-#     else:
-#         return suggested_recipes

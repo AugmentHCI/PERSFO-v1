@@ -23,6 +23,20 @@ def get_all_recipes() -> list:
         myclient.close()
 
 
+def get_confirmed_orders() -> list:
+    cursor = orders_col.find({
+            "$and": [
+                {"confirmed": { "$exists": True}},
+                {"confirmed": True}
+            ]
+    }, {
+        "userid": True,
+        "recipeId": True,
+        "_id": False
+    })
+    return list(cursor)
+
+
 def get_users_preference() -> dict:
     pipeline = [
         {

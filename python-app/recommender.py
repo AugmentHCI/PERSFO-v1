@@ -1,11 +1,13 @@
 import db_crud
 from pandas import DataFrame, options
 import datetime
+
 options.mode.chained_assignment = None
 from collections import Counter
 from icecream import ic
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
+from surprise import SVD, Reader, Dataset
 
 
 def binarize_ingredients(df: DataFrame) -> DataFrame:
@@ -144,11 +146,11 @@ def remove_ingredients(the_list: list, ingredients_to_remove: list):
     #         print(ing_to_remove, ingredient)
     #         if ingredient == ing_to_remove:
     #             the_list.remove(ingredient)
-        # result = [ingredient for ingredient in the_list if ingredient != ing_to_remove]
+    # result = [ingredient for ingredient in the_list if ingredient != ing_to_remove]
     return final_list
 
 
-def get_the_topk_ingredients(ingredients_of_user:list, topk_features: list):
+def get_the_topk_ingredients(ingredients_of_user: list, topk_features: list):
     # Select some most common ingredients
     ingredients_of_user = Counter(ingredients_of_user).most_common(topk_features)
 
@@ -156,7 +158,7 @@ def get_the_topk_ingredients(ingredients_of_user:list, topk_features: list):
     return [a_tuple[0] for a_tuple in ingredients_of_user]
 
 
-def calculate_all_user_recipes(num: int, topk_features: int, ingredients_to_remove: list, save_to_db: bool):
+def content_based_recommendation(num: int, topk_features: int, ingredients_to_remove: list, save_to_db: bool):
     output = []
     # Load all the recipes from db
     df_recipes = recipes_col_to_df()
@@ -207,5 +209,48 @@ def calculate_all_user_recipes(num: int, topk_features: int, ingredients_to_remo
     return output
 
 
+def fit_dataframe(df: DataFrame):
+    # A reader is needed by surprise lib but the rating_scale param is requiered.
+    reader = Reader(rating_scale=(0, 1))
+    data = Dataset.load_from_df(df[['userid', 'recipeId', 'ordered']], reader)
+    trainset = data.build_full_trainset()
+
+    # Fit an SVD model
+    svd_model = SVD()
+    svd_model.fit(trainset)
+
+    return svd_model
+
+
+def useritem_filtering_recommendation(num: int, save_to_db: bool):
+    # Load the recipes ordered by users
+    preferences_of_users = db_crud.get_confirmed_orders()
+
+    # Convert the orders list to dataframe
+    # And add a new column "ordered", mark cells as 1 (ordered)
+    df = DataFrame.from_dict(preferences_of_users)
+    df["ordered"] = 1
+
+    svd_model = fit_dataframe(df)
+
+    user_id = str("BjRnLcPw3foPjBsBo")  # user id
+    recipe_id = str("149743403470001")  # movie id
+
+    # Get a prediction for the given users and recipe.
+    prediction_output = svd_model.predict(user_id, recipe_id, verbose=True)
+
+    return prediction_output
+
+    # MF
+    # https://beckernick.github.io/matrix-factorization-recommender/
+    # one row per user and one column per movie
+    R_df = ratings_df.pivot(index='UserID', columns='MovieID', values='Rating').fillna(0)
+    # de-mean the data (normalize by each users mean) and convert it from a dataframe to a numpy array.
+    R = R_df.as_matrix()
+    user_ratings_mean = np.mean(R, axis=1)
+    R_demeaned = R - user_ratings_mean.reshape(-1, 1)
+
+
 if __name__ == "__main__":
-    print(calculate_all_user_recipes(10, 5, ["Koolzaadolie", "Water", "Gejodeerdzout", "Knoflook", "Aardappel", "Kervel", "Koolzaadolie", "Gejodeerdzout", "Knoflook", "Water", "Champignon", "Knolselderij", "Aardappel", "Roommelk", "Koolzaadolie", "Gejodeerdzout", "Knoflook"]))
+    # print(content_based_recommendation(10, 5, ["Koolzaadolie", "Water", "Gejodeerdzout", "Knoflook", "Aardappel", "Kervel", "Koolzaadolie", "Gejodeerdzout", "Knoflook", "Water", "Champignon", "Knolselderij", "Aardappel", "Roommelk", "Koolzaadolie", "Gejodeerdzout", "Knoflook"]))
+    print(useritem_filtering_recommendation(10, False))
