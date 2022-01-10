@@ -8,6 +8,8 @@ import { RecipesCollection } from '/imports/db/recipes/RecipesCollection';
 import { RecommendedRecipes } from '/imports/db/recommendedRecipes/RecommendedRecipes';
 import { ExplanationSnackbar } from "/imports/ui/components/ExplanationSnackbar";
 import { NutrientsBar } from "/imports/ui/components/NutrientsBar";
+import { UserPreferences } from '/imports/db/userPreferences/UserPreferences';
+
 
 const componentName = "FoodPreferencesContext"
 export const FoodPreferencesContext = ({ recipe }) => {
@@ -46,14 +48,23 @@ export const FoodPreferencesContext = ({ recipe }) => {
         const recommendationHandler = Meteor.subscribe("recommendedrecipes");
         const orderHandler = Meteor.subscribe("orders");
         const recipeHandler = Meteor.subscribe("recipes");
+        const userpreferencesHandler = Meteor.subscribe("userpreferences");
 
-        if (!recipe || !Meteor.user() || !recommendationHandler.ready() || !orderHandler.ready() || !recipeHandler.ready()) {
+        if (!recipe || !Meteor.user() || !recommendationHandler.ready() || !orderHandler.ready() || !recipeHandler.ready() || !userpreferencesHandler.ready()) {
             return { ...noDataAvailable, isLoading: true };
         }
 
         const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
         const recommendation = _.sortBy(recommendedRecipes, r => -r.pop)[0];
         const recommendationIngredients = recommendation.cleanedIngredients;
+        const userPreferences = UserPreferences.findOne({ userid: Meteor.userId() });
+
+
+        if(userPreferences.orderBasedRecommendations) {
+
+        } else {
+
+        }
 
         const allOrders = OrdersCollection.find({ recipeId: recipe.id, userid: Meteor.userId() }).fetch()
 
