@@ -8,7 +8,9 @@ import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
 import { getElementID, getNutriscoreRankingValue, getNbDisliked } from "/imports/api/apiPersfo";
 import { calculateNutrientforRecipe } from '../../api/apiPersfo';
 
-const coursesToIgnore = ["Dranken", "Soep"];
+import { FALLBACK_DATE } from "/imports/api/methods.js";
+
+const coursesToIgnore = ["Dranken", "Soep", "Soup"];
 
 Meteor.methods({
     "recommender.updateRecommendations"() {
@@ -28,7 +30,7 @@ Meteor.methods({
         });
         // pick random menu when no menu available today
         if (!menu) {
-            menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
+            menu = MenusCollection.findOne({ starting_date: FALLBACK_DATE });
             console.log("recommender: no menu for today!")
         }
 
@@ -119,7 +121,7 @@ Meteor.methods({
                 const value = calculateNutrientforRecipe(recipe, nutrient["apicName"])
                 nutrient["min"] = nutrient["min"] < value ? nutrient["min"] : value;
                 nutrient["max"] = nutrient["max"] > value ? nutrient["max"] : value;
-                if(value !== 0) {
+                if (value !== 0) {
                     nutrient["average"] = value;
                     nutrient["nonZeroCount"] = nutrient["nonZeroCount"] + 1;
                 }
@@ -129,7 +131,8 @@ Meteor.methods({
         });
 
         nutrients.forEach(nutrient => {
-            nutrient["average"] = nutrient["average"] / nutrient["nonZeroCount"];
+            let result = nutrient["average"] / nutrient["nonZeroCount"];
+            nutrient["average"] = isNaN(result) ? 0 : result;
         });
 
         // sort recipe by dislikedingredient first, then by decent nutriscore
@@ -176,7 +179,7 @@ Meteor.methods({
                 rating = food4me[splittedQuisperName[0]][splittedQuisperName[1]][ranges.quisperRating]
             }
             let normalizedNutrient = (calculateNutrientforRecipe(recipe, ranges["apicName"]) / ranges["max"]);
-            if(normalizedNutrient == 0) {
+            if (normalizedNutrient == 0 || isNaN(normalizedNutrient)) {
                 normalizedNutrient = ranges["average"];
             }
             let score = { value: 0, food4me: ranges.quisperName, rating: rating, normalizedNutrient: normalizedNutrient }

@@ -14,7 +14,7 @@ export function initData() {
   // first load menus to only load relevant recipes!
 
   // init menus
-  let allMenus = JSON.parse(Assets.getText("data/menus/menuLaPlaine.json")).results;
+  let allMenus = JSON.parse(Assets.getText("data/menus/menuJJ.json")).results;
   // let allMenus = JSON.parse(Assets.getText("data/menus/menu2.json")).results;
   let allRecipeIds = [];
 

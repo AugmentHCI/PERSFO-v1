@@ -49,6 +49,7 @@ export const Food4MeContent = ({ recipe }) => {
 
         let totalValue = 0;
         explanations.forEach(e => totalValue += Math.abs(e.value));
+        explanations.forEach(e => console.log(e));
 
         const lowExplanations = _.filter(explanations, e => e.rating == "LOW");
         const highExplanations = _.filter(explanations, e => e.rating == "HIGH");

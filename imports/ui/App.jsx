@@ -17,7 +17,8 @@ import { TabHomeScreen } from "./TabHomeScreen";
 import {
   OpenFeedback, OpenMealDetails,
   OpenProgress,
-  OpenSettings, OpenRecommenderExplanations
+  OpenSettings, OpenRecommenderExplanations, 
+  FALLBACK_DATE
 } from "/imports/api/methods.js";
 import { MenusCollection } from '/imports/db/menus/MenusCollection';
 import { OrdersCollection } from '/imports/db/orders/OrdersCollection';
@@ -127,6 +128,7 @@ export const App = () => {
       doneForToday: false,
       icfFinished: true,
       surveyFinished: true,
+      isLoading: true,
       recommendedRecipe: null // in case no meal is recommended, suggest a sandwhich
     };
 
@@ -142,7 +144,7 @@ export const App = () => {
     const GetOpenRecommenderExplanations = OpenRecommenderExplanations.get();
 
     if (!Meteor.user() || !menuHandler.ready() || !recipesHandler.ready() || !preferencesHandler.ready() || !orderHandler.ready() || !recommendationHandler.ready()) {
-      return { ...noDataAvailable, isLoading: true };
+      return { ...noDataAvailable};
     }
     // // wait for menus, recipes, AND userpreferences to load before initializing recommendations
     // // recalculate new recommendation on every app startup
@@ -167,7 +169,7 @@ export const App = () => {
     });
 
     // pick menu of December 6 when no menu available today
-    if (!menu) menu = MenusCollection.findOne({ starting_date: "2021-12-06" });
+    if (!menu) menu = MenusCollection.findOne({ starting_date: FALLBACK_DATE });
 
     let randomConfirmedOrder = OrdersCollection.findOne({ orderday: nowString, confirmed: true });
     const doneForToday = randomConfirmedOrder !== undefined;
@@ -191,9 +193,10 @@ export const App = () => {
       tempRecommendation = RecipesCollection.findOne({ id: recommendedRecipeId });
     }
 
-    const recommendedRecipe = tempRecommendation
+    const recommendedRecipe = tempRecommendation;
+    const isLoading = false;
 
-    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenRecommenderExplanations, menu, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
+    return { GetOpenMealDetails, GetOpenProgress, GetOpenSettings, GetOpenFeedback, GetOpenRecommenderExplanations, menu, isLoading, doneForToday, icfFinished, surveyFinished, recommendedRecipe };
   });
 
   const TabPanel = (props) => {
@@ -203,13 +206,19 @@ export const App = () => {
 
   const getCoursesTabs = () => {
     if (!isLoading) {
-      return menu.courses.map((course) => (
-        <Tab
-          style={{ minHeight: "32px" }}
-          key={course.name}
-          label={course.name}
-        />
-      ));
+      try {
+        return menu.courses.map((course) => (
+          <Tab
+            style={{ minHeight: "32px" }}
+            key={course.name}
+            label={course.name}
+          />
+        ));
+      } catch (error) {
+        console.log(error);
+        return (<></>)
+      }
+
     }
   };
 
