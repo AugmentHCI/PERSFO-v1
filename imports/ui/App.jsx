@@ -152,14 +152,6 @@ export const App = () => {
     const now = new Date();
     const nowString = now.toISOString().substring(0, 10);
 
-    if (lastRecommenderUpdate === undefined) {
-      Meteor.call("recommender.updateRecommendations");
-      setLastRecommenderUpdate(now.getTime());
-    } else if (now.getTime() - lastRecommenderUpdate >= (10 * 1000)) {
-      Meteor.call("recommender.updateRecommendations");
-      setLastRecommenderUpdate(now.getTime());
-    }
-
     const earlier = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().substring(0, 10);
     // pick specific date for demo
     // let menu = MenusCollection.findOne({ starting_date: "2021-12-07" });
@@ -181,18 +173,28 @@ export const App = () => {
     let recommendedRecipeId = "";
     let tempRecommendation = null;
     let noMoreRecommendations = false;
-    try {
-      const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
-      recommendedRecipeId = _.sortBy(recommendedRecipes, r => -r.food4meRanking)[0].id;
-    } catch (error) {
-      console.log("no recommendations anymore: " + error)
-      noMoreRecommendations = true;
-    }
 
-    if (!noMoreRecommendations) {
-      tempRecommendation = RecipesCollection.findOne({ id: recommendedRecipeId });
-    }
 
+    if(surveyFinished) {
+
+      if (lastRecommenderUpdate === undefined || now.getTime() - lastRecommenderUpdate >= (10 * 1000)) {
+        Meteor.call("recommender.updateRecommendations");
+        setLastRecommenderUpdate(now.getTime());
+      }
+
+      try {
+        const recommendedRecipes = RecommendedRecipes.findOne({ userid: Meteor.userId() }).recommendations;
+        recommendedRecipeId = _.sortBy(recommendedRecipes, r => -r.food4meRanking)[0].id;
+      } catch (error) {
+        console.log("no recommendations anymore: " + error)
+        noMoreRecommendations = true;
+      }
+  
+      if (!noMoreRecommendations) {
+        tempRecommendation = RecipesCollection.findOne({ id: recommendedRecipeId });
+      }
+    }
+    
     const recommendedRecipe = tempRecommendation;
     const isLoading = false;
 

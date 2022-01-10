@@ -88,7 +88,7 @@ export const TabHomeScreen = ({ recommendedRecipe, recipeURLs, courseName }) => 
             </div>
           </>
         ) :
-        console.log("no recommendations left")
+        <></>
       }
 
       <Snackbar

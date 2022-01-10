@@ -179,5 +179,5 @@ Meteor.methods({
             { userid: this.userId },
             { $set: { icfFinished: true } }
         );
-    },
+    }
 });

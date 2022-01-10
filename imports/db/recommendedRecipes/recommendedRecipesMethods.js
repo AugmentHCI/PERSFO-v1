@@ -9,6 +9,7 @@ import { getElementID, getNutriscoreRankingValue, getNbDisliked } from "/imports
 import { calculateNutrientforRecipe } from '../../api/apiPersfo';
 
 import { FALLBACK_DATE } from "/imports/api/methods.js";
+import { red } from '@material-ui/core/colors';
 
 const coursesToIgnore = ["Dranken", "Soep", "Soup"];
 
@@ -23,10 +24,11 @@ Meteor.methods({
         // 7 days earlier
         // const earlier = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().substring(0, 10);
 
+        const today = new Date().toISOString().substring(0, 10);
         // find today's menu
         let menu = MenusCollection.findOne({
             // starting_date: earlier,
-            starting_date: new Date().toISOString().substring(0, 10),
+            starting_date: today,
         });
         // pick random menu when no menu available today
         if (!menu) {
@@ -71,6 +73,23 @@ Meteor.methods({
             }
             return true;
         });
+
+        // prevent that todays recommendation gets filtered again.
+        const allLastRecommendations = _.filter(userpreferences.lastRecommendations, rec => rec.date !== today);
+        const lastRecommendations = _.filter(allLastRecommendations, rec => {
+            // filter recipes recommended more than three days ago
+            return new Date(rec.date) > new Date() - (3 * 24 * 60 * 60 * 1000);
+        });
+
+        const lastRecommendationIds = _.map(lastRecommendations, rec => rec.recipeId);
+        const lastRecommendationDates = _.map(lastRecommendations, rec => rec.date);
+
+        if (lastRecommendations) {
+            // filter recipes that were recommended in the last 3 days
+            todaysRecipes = _.filter(todaysRecipes, (recipe) => {
+                return !_.includes(lastRecommendationIds, recipe.id);
+            });
+        }
 
         // filter recipes without an image and/or no nutrient data
         todaysRecipes = _.filter(todaysRecipes, (recipe) => {
@@ -138,7 +157,7 @@ Meteor.methods({
         // sort recipe by dislikedingredient first, then by decent nutriscore
         const dislikedIngredients = userpreferences?.dislikedIngredients ? userpreferences.dislikedIngredients : [];
         const food4me = userpreferences?.food4me?.Output;
-        const nbLikedMax = _.maxBy(todaysRecipes, "nbLikes").nbLikes;
+        const nbLikedMax = _.maxBy(todaysRecipes, "nbLikes")?.nbLikes;
 
         // last step! Assign rankings
         const now = new Date().getTime();
@@ -164,11 +183,23 @@ Meteor.methods({
             todaysRecipes[i].lastUpdated = now;
         }
 
-        // insert/update recommendations for user
-        RecommendedRecipes.upsert(
-            { userid: this.userId },
-            { $set: { recommendations: _.sortBy(todaysRecipes, r => -r.food4meRanking) } }
-        );
+        const result = _.sortBy(todaysRecipes, r => -r.food4meRanking);
+
+
+        if (result?.length) {
+            // insert/update recommendations for user
+            RecommendedRecipes.upsert(
+                { userid: this.userId },
+                { $set: { recommendations: result } }
+            );
+
+            if (!_.includes(lastRecommendationDates, today)) {
+                console.log("last recommendation saved");
+                UserPreferences.update({ userid: this.userId },
+                    { $addToSet: { lastRecommendations: { recipeId: result[0].id, date: today } } });
+            }
+        }
+
 
         function getNutrientRatingForRecipe(ranges, recipe) {
             let rating;
