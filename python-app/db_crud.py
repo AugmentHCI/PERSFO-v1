@@ -7,6 +7,7 @@ myclient = MongoClient(MONGO_URI)
 mydb = myclient["meteor"]
 recipes_col = mydb["recipes"]
 orders_col = mydb["orders"]
+users_col = mydb["users"]
 userpreferences_col = mydb["userpreferences"]
 
 
@@ -23,12 +24,34 @@ def get_all_recipes() -> list:
         myclient.close()
 
 
+def get_all_recipes_ids() -> list:
+    cursor = recipes_col.find({}, {
+        "id": True,
+        "_id": False
+    })
+    try:
+        return list(cursor)
+    finally:
+        myclient.close()
+
+
+def get_all_users_ids() -> list:
+    cursor = users_col.find({}, {
+        "_id": True
+    })
+
+    try:
+        return list(cursor)
+    finally:
+        myclient.close()
+
+
 def get_confirmed_orders() -> list:
     cursor = orders_col.find({
-            "$and": [
-                {"confirmed": { "$exists": True}},
-                {"confirmed": True}
-            ]
+        "$and": [
+            {"confirmed": {"$exists": True}},
+            {"confirmed": True}
+        ]
     }, {
         "userid": True,
         "recipeId": True,
