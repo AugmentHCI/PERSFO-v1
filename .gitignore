@@ -7,3 +7,4 @@ python-app/app.log
 app/.DS_Store
 app/.meteor/.DS_Store
 python-app/.DS_Store
+.DS_Store
