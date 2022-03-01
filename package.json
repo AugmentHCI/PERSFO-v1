@@ -21,7 +21,7 @@
     "meteor-node-stubs": "^1.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "showdown": "^1.9.1",
+    "showdown": "^2.0.1",
     "survey-react": "^1.9.1",
     "surveyjs": "^3.0.2"
   },
