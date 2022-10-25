@@ -22,7 +22,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "showdown": "^1.9.1",
-    "survey-react": "^1.9.1",
+    "survey-react": "^1.9.55",
     "surveyjs": "^3.0.2"
   },
   "meteor": {
